@@ -28,6 +28,13 @@ export class AppManager {
                 total_allocated: 30,
                 total_used: 18,
                 available_slots: 12
+            },
+
+            metrics: {
+                total_users: 142,
+                total_resellers: 8,
+                total_clients: 134,
+                active_licensed_slots: 240
             }
         };
 
@@ -57,8 +64,6 @@ export class AppManager {
         }
 
         // 4. NIVEL 3: CLIENT (Emisor Talonario Final)
-        
-        // A) Control de Bloqueo Global (Desactivación Maestra por el Dueño o Imprenta)
         if (!this.state.isActive) {
             this.container.innerHTML = renderSupportLockScreen(
                 "Tu cuenta ha sido pausada temporalmente por la administración de la imprenta. Por favor contacta a soporte técnico.",
@@ -67,13 +72,11 @@ export class AppManager {
             return;
         }
 
-        // B) Control de Onboarding Inicial (Datos RUC)
         if (!this.state.isConfigured) {
             this.container.innerHTML = renderOnboardingScreen();
             return;
         }
 
-        // C) Control de Firma Electrónica (.p12)
         if (!this.state.hasSignature) {
             this.container.innerHTML = renderSupportLockScreen(
                 "Aún no has configurado tu archivo de Firma Electrónica (.p12) requerida por el SRI para emitir comprobantes.",
@@ -82,7 +85,6 @@ export class AppManager {
             return;
         }
 
-        // D) Facturador Físico Realista Replica Exacta
         this.container.innerHTML = renderFacturadorRealista(this.state, this.state.currentDocNumber);
     }
 
@@ -109,7 +111,19 @@ export class AppManager {
         this.evaluateStateAndRender();
     }
 
-    // ACCIONES SUPERADMIN DUEÑO
+    // ACCIONES SUPERADMIN DUEÑO (ILIMITADAS IMPRENTAS)
+    createReseller() {
+        const name = document.getElementById('new-reseller-name').value;
+        const size = parseInt(document.getElementById('new-reseller-package-size').value) || 30;
+
+        this.state.metrics.total_resellers += 1;
+        this.state.metrics.active_licensed_slots += size;
+        this.state.metrics.total_users += 1;
+
+        alert(`🏭 ¡Imprenta "${name}" registrada exitosamente!\nSe ha habilitado su cuenta Reseller y su primer lote de ${size} licencias.`);
+        this.evaluateStateAndRender();
+    }
+
     toggleMasterAccount(btn, imprentaName) {
         if (btn.innerText.includes('Suspender')) {
             btn.innerText = '🟢 Activar Imprenta';
@@ -124,7 +138,9 @@ export class AppManager {
 
     assignPackage() {
         const size = parseInt(document.getElementById('owner-package-size').value) || 30;
+        this.state.metrics.active_licensed_slots += size;
         alert(`📦 Se asignaron exitosamente ${size} licencias adicionales a la imprenta.`);
+        this.evaluateStateAndRender();
     }
 
     // ACCIONES RESELLER IMPRENTA
@@ -136,6 +152,8 @@ export class AppManager {
         const name = document.getElementById('reseller-client-name').value;
         this.state.resellerQuota.total_used += 1;
         this.state.resellerQuota.available_slots -= 1;
+        this.state.metrics.total_clients += 1;
+        this.state.metrics.total_users += 1;
         alert(`👤 Cliente "${name}" dado de alta exitosamente dentro de tu lote de imprenta.`);
         this.evaluateStateAndRender();
     }

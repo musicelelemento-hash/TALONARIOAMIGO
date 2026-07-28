@@ -30,9 +30,10 @@ Route::group(['middleware' => ['auth:sanctum', 'check.account.status']], functio
     Route::post('/v1/facturacion/sri/autorizar', [FacturacionElectronicaController::class, 'autorizarSri']);
 });
 
-// Rutas Panel SuperAdmin (Dueño - Control Total)
+// Rutas Panel SuperAdmin (Dueño - Control Total Global)
 Route::group(['middleware' => ['auth:sanctum'], 'prefix' => 'v1/admin/owner'], function () {
     Route::get('/dashboard', [OwnerController::class, 'getGlobalDashboard']);
+    Route::post('/create-reseller', [OwnerController::class, 'createReseller']);
     Route::post('/toggle-account/{id}', [OwnerController::class, 'toggleAccountStatus']);
     Route::post('/assign-package', [OwnerController::class, 'assignResellerPackage']);
 });

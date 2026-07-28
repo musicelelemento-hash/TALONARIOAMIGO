@@ -11,7 +11,7 @@ export function renderSuperAdminPanel(dashboardData) {
             <div class="receipt-header">
                 <div class="receipt-number">PANEL DE CONTROL TOTAL — DUEÑO</div>
                 <div class="emisor-title">Plataforma Global Talonario Amigo</div>
-                <div class="emisor-meta">Monitoreo y Activación / Suspensión Maestra de Cuentas</div>
+                <div class="emisor-meta">Monitoreo, Alta de Imprentas y Activación/Suspensión Maestra</div>
             </div>
 
             <!-- Métricas Globales -->
@@ -34,10 +34,44 @@ export function renderSuperAdminPanel(dashboardData) {
                 </div>
             </div>
 
-            <!-- Formulario Asignar Lote a Imprenta -->
+            <!-- Formulario 1: Dar de Alta una NUEVA Imprenta Reseller -->
+            <div style="background: #FFF; border: 2px solid #1A1A1A; border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+                <h4 style="font-family: var(--font-serif-header); font-size: 16px; font-weight: 800; margin-bottom: 10px; color: #1D4ED8;">
+                    🏭 Registrar Nueva Imprenta Aliada (Reseller)
+                </h4>
+                <form onsubmit="event.preventDefault(); window.appState.createReseller();" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div>
+                        <label class="form-label">Nombre de la Imprenta</label>
+                        <input type="text" id="new-reseller-name" class="form-input" placeholder="Ej. Imprenta Gráficas del Sur" required>
+                    </div>
+                    <div>
+                        <label class="form-label">Correo de Acceso Reseller</label>
+                        <input type="email" id="new-reseller-email" class="form-input" placeholder="contacto@imprenta.com" required>
+                    </div>
+                    <div>
+                        <label class="form-label">Contraseña de la Imprenta</label>
+                        <input type="password" id="new-reseller-pass" class="form-input" placeholder="••••••••" required>
+                    </div>
+                    <div>
+                        <label class="form-label">WhatsApp Soporte Imprenta</label>
+                        <input type="text" id="new-reseller-wa" class="form-input" placeholder="Ej. 0993050689" required>
+                    </div>
+                    <div style="grid-column: span 2;">
+                        <label class="form-label">Lote Inicial de Licencias Vendidas</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="number" id="new-reseller-package-size" class="form-input" value="30" placeholder="Ej. 30 licencias" style="flex:1;">
+                            <button type="submit" class="btn-stamp" style="width: auto; padding: 10px 18px; font-size: 12px; background: #1D4ED8;">
+                                ➕ REGISTRAR IMPRENTA & VENDER LOTE
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Formulario 2: Asignar Lote Adicional a Imprenta Existente -->
             <div style="background: #FFF; border: 2px solid #1A1A1A; border-radius: 12px; padding: 16px; margin-bottom: 20px;">
                 <h4 style="font-family: var(--font-serif-header); font-size: 16px; font-weight: 800; margin-bottom: 10px;">
-                    ➕ Vender / Asignar Lote de Licencias a Imprenta
+                    📦 Vender / Asignar Lote Adicional a Imprenta Existente
                 </h4>
                 <form onsubmit="event.preventDefault(); window.appState.assignPackage();" style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; align-items: end;">
                     <div>
@@ -49,7 +83,7 @@ export function renderSuperAdminPanel(dashboardData) {
                         </select>
                     </div>
                     <div>
-                        <label class="form-label">Tamaño del Lote</label>
+                        <label class="form-label">Tamaño del Lote Adicional</label>
                         <input type="number" id="owner-package-size" class="form-input" value="30" placeholder="Ej. 30 licencias">
                     </div>
                     <button type="submit" class="btn-stamp" style="padding: 10px 16px; font-size: 12px;">
@@ -59,13 +93,13 @@ export function renderSuperAdminPanel(dashboardData) {
             </div>
 
             <!-- Lista Global de Resellers con Switch Maestro ON/OFF -->
-            <h4 style="font-weight: 800; font-size: 14px; margin-bottom: 10px;">Gestión Maestra de Resellers & Imprentas</h4>
+            <h4 style="font-weight: 800; font-size: 14px; margin-bottom: 10px;">Gestión Maestra de Resellers & Imprentas (${metrics.total_resellers})</h4>
 
-            <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div style="display: flex; flex-direction: column; gap: 10px;" id="owner-resellers-list">
                 <div style="background: #FFF; border: 1.5px solid #1A1A1A; border-radius: 10px; padding: 14px; display: flex; justify-content: space-between; align-items: center;">
                     <div>
                         <strong style="font-size: 15px;">Imprenta Gráficas Amazonas</strong><br>
-                        <small style="color: #57534E; font-family: var(--font-mono-num);">Lote Activo: 30 Cuentas (18 Usadas, 12 Disponibles)</small><br>
+                        <small style="color: #57534E; font-family: var(--font-mono-num);">Lotes Activos: 30 Licencias (18 Usadas, 12 Disponibles)</small><br>
                         <small style="color: #1D4ED8;">📞 WhatsApp Soporte: 0993050689</small>
                     </div>
                     <div style="text-align: right;">
@@ -79,7 +113,7 @@ export function renderSuperAdminPanel(dashboardData) {
                 <div style="background: #FFF; border: 1.5px solid #1A1A1A; border-radius: 10px; padding: 14px; display: flex; justify-content: space-between; align-items: center;">
                     <div>
                         <strong style="font-size: 15px;">Imprenta Offset Serviprint</strong><br>
-                        <small style="color: #57534E; font-family: var(--font-mono-num);">Lote Activo: 50 Cuentas (45 Usadas, 5 Disponibles)</small><br>
+                        <small style="color: #57534E; font-family: var(--font-mono-num);">Lotes Activos: 50 Licencias (45 Usadas, 5 Disponibles)</small><br>
                         <small style="color: #1D4ED8;">📞 WhatsApp Soporte: 0992345678</small>
                     </div>
                     <div style="text-align: right;">
