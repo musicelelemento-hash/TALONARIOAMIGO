@@ -1,6 +1,6 @@
 /**
  * Master App State Evaluator & Router
- * Administra los 3 Niveles de Acceso: SUPER_ADMIN (Dueño), RESELLER (Imprentas), CLIENT (Talonario)
+ * Incluye físicas 3D de desprendimiento de papel, Haptic Feedback API y cálculo dinámico
  */
 import { renderLoginScreen } from './LoginScreen.js';
 import { renderOnboardingScreen } from './OnboardingScreen.js';
@@ -45,25 +45,21 @@ export class AppManager {
      * EVALUACIÓN MASTER DE ESTADO Y ENRUTAMIENTO POR ROLE Y PERMISOS
      */
     evaluateStateAndRender() {
-        // 1. Si no ha iniciado sesión -> Login Screen
         if (!this.state.isLoggedIn) {
             this.container.innerHTML = renderLoginScreen();
             return;
         }
 
-        // 2. NIVEL 1: SUPER_ADMIN (Dueño — Control Total Global)
         if (this.state.currentRole === 'SUPER_ADMIN') {
             this.container.innerHTML = renderSuperAdminPanel(this.state);
             return;
         }
 
-        // 3. NIVEL 2: RESELLER (Imprenta Aliada — Lotes & Clientes Propios)
         if (this.state.currentRole === 'RESELLER') {
             this.container.innerHTML = renderResellerPanel({ quota: this.state.resellerQuota });
             return;
         }
 
-        // 4. NIVEL 3: CLIENT (Emisor Talonario Final)
         if (!this.state.isActive) {
             this.container.innerHTML = renderSupportLockScreen(
                 "Tu cuenta ha sido pausada temporalmente por la administración de la imprenta. Por favor contacta a soporte técnico.",
@@ -88,6 +84,94 @@ export class AppManager {
         this.container.innerHTML = renderFacturadorRealista(this.state, this.state.currentDocNumber);
     }
 
+    // SOPORTE VIBRACIÓN HÁPTICA MÓVIL
+    triggerHaptic(pattern = 15) {
+        if ('vibrate' in navigator) {
+            navigator.vibrate(pattern);
+        }
+    }
+
+    // SECUENCIA 3D DE EMISIÓN SRI, SELLO E IMPACTO DE PAPEL
+    executeEmit3DSequence() {
+        // 1. Háptico de pulsación
+        this.triggerHaptic([40, 30, 80]);
+
+        const stampBadge = document.getElementById('stamp-sri-badge');
+        const paperCard = document.getElementById('receipt-paper-card');
+
+        // 2. Impacto Sello SRI en Rojo / Verde
+        if (stampBadge) {
+            stampBadge.classList.add('slam-anim');
+        }
+
+        setTimeout(() => {
+            // 3. Animación 3D Desprendimiento del Talonario
+            if (paperCard) {
+                paperCard.classList.remove('paper-glide-in');
+                paperCard.classList.add('tearing-away');
+            }
+
+            this.triggerHaptic(30);
+
+            setTimeout(() => {
+                // 4. Incrementar Secuencial N° de Factura / Nota de Venta
+                this.state.currentDocNumber += 1;
+
+                // 5. Entrar nueva hoja en blanco con deslizado 3D
+                this.evaluateStateAndRender();
+
+                // Notification Toast
+                this.showToast(`🎉 ¡Comprobante N° 001-001-${String(this.state.currentDocNumber - 1).padStart(9, '0')} firmado con XAdES-BES y AUTORIZADO por el SRI!`);
+            }, 700);
+        }, 1100);
+    }
+
+    // CÁLCULO DINÁMICO DE TOTALES
+    recalculateTotals() {
+        const rows = document.querySelectorAll('#realista-items-body tr');
+        let grandTotal = 0;
+
+        rows.forEach(row => {
+            const qtyInput = row.querySelector('td:nth-child(1) input');
+            const priceInput = row.querySelector('td:nth-child(3) input');
+            const totalCell = row.querySelector('.row-total');
+
+            if (qtyInput && priceInput && totalCell) {
+                const qty = parseFloat(qtyInput.value) || 0;
+                const price = parseFloat(priceInput.value) || 0;
+                const rowTotal = qty * price;
+                totalCell.innerText = `$${rowTotal.toFixed(2)}`;
+                grandTotal += rowTotal;
+            }
+        });
+
+        const totalDisplay = document.getElementById('grand-total-display');
+        if (totalDisplay) {
+            totalDisplay.innerText = `$${grandTotal.toFixed(2)}`;
+            totalDisplay.style.transform = 'scale(1.1)';
+            setTimeout(() => totalDisplay.style.transform = 'scale(1)', 200);
+        }
+    }
+
+    showToast(message) {
+        let toast = document.getElementById('custom-toast-msg');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'custom-toast-msg';
+            toast.style.cssText = `
+                position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+                background: #0F172A; color: white; padding: 12px 20px; border-radius: 10px;
+                font-family: var(--font-sans); font-size: 13px; font-weight: 800;
+                box-shadow: 0 8px 24px rgba(0,0,0,0.3); z-index: 1000; border: 1.5px solid #1A1A1A;
+                text-align: center; max-width: 90%; animation: paperEntrance 0.3s ease;
+            `;
+            document.body.appendChild(toast);
+        }
+        toast.innerText = message;
+        toast.style.display = 'block';
+        setTimeout(() => { toast.style.display = 'none'; }, 4000);
+    }
+
     // ACCIONES PANELS & ESTADO
     setRole(role) {
         this.state.currentRole = role;
@@ -95,24 +179,20 @@ export class AppManager {
     }
 
     handleLogin() {
+        this.triggerHaptic(20);
         this.state.isLoggedIn = true;
         this.evaluateStateAndRender();
     }
 
     saveOnboarding() {
+        this.triggerHaptic(20);
         this.state.isConfigured = true;
         this.state.hasSignature = true;
         this.evaluateStateAndRender();
     }
 
-    simularEmisionSRI() {
-        alert("✒️ Comprobante firmado con XAdES-BES y AUTORIZADO por el SRI de Ecuador.\nSecuencial N° 001-001-000000126 procesado.");
-        this.state.currentDocNumber += 1;
-        this.evaluateStateAndRender();
-    }
-
-    // ACCIONES SUPERADMIN DUEÑO (ILIMITADAS IMPRENTAS)
     createReseller() {
+        this.triggerHaptic(20);
         const name = document.getElementById('new-reseller-name').value;
         const size = parseInt(document.getElementById('new-reseller-package-size').value) || 30;
 
@@ -125,6 +205,7 @@ export class AppManager {
     }
 
     toggleMasterAccount(btn, imprentaName) {
+        this.triggerHaptic(20);
         if (btn.innerText.includes('Suspender')) {
             btn.innerText = '🟢 Activar Imprenta';
             btn.style.background = '#15803D';
@@ -137,14 +218,15 @@ export class AppManager {
     }
 
     assignPackage() {
+        this.triggerHaptic(20);
         const size = parseInt(document.getElementById('owner-package-size').value) || 30;
         this.state.metrics.active_licensed_slots += size;
         alert(`📦 Se asignaron exitosamente ${size} licencias adicionales a la imprenta.`);
         this.evaluateStateAndRender();
     }
 
-    // ACCIONES RESELLER IMPRENTA
     createClientByReseller() {
+        this.triggerHaptic(20);
         if (this.state.resellerQuota.available_slots <= 0) {
             alert('❌ Has alcanzado el límite de tu lote de licencias. Contacta al Dueño para comprar más cuentas.');
             return;
@@ -159,6 +241,7 @@ export class AppManager {
     }
 
     toggleClientByReseller(btn, clientName) {
+        this.triggerHaptic(20);
         if (btn.innerText.includes('Pausar')) {
             btn.innerText = '🟢 Activar';
             btn.style.background = '#15803D';
@@ -171,12 +254,14 @@ export class AppManager {
     }
 
     updateResellerWhatsapp() {
+        this.triggerHaptic(20);
         const num = document.getElementById('reseller-whatsapp-input').value;
         this.state.supportWhatsapp = num;
         alert(`📱 Número de WhatsApp de soporte actualizado a: ${num}. Los bloqueos de tus clientes se dirigirán a este número.`);
     }
 
     setSimulatedState(key, val) {
+        this.triggerHaptic(10);
         this.state[key] = val;
         this.evaluateStateAndRender();
     }

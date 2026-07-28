@@ -1,9 +1,9 @@
 /* ==========================================================================
-   TALONARIO AMIGO — DESIGN SYSTEM & REALISTIC RECEIPT BOOK STYLING
-   Fiel réplica de talonario físico analógico de imprenta offset para Ecuador
+   TALONARIO AMIGO — ADVANCED AAA UI/UX DESIGN SYSTEM & PAPER PHYSICS (60 FPS)
+   Efectos 3D de desprendimiento de papel, escritura analógica y stamp SRI
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600;1,800&family=JetBrains+Mono:wght@400;600;800&family=Outfit:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600;1,800&family=JetBrains+Mono:wght@400;600;800&family=Outfit:wght@400;500;600;700;800&family=Special+Elite&display=swap');
 
 :root {
     /* Paleta Analógica de Imprenta */
@@ -16,16 +16,17 @@
     --ink-black: #0F172A;
     --ink-dark-navy: #1B263B;
     --stamp-red: #D90429;      /* Tinta roja fosforescente de numeración secuencial */
-    --stamp-red-bg: #FFE5E8;
     --stamp-green: #15803D;
+    --stamp-blue: #1D4ED8;
     
     /* Tipografías */
     --font-sans: 'Outfit', -apple-system, sans-serif;
     --font-serif-header: 'Playfair Display', Georgia, serif;
     --font-mono-num: 'JetBrains Mono', monospace;
+    --font-stamp: 'Special Elite', cursive, monospace;
     
-    /* Sombras Analógicas */
-    --shadow-paper: 0 12px 30px -8px rgba(0, 0, 0, 0.18), 0 4px 8px -2px rgba(0, 0, 0, 0.08);
+    /* Sombras 3D Profundas */
+    --shadow-paper: 0 16px 36px -8px rgba(0, 0, 0, 0.22), 0 6px 12px -2px rgba(0, 0, 0, 0.1);
 }
 
 * {
@@ -46,6 +47,7 @@ body {
     padding: 12px;
     display: flex;
     justify-content: center;
+    perspective: 1200px; /* Soporte para transformaciones 3D */
 }
 
 /* App Wrapper Mobile First */
@@ -76,6 +78,7 @@ body {
     justify-content: space-between;
     gap: 8px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 10;
 }
 
 .sim-btn {
@@ -87,7 +90,11 @@ body {
     font-size: 11px;
     font-weight: 700;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sim-btn:active {
+    transform: scale(0.94);
 }
 
 .sim-btn:hover, .sim-btn.active {
@@ -95,15 +102,18 @@ body {
     color: var(--ink-black);
 }
 
-/* Card Principal de Talonario Físico */
+/* Card Principal de Talonario Físico con Soporte 3D */
 .factura-talonario-container {
     background: var(--paper-card);
     border: 2.5px solid var(--paper-border);
-    border-radius: 4px;
-    padding: 16px 14px;
+    border-radius: 6px;
+    padding: 18px 16px;
     box-shadow: var(--shadow-paper);
     position: relative;
     overflow: hidden;
+    transform-origin: top center;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
+    will-change: transform, opacity;
 }
 
 /* Borde Troquelado Superior (Simulación de hojas arrancadas de talonario) */
@@ -113,12 +123,88 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    height: 5px;
-    background: radial-gradient(circle at 5px -2.5px, transparent 4px, var(--paper-border) 4.5px);
-    background-size: 10px 8px;
+    height: 6px;
+    background: radial-gradient(circle at 6px -3px, transparent 5px, var(--paper-border) 5.5px);
+    background-size: 12px 9px;
 }
 
-/* Header Grid: Bloque Izquierdo Negocio + Bloque Derecho RUC/Nota de Venta */
+/* ANIMACIONES 3D DE DESPRENDIMIENTO Y NUEVA HOJA */
+.factura-talonario-container.tearing-away {
+    animation: tearOff3D 0.75s cubic-bezier(0.5, 0, 0.75, 0) forwards;
+}
+
+.factura-talonario-container.paper-glide-in {
+    animation: paperEntrance 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes tearOff3D {
+    0% {
+        transform: rotateX(0deg) translateY(0) scale(1);
+        opacity: 1;
+    }
+    30% {
+        transform: rotateX(-12deg) translateY(20px) rotateZ(-2deg);
+        box-shadow: 0 30px 60px rgba(0,0,0,0.35);
+    }
+    100% {
+        transform: rotateX(-35deg) translateY(-140%) rotateZ(-8deg) scale(0.85);
+        opacity: 0;
+    }
+}
+
+@keyframes paperEntrance {
+    0% {
+        transform: translateY(60px) scale(0.96);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+/* SELLO VINTAGE IMPACTO SRI */
+.stamp-sri-impact {
+    position: absolute;
+    top: 35px;
+    right: 18px;
+    border: 3.5px dashed var(--stamp-green);
+    color: var(--stamp-green);
+    font-family: var(--font-stamp);
+    font-weight: bold;
+    font-size: 14px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    pointer-events: none;
+    z-index: 5;
+    background: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 4px 10px rgba(21, 128, 61, 0.2);
+    display: none;
+}
+
+.stamp-sri-impact.slam-anim {
+    display: block;
+    animation: stampSlam 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes stampSlam {
+    0% {
+        transform: scale(3.5) rotate(-30deg);
+        opacity: 0;
+    }
+    70% {
+        transform: scale(0.92) rotate(-6deg);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1) rotate(-8deg);
+        opacity: 1;
+    }
+}
+
+/* Header Grid */
 .header-grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -132,7 +218,6 @@ body {
     }
 }
 
-/* Badge Régimen RIMPE Superior */
 .rimpe-badge {
     background: var(--ink-dark-navy);
     color: #FFFFFF;
@@ -147,7 +232,6 @@ body {
     margin-bottom: 6px;
 }
 
-/* Nombre Comercial / Emisor */
 .emisor-nombre {
     font-family: var(--font-serif-header);
     font-size: 20px;
@@ -174,7 +258,7 @@ body {
     line-height: 1.3;
 }
 
-/* Bloque Derecho Cuadro RUC & Serie & Numeralia Roja */
+/* Bloque Derecho Cuadro RUC & Numeralia Roja */
 .ruc-box-container {
     border: 2px solid var(--paper-border);
     border-radius: 6px;
@@ -213,7 +297,6 @@ body {
     letter-spacing: 0.5px;
 }
 
-/* NUMERACIÓN ROJA IMPRENTA OFFSET */
 .numeralia-roja {
     font-family: var(--font-mono-num);
     font-size: 22px;
@@ -222,6 +305,7 @@ body {
     letter-spacing: 2px;
     padding: 2px 0 4px 0;
     text-shadow: 0 0 1px rgba(217, 4, 41, 0.4);
+    transition: color 0.3s ease;
 }
 
 .aut-sri-row {
@@ -253,7 +337,7 @@ body {
     border-right: none;
 }
 
-/* Sección Datos Cliente / Receptor */
+/* EFECTOS DE ESCRITURA ANALÓGICA Y FOCUS DE TINTA */
 .cliente-seccion {
     border-top: 2px solid var(--paper-border);
     padding-top: 8px;
@@ -279,16 +363,25 @@ body {
 .cliente-line-input {
     flex: 1;
     border: none;
-    border-bottom: 1.5px solid var(--paper-border);
+    border-bottom: 1.5px dashed var(--paper-border);
     background: transparent;
     font-family: var(--font-mono-num);
     font-size: 11.5px;
     color: var(--ink-black);
     outline: none;
-    padding: 1px 4px;
+    padding: 2px 4px;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Tabla de Detalle con Fondo Troquelado y Marca de Agua */
+/* Efecto Escritura Analógica al Enfocar */
+.cliente-line-input:focus {
+    border-bottom: 2px solid var(--stamp-blue);
+    background: rgba(29, 78, 216, 0.04);
+    box-shadow: 0 2px 6px rgba(29, 78, 216, 0.12);
+    padding-left: 8px;
+}
+
+/* Tabla Realista e Inputs Dinámicos */
 .tabla-productos-wrapper {
     position: relative;
     border: 2px solid var(--paper-border);
@@ -329,7 +422,7 @@ body {
 .tabla-realista td {
     border-bottom: 1px solid var(--paper-border);
     border-right: 1.5px solid var(--paper-border);
-    padding: 6px 4px;
+    padding: 2px 4px;
     font-family: var(--font-mono-num);
     font-size: 11px;
 }
@@ -338,7 +431,22 @@ body {
     border-right: none;
 }
 
-/* Forma de Pago y Total Box */
+.table-input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-mono-num);
+    font-size: 11px;
+    outline: none;
+    padding: 4px;
+    transition: background 0.2s ease;
+}
+
+.table-input:focus {
+    background: rgba(29, 78, 216, 0.06);
+}
+
+/* Forma de Pago y Checkboxes con Bounce Animation */
 .footer-grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -382,7 +490,37 @@ body {
 .pago-item {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 5px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.pago-item input[type="checkbox"] {
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    border: 1.5px solid var(--paper-border);
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.pago-item input[type="checkbox"]:checked {
+    background: var(--ink-black);
+    border-color: var(--ink-black);
+    transform: scale(1.15);
+}
+
+.pago-item input[type="checkbox"]:checked::after {
+    content: '✓';
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    position: absolute;
+    top: -1px;
+    left: 2px;
 }
 
 .total-cobrar-box {
@@ -410,9 +548,10 @@ body {
     font-weight: 900;
     color: var(--ink-black);
     margin-top: 2px;
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* Pie de Imprenta Autorizada */
+/* Pie de Imprenta */
 .imprenta-pie {
     background: var(--ink-dark-navy);
     color: #FFF;
@@ -443,46 +582,27 @@ body {
     text-transform: uppercase;
 }
 
-/* Pantalla de Bloqueo a Soporte Elegante */
-.lock-screen-container {
-    background: var(--paper-card);
-    border: 2px solid var(--paper-border);
-    border-radius: 16px;
-    padding: 36px 24px;
-    text-align: center;
-    box-shadow: var(--shadow-paper);
-}
-
-.lock-badge {
-    width: 64px;
-    height: 64px;
-    background: var(--stamp-red-bg);
-    border: 2px solid var(--stamp-red);
-    border-radius: 50%;
+/* BOTÓN DE IMPACTO CON HÁPTICO */
+.btn-stamp-action {
+    width: 100%;
+    padding: 15px;
+    background: var(--ink-black);
+    color: #FFF;
+    border: 2px solid var(--ink-black);
+    border-radius: 12px;
+    font-family: var(--font-sans);
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 28px;
-    margin: 0 auto 16px;
-}
-
-.whatsapp-btn {
-    background: #25D366;
-    color: white;
-    border: none;
-    padding: 14px 24px;
-    border-radius: 12px;
-    font-weight: 800;
-    font-size: 15px;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
     gap: 10px;
-    box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35);
-    transition: transform 0.2s ease;
-    margin-top: 20px;
+    box-shadow: 0 5px 0 var(--paper-border);
+    transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.whatsapp-btn:hover {
-    transform: scale(1.02);
+.btn-stamp-action:active {
+    transform: translateY(4px);
+    box-shadow: 0 1px 0 var(--paper-border);
 }

@@ -1,12 +1,18 @@
 /**
  * Componente: FacturadorRealista
- * Réplica fiel y exacta del talonario impreso tradicional (modelo referencia del facturador realista.png)
+ * Réplica fiel del talonario impreso tradicional con soporte para Física 3D, Haptic Feedback y Sello SRI Impact
  */
 export function renderFacturadorRealista(emisorData, currentDocNumber) {
     const docNumStr = String(currentDocNumber || 126).padStart(9, '0');
     
     return `
-        <div class="factura-talonario-container">
+        <div class="factura-talonario-container paper-glide-in" id="receipt-paper-card">
+            <!-- SELLO IMPACTO AUTORIZADO SRI -->
+            <div class="stamp-sri-impact" id="stamp-sri-badge">
+                ✓ AUTORIZADO SRI<br>
+                <small style="font-size:9px; font-weight:normal;">CLAVE ACCESO: 2807202601...</small>
+            </div>
+
             <!-- Header Grid: Datos del Emisor (Izq) vs RUC / Documento Box (Der) -->
             <div class="header-grid">
                 <!-- Bloque Izquierdo: Emisor -->
@@ -26,7 +32,7 @@ export function renderFacturadorRealista(emisorData, currentDocNumber) {
                     <div class="ruc-title-row">R U C: 0706050986001</div>
                     <div class="document-type-banner">NOTA DE VENTA</div>
                     <div class="serie-row">SERIE: 001-001</div>
-                    <div class="numeralia-roja">${docNumStr}</div>
+                    <div class="numeralia-roja" id="doc-secuencial-num">${docNumStr}</div>
                     <div class="aut-sri-row">AUT. S R I: 1133462787</div>
                     <div class="fecha-grid-box">
                         <div>DIA<br><strong style="font-size:11px;">28</strong></div>
@@ -36,27 +42,26 @@ export function renderFacturadorRealista(emisorData, currentDocNumber) {
                 </div>
             </div>
 
-            <!-- Sección Datos del Cliente Receptor -->
+            <!-- Sección Datos del Cliente Receptor con Efecto Escritura Analógica -->
             <div class="cliente-seccion">
                 <div class="cliente-row">
                     <span class="cliente-label">Sr. (s)</span>
-                    <input type="text" class="cliente-line-input" value="Juan Alberto Pérez Gómez" placeholder="Nombre completo">
+                    <input type="text" class="cliente-line-input" value="Juan Alberto Pérez Gómez" placeholder="Nombre completo" onfocus="window.appState.triggerHaptic(10)">
                 </div>
                 <div class="cliente-row">
                     <span class="cliente-label">Dirección</span>
-                    <input type="text" class="cliente-line-input" value="Av. Central N12-45 y Rocafuerte" placeholder="Dirección del cliente">
+                    <input type="text" class="cliente-line-input" value="Av. Central N12-45 y Rocafuerte" placeholder="Dirección del cliente" onfocus="window.appState.triggerHaptic(10)">
                 </div>
                 <div class="cliente-row">
                     <span class="cliente-label">RUC / CI #</span>
-                    <input type="text" class="cliente-line-input" style="max-width: 140px;" value="1712345678" placeholder="Identificación">
+                    <input type="text" class="cliente-line-input" style="max-width: 140px;" value="1712345678" placeholder="Identificación" onfocus="window.appState.triggerHaptic(10)">
                     <span class="cliente-label" style="margin-left: 8px;">Guía de Remisión</span>
-                    <input type="text" class="cliente-line-input" placeholder="Opcional">
+                    <input type="text" class="cliente-line-input" placeholder="Opcional" onfocus="window.appState.triggerHaptic(10)">
                 </div>
             </div>
 
-            <!-- Tabla de Detalle con Fondo Troquelado y Marca de Agua -->
+            <!-- Tabla de Detalle con Inputs Interactivos -->
             <div class="tabla-productos-wrapper">
-                <!-- Marca de Agua (Vector Cacao / Logo en marca de agua transparente) -->
                 <svg class="watermark-sketch" viewBox="0 0 100 100" fill="currentColor">
                     <path d="M50 10 C30 30, 20 60, 50 90 C80 60, 70 30, 50 10 Z" fill="#4A4A4A"/>
                 </svg>
@@ -70,21 +75,19 @@ export function renderFacturadorRealista(emisorData, currentDocNumber) {
                             <th style="width: 15%;">PRECIO TOTAL</th>
                         </tr>
                     </thead>
-                    <tbody id="realista-items">
+                    <tbody id="realista-items-body">
                         <tr>
-                            <td style="text-align: center;">500</td>
-                            <td>Quintales de Cacao Fino de Aroma (Exportación)</td>
-                            <td style="text-align: right;">$0.12</td>
-                            <td style="text-align: right;">$60.00</td>
+                            <td style="text-align: center;"><input type="number" class="table-input" value="500" oninput="window.appState.recalculateTotals()" onfocus="window.appState.triggerHaptic(10)"></td>
+                            <td><input type="text" class="table-input" value="Quintales de Cacao Fino de Aroma (Exportación)" onfocus="window.appState.triggerHaptic(10)"></td>
+                            <td style="text-align: right;"><input type="number" step="0.01" class="table-input" value="0.12" style="text-align:right;" oninput="window.appState.recalculateTotals()" onfocus="window.appState.triggerHaptic(10)"></td>
+                            <td style="text-align: right; padding-right: 6px;" class="row-total">$60.00</td>
                         </tr>
                         <tr>
-                            <td style="text-align: center;">1</td>
-                            <td>Licencia Digital Talonario Amigo SRI</td>
-                            <td style="text-align: right;">$25.00</td>
-                            <td style="text-align: right;">$25.00</td>
+                            <td style="text-align: center;"><input type="number" class="table-input" value="1" oninput="window.appState.recalculateTotals()" onfocus="window.appState.triggerHaptic(10)"></td>
+                            <td><input type="text" class="table-input" value="Licencia Digital Talonario Amigo SRI" onfocus="window.appState.triggerHaptic(10)"></td>
+                            <td style="text-align: right;"><input type="number" step="0.01" class="table-input" value="25.00" style="text-align:right;" oninput="window.appState.recalculateTotals()" onfocus="window.appState.triggerHaptic(10)"></td>
+                            <td style="text-align: right; padding-right: 6px;" class="row-total">$25.00</td>
                         </tr>
-                        <!-- Filas vacías del talonario impreso tradicional -->
-                        <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
                         <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
                         <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
                     </tbody>
@@ -96,20 +99,20 @@ export function renderFacturadorRealista(emisorData, currentDocNumber) {
                 <div class="forma-pago-box">
                     <div class="forma-pago-header">FORMA DE PAGO:</div>
                     <div class="pago-checkboxes">
-                        <label class="pago-item"><input type="checkbox" checked> EFECTIVO DINERO:</label>
-                        <label class="pago-item"><input type="checkbox"> ELECTRÓNICO:</label>
-                        <label class="pago-item"><input type="checkbox"> TARJETA CRÉDITO/DÉBITO:</label>
-                        <label class="pago-item"><input type="checkbox"> OTROS:</label>
+                        <label class="pago-item" onclick="window.appState.triggerHaptic(15)"><input type="checkbox" checked> EFECTIVO DINERO:</label>
+                        <label class="pago-item" onclick="window.appState.triggerHaptic(15)"><input type="checkbox"> ELECTRÓNICO:</label>
+                        <label class="pago-item" onclick="window.appState.triggerHaptic(15)"><input type="checkbox"> TARJETA CRÉDITO/DÉBITO:</label>
+                        <label class="pago-item" onclick="window.appState.triggerHaptic(15)"><input type="checkbox"> OTROS:</label>
                     </div>
                 </div>
 
                 <div class="total-cobrar-box">
                     <div class="total-cobrar-header">TOTAL A COBRAR <span style="font-size:14px;">➔</span></div>
-                    <div class="total-cobrar-monto">$85.00</div>
+                    <div class="total-cobrar-monto" id="grand-total-display">$85.00</div>
                 </div>
             </div>
 
-            <!-- Pie de Imprenta Autorizada (Autorización SRI y Vencimiento) -->
+            <!-- Pie de Imprenta Autorizada -->
             <div class="imprenta-pie">
                 <strong>IMPRENTA "CORDOVA"</strong> • RUC: 0702065319001 • N° Aut. 8634 • PEDRO MANUEL CÓRDOVA RODRÍGUEZ<br>
                 DIRECCIÓN: COLÓN E / SUCRE Y AV. ROCAFUERTE / PASAJE 📞 0993083943<br>
@@ -126,9 +129,9 @@ export function renderFacturadorRealista(emisorData, currentDocNumber) {
                 Fecha de Caducidad: 15/Junio/2027
             </div>
 
-            <!-- Botón Acción Enviar SRI -->
+            <!-- Botón Acción Enviar SRI con Animaciones AAA -->
             <div style="margin-top: 18px;">
-                <button onclick="window.appState.simularEmisionSRI()" style="width: 100%; padding: 14px; background: #0F172A; color: white; border: 2px solid #0F172A; border-radius: 10px; font-family: var(--font-sans); font-size: 14px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 0 #D4CEBE;">
+                <button class="btn-stamp-action" onclick="window.appState.executeEmit3DSequence()">
                     ✒️ FIRMAR Y EMITIR AL SRI (XAdES-BES)
                 </button>
             </div>
