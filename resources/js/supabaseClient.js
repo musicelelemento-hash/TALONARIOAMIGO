@@ -1,11 +1,11 @@
 /**
  * Supabase Client Module — Talonario Amigo
- * Manejo de autenticación, perfiles de usuario, roles y licencias
+ * Proyecto Supabase ID: zrarulilyvwfetpohkbu
  */
 
-// Variables de Configuración de Supabase (Configurables vía localStorage o variables de entorno)
-export const SUPABASE_URL = localStorage.getItem('SUPABASE_URL') || "https://su-proyecto.supabase.co";
-export const SUPABASE_ANON_KEY = localStorage.getItem('SUPABASE_ANON_KEY') || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
+export const SUPABASE_PROJECT_ID = "zrarulilyvwfetpohkbu";
+export const SUPABASE_URL = `https://${SUPABASE_PROJECT_ID}.supabase.co`;
+export const SUPABASE_ANON_KEY = localStorage.getItem('SUPABASE_ANON_KEY') || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpyYXJ1bGlseXZ3ZmV0cG9oa2J1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODAwMDAwMDAsImV4cCI6MjAwMDAwMDAwMH0.example";
 
 class SupabaseAuthClient {
     constructor() {
@@ -19,6 +19,7 @@ class SupabaseAuthClient {
      */
     async login(email, password) {
         try {
+            console.log(`[Supabase Auth] Conectando a ${this.url}/auth/v1/token...`);
             const response = await fetch(`${this.url}/auth/v1/token?grant_type=password`, {
                 method: 'POST',
                 headers: {
@@ -31,7 +32,6 @@ class SupabaseAuthClient {
             const data = await response.json();
 
             if (!response.ok) {
-                // Fallback para prueba con usuarios locales si Supabase aún no está configurado
                 return this.localLoginFallback(email, password);
             }
 
@@ -44,13 +44,13 @@ class SupabaseAuthClient {
 
             return { success: true, user: profile };
         } catch (err) {
-            console.warn('[Supabase Client] Error al conectar con Supabase. Usando fallback de autenticación.', err);
+            console.warn('[Supabase Client] Usando fallback para prueba local.', err);
             return this.localLoginFallback(email, password);
         }
     }
 
     /**
-     * Obtener Perfil del Usuario y Rol desde la tabla 'profiles' / 'users' en Supabase
+     * Obtener Perfil del Usuario desde Supabase
      */
     async getUserProfile(userId, token) {
         try {
@@ -73,9 +73,6 @@ class SupabaseAuthClient {
         }
     }
 
-    /**
-     * Fallback de inicio de sesión inteligente si Supabase está sin credenciales
-     */
     localLoginFallback(email, password) {
         let role = 'CLIENT';
         if (email.includes('admin') || email.includes('owner')) role = 'SUPER_ADMIN';
