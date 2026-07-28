@@ -1,0 +1,47 @@
+services:
+  - type: web
+    name: talonario-amigo-api
+    env: docker
+    plan: free
+    region: oregon
+    dockerfilePath: Dockerfile
+    healthCheckPath: /api/v1/facturacion/tipos
+    envVars:
+      - key: APP_NAME
+        value: TalonarioAmigo
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_URL
+        value: https://talonario-amigo-api.onrender.com
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: DB_CONNECTION
+        value: mysql
+      - key: DB_HOST
+        fromDatabase:
+          name: talonario-amigo-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: talonario-amigo-db
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: talonario-amigo-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: talonario-amigo-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: talonario-amigo-db
+          property: password
+
+databases:
+  - name: talonario-amigo-db
+    plan: free
+    databaseName: talonario_amigo_prod
+    user: talonario_user

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talonario Amigo — Sistema Multitenant & Facturador Realista</title>
+    <!-- Fuentes Google: Playfair Display, Outfit y JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&family=Outfit:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,800;1,600;1,800&display=swap" rel="stylesheet">
+    
+    <!-- Hoja de Estilos Talonario Realista -->
+    <link rel="stylesheet" href="/resources/css/talonario-realista.css">
+</head>
+<body>
+
+    <div class="mobile-app-wrapper">
+        <!-- Control de Niveles de Acceso y Simulación en Vivo -->
+        <div class="simulator-nav">
+            <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.5px; width: 100%;">👑 NIVELES DE ACCESO MULTITENANT:</div>
+            <div style="display: flex; gap: 4px; flex-wrap: wrap; width: 100%;">
+                <button class="sim-btn" onclick="app.setRole('SUPER_ADMIN')">👑 Panel SuperAdmin (Dueño)</button>
+                <button class="sim-btn" onclick="app.setRole('RESELLER')">🏭 Panel Imprenta (Reseller)</button>
+                <button class="sim-btn active" onclick="app.setRole('CLIENT'); app.setSimulatedState('isLoggedIn', true); app.setSimulatedState('isConfigured', true); app.setSimulatedState('hasSignature', true); app.setSimulatedState('isActive', true);">📜 Talonario Cliente (Emisor)</button>
+            </div>
+
+            <div style="font-size: 10px; font-weight: 800; letter-spacing: 0.5px; margin-top: 6px; width: 100%; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 6px;">
+                🧪 PROBAR ESTADOS CLIENTE:
+            </div>
+            <div style="display: flex; gap: 4px; flex-wrap: wrap; width: 100%;">
+                <button class="sim-btn" onclick="app.setRole('CLIENT'); app.setSimulatedState('isLoggedIn', false);">🔑 Login</button>
+                <button class="sim-btn" onclick="app.setRole('CLIENT'); app.setSimulatedState('isLoggedIn', true); app.setSimulatedState('isConfigured', false);">🚀 Onboarding RUC</button>
+                <button class="sim-btn" onclick="app.setRole('CLIENT'); app.setSimulatedState('isLoggedIn', true); app.setSimulatedState('isConfigured', true); app.setSimulatedState('hasSignature', false);">🔒 Sin Firma .p12</button>
+                <button class="sim-btn" onclick="app.setRole('CLIENT'); app.setSimulatedState('isLoggedIn', true); app.setSimulatedState('isActive', false);">🔴 Cuenta Inactiva</button>
+            </div>
+        </div>
+
+        <!-- App Root Render Target -->
+        <div id="app-root"></div>
+    </div>
+
+    <!-- Script de Invocación Modular -->
+    <script type="module">
+        import { AppManager } from '/resources/js/components/AppManager.js';
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const app = new AppManager('app-root');
+            window.app = app;
+            app.setRole('CLIENT');
+        });
+    </script>
+</body>
+</html>
