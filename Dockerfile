@@ -5,7 +5,7 @@
 
 FROM php:8.1-fpm
 
-# Instalar dependencias del sistema y extensiones de PHP necesarias para el SRI (SOAP, OpenSSL, Zip, Pdo, Mbstring)
+# Instalar dependencias del sistema y extensiones de PHP necesarias para el SRI (SOAP, OpenSSL, Zip, Pdo, Mbstring, Postgres)
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     libzip-dev \
+    libpq-dev \
     zip \
     unzip \
     nginx
@@ -20,8 +21,8 @@ RUN apt-get update && apt-get install -y \
 # Limpiar cache de apt
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Instalar extensiones de PHP requeridas para Laravel y firma digital SRI (SOAP, Zip, GD, PDO)
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd soap zip xml
+# Instalar extensiones de PHP requeridas para Laravel y firma digital SRI (SOAP, Zip, GD, PDO MySQL + PostgreSQL)
+RUN docker-php-ext-install pdo_mysql pdo_pgsql pgsql mbstring exif pcntl bcmath gd soap zip xml
 
 # Obtener Composer oficial
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
