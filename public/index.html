@@ -3718,6 +3718,79 @@
                 this.evaluateStateAndRender();
             }
 
+            toggleRoleSwitcherModal() {
+                this.triggerHaptic(20);
+                let modal = document.getElementById('role-switcher-modal');
+                if (!modal) {
+                    modal = document.createElement('div');
+                    modal.id = 'role-switcher-modal';
+                    modal.className = 'drawer-products-modal';
+                    document.body.appendChild(modal);
+                }
+                
+                modal.innerHTML = `
+                    <div class="drawer-products-content" style="max-width: 380px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                            <div>
+                                <h3 style="font-family: var(--font-serif-header); font-size: 18px; font-weight: 800; color: #0F172A;">👑 Selector de Portal</h3>
+                                <p style="font-size: 11px; color: #64748B; margin-top: 2px;">Cambia al instante de vista de usuario o administración:</p>
+                            </div>
+                            <button type="button" onclick="document.getElementById('role-switcher-modal').classList.remove('open')" style="background: #E2E8F0; border: none; border-radius: 50%; width: 28px; height: 28px; font-weight: 800; cursor: pointer;">✕</button>
+                        </div>
+
+                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                            <!-- 1. COMERCIANTE / EMISOR -->
+                            <div onclick="appState.switchRole('CLIENT')" style="background: ${this.state.currentRole === 'CLIENT' ? '#F0FDF4' : '#FFF'}; border: 2px solid ${this.state.currentRole === 'CLIENT' ? '#16A34A' : '#CBD5E1'}; border-radius: 12px; padding: 12px; cursor: pointer; display: flex; align-items: center; justify-content: space-between;">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div style="font-size: 24px;">✒️</div>
+                                    <div>
+                                        <div style="font-weight: 800; font-size: 13px; color: #0F172A;">Comerciante / Emisor</div>
+                                        <div style="font-size: 10.5px; color: #64748B;">Talonario de papel, emisión SRI y copias</div>
+                                    </div>
+                                </div>
+                                ${this.state.currentRole === 'CLIENT' ? '<span style="color:#16A34A; font-weight:900; font-size:12px;">✓ ACTIVO</span>' : ''}
+                            </div>
+
+                            <!-- 2. IMPRENTA / RESELLER -->
+                            <div onclick="appState.switchRole('RESELLER')" style="background: ${this.state.currentRole === 'RESELLER' ? '#EFF6FF' : '#FFF'}; border: 2px solid ${this.state.currentRole === 'RESELLER' ? '#1D4ED8' : '#CBD5E1'}; border-radius: 12px; padding: 12px; cursor: pointer; display: flex; align-items: center; justify-content: space-between;">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div style="font-size: 24px;">🏭</div>
+                                    <div>
+                                        <div style="font-weight: 800; font-size: 13px; color: #0F172A;">Imprenta Autorizada (Reseller)</div>
+                                        <div style="font-size: 10.5px; color: #64748B;">Venta de paquetes, alta de comercios y cupos</div>
+                                    </div>
+                                </div>
+                                ${this.state.currentRole === 'RESELLER' ? '<span style="color:#1D4ED8; font-weight:900; font-size:12px;">✓ ACTIVO</span>' : ''}
+                            </div>
+
+                            <!-- 3. SUPERADMINISTRADOR -->
+                            <div onclick="appState.switchRole('SUPER_ADMIN')" style="background: ${this.state.currentRole === 'SUPER_ADMIN' ? '#FAF8F5' : '#FFF'}; border: 2px solid ${this.state.currentRole === 'SUPER_ADMIN' ? '#D4AF37' : '#CBD5E1'}; border-radius: 12px; padding: 12px; cursor: pointer; display: flex; align-items: center; justify-content: space-between;">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div style="font-size: 24px;">👑</div>
+                                    <div>
+                                        <div style="font-weight: 800; font-size: 13px; color: #0F172A;">SuperAdmin Central</div>
+                                        <div style="font-size: 10.5px; color: #64748B;">Control maestro de imprentas, recargas y pagos</div>
+                                    </div>
+                                </div>
+                                ${this.state.currentRole === 'SUPER_ADMIN' ? '<span style="color:#D4AF37; font-weight:900; font-size:12px;">✓ ACTIVO</span>' : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                modal.classList.add('open');
+            }
+
+            switchRole(newRole) {
+                this.triggerHaptic([30, 20, 50]);
+                this.state.currentRole = newRole;
+                this.state.isLoggedIn = true;
+                localStorage.setItem('ta_current_role', newRole);
+                document.getElementById('role-switcher-modal')?.classList.remove('open');
+                this.showToast(`👑 Portal: ${newRole === 'SUPER_ADMIN' ? 'SuperAdmin' : (newRole === 'RESELLER' ? 'Imprenta' : 'Comerciante')}`);
+                this.evaluateStateAndRender();
+            }
+
             updateHeaderStatusPill() {
                 const label = document.getElementById('current-user-role-label');
                 if (!label) return;
@@ -6567,7 +6640,7 @@
                             </details>
 
                             <!-- 5. COMPROBANTES SRI -->
-                            <details>
+                            <details style="border-bottom: 1.5px solid #CBD5E1;">
                                 <summary style="padding: 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; list-style: none; user-select: none;">
                                     <div style="display: flex; align-items: center; gap: 12px;">
                                         <div style="font-size: 20px;">⚙️</div>
@@ -6587,6 +6660,35 @@
                                             <input type="checkbox" class="doc-toggle-checkbox" ${this.state.activeDocTypes[d.key] ? 'checked' : ''} onchange="appState.toggleDocTypeSetting('${d.key}')">
                                         </div>
                                     `).join('')}
+                                </div>
+                            </details>
+
+                            <!-- 6. PORTALES DE ADMINISTRACIÓN Y SUPERADMIN -->
+                            <details>
+                                <summary style="padding: 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; list-style: none; user-select: none;">
+                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                        <div style="font-size: 20px;">👑</div>
+                                        <div style="font-size: 14px; font-weight: 800; color: #0F172A;">Portales & Administración</div>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <span style="font-size: 11px; font-weight: 700; color: #854D0E; background: #FEF9C3; padding: 2px 8px; border-radius: 12px;">SuperAdmin / Imprenta</span>
+                                        <span style="font-size: 14px; color: #94A3B8;">▼</span>
+                                    </div>
+                                </summary>
+                                <div style="padding: 16px; background: #F8FAFC; border-top: 1px solid #E2E8F0; display: flex; flex-direction: column; gap: 10px;">
+                                    <p style="font-size: 11.5px; color: #475569; margin-bottom: 4px;">Accede directamente a las consolas de gestión de imprentas y control maestro:</p>
+                                    
+                                    <button type="button" onclick="appState.switchRole('SUPER_ADMIN')" style="width: 100%; background: #0F172A; color: #D4AF37; border: 1.5px solid #D4AF37; border-radius: var(--radius-btn); padding: 12px; font-size: 13px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(15,23,42,0.25);">
+                                        <span>👑 Abrir Panel SuperAdmin</span>
+                                    </button>
+
+                                    <button type="button" onclick="appState.switchRole('RESELLER')" style="width: 100%; background: #1E293B; color: #60A5FA; border: 1.5px solid #3B82F6; border-radius: var(--radius-btn); padding: 12px; font-size: 13px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                        <span>🏭 Abrir Panel de Imprenta (Reseller)</span>
+                                    </button>
+
+                                    <button type="button" onclick="appState.toggleRoleSwitcherModal()" style="width: 100%; background: #FFFFFF; color: #0F172A; border: 1.5px solid #CBD5E1; border-radius: var(--radius-btn); padding: 10px; font-size: 12px; font-weight: 700; cursor: pointer;">
+                                        🔄 Abrir Selector de Portales
+                                    </button>
                                 </div>
                             </details>
 
