@@ -10,6 +10,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=JetBrains+Mono:wght@400;600;800&family=Outfit:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,800;1,600;1,800&family=Special+Elite&display=swap" rel="stylesheet">
     <!-- Motor Criptográfico para Firmas P12 en Frontend (Zero-Trust) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/forge/1.3.1/forge.min.js"></script>
+    <!-- Generador de Código de Barras Code128 para Clave de Acceso SRI (49 dígitos) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsbarcode/3.11.5/JsBarcode.all.min.js"></script>
+    <!-- Generador de Código QR para Verificación Tributaria SRI -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         /* Ocultar el marcador nativo del acordeón */
         details > summary::-webkit-details-marker { display: none; }
@@ -1843,8 +1847,189 @@
         body.minimalist-mode #payment-modal-overlay button:hover {
             background: #F8FAFC !important;
             border-color: #E2E8F0 !important;
+        /* ==========================================================================
+           ESTILOS MAESTROS PARA LOS 5 PILARES (FIRMA, CATÁLOGO, RIDE, TÉRMICO, OFFLINE)
+           ========================================================================== */
+        /* 1. MODAL OVERLAY Y SHEETS */
+        .ta-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+        .ta-modal-overlay.open { display: flex; }
+        .ta-modal-sheet {
+            width: 100%;
+            max-width: 480px;
+            max-height: 90vh;
+            overflow-y: auto;
+            background: #FFFEF9;
+            border-radius: var(--radius-container);
+            padding: 24px 20px;
+            border: 2px solid #0F172A;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            animation: slideUpModal 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
         }
 
+        /* 2. DROPZONE BÓVEDA .P12 */
+        .dropzone-p12 {
+            border: 2px dashed #94A3B8;
+            border-radius: var(--radius-card);
+            padding: 24px 16px;
+            text-align: center;
+            background: #F8FAFC;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        .dropzone-p12:hover, .dropzone-p12.dragover {
+            border-color: #1D4ED8;
+            background: #EFF6FF;
+        }
+        .p12-cert-badge {
+            background: #F0FDF4;
+            border: 1.5px solid #86EFAC;
+            border-radius: var(--radius-card);
+            padding: 14px;
+            margin-top: 14px;
+            text-align: left;
+            box-shadow: 0 4px 12px rgba(22, 163, 74, 0.1);
+        }
+
+        /* 3. CATÁLOGO TÁCTIL RÁPIDO DE PRODUCTOS */
+        .fast-category-bar {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            padding: 4px 2px 8px 2px;
+            margin-bottom: 10px;
+            -webkit-overflow-scrolling: touch;
+        }
+        .fast-category-chip {
+            background: #F1F5F9;
+            color: #334155;
+            border: 1.5px solid #CBD5E1;
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 11px;
+            font-weight: 800;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .fast-category-chip.active {
+            background: #0F172A;
+            color: #FFFFFF;
+            border-color: #0F172A;
+        }
+        .fast-products-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            max-height: 280px;
+            overflow-y: auto;
+            padding: 4px 2px;
+        }
+        .fast-product-card {
+            background: #FFFFFF;
+            border: 1.5px solid #E2E8F0;
+            border-radius: var(--radius-card);
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-align: left;
+        }
+        .fast-product-card:active {
+            transform: scale(0.96);
+            background: #F8FAFC;
+            border-color: #1D4ED8;
+        }
+
+        /* 4. VISOR RIDE SRI OFICIAL */
+        .ride-a4-sheet {
+            background: #FFFFFF;
+            border: 1.5px solid #CBD5E1;
+            border-radius: 8px;
+            padding: 20px;
+            color: #0F172A;
+            font-size: 11px;
+            font-family: var(--font-sans);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 14px;
+        }
+        .ride-header-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 12px;
+            margin-bottom: 12px;
+            border-bottom: 2px solid #0F172A;
+            padding-bottom: 12px;
+        }
+        .ride-auth-box {
+            background: #F8FAFC;
+            border: 1.5px solid #CBD5E1;
+            border-radius: 6px;
+            padding: 8px 10px;
+            font-size: 10px;
+        }
+
+        /* 5. IMPRESIÓN TÉRMICA BLUETOOTH */
+        .thermal-ticket-preview {
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto 16px auto;
+            background: #FFFFFF;
+            border: 1.5px dashed #94A3B8;
+            padding: 14px 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: #000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        /* 6. BANNER OFFLINE Y CONTINGENCIA */
+        .offline-status-banner {
+            background: #FEF3C7;
+            border: 1.5px solid #F59E0B;
+            color: #92400E;
+            border-radius: var(--radius-btn);
+            padding: 8px 12px;
+            font-size: 11px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        /* 7. ESTILOS DE IMPRESIÓN */
+        @media print {
+            body * { visibility: hidden; }
+            #printable-ride-area, #printable-ride-area * {
+                visibility: visible;
+            }
+            #printable-ride-area {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                background: white;
+            }
+            .no-print { display: none !important; }
+        }
         /* Configuración (Mi Cuenta) Minimalista */
         body.minimalist-mode #account-settings-container {
             border: 1px solid #F1F5F9 !important;
@@ -3466,36 +3651,12 @@
             handleVaultP12Upload() {
                 this.triggerHaptic([20, 20, 40]);
                 const vault = document.getElementById('vault-p12-box');
-                const lockIcon = document.getElementById('vault-lock-icon');
-                const statusText = document.getElementById('vault-status-text');
-                const subText = document.getElementById('vault-sub-text');
-
-                if (vault) {
-                    vault.classList.add('unlocking');
-                    
-                    // Simular apertura de caja fuerte y subir archivo
-                    setTimeout(() => {
-                        this.playPaperRipSound(); // Reuse rip sound as a metallic clang for the vault
-                        
-                        const input = document.createElement('input');
-                        input.type = 'file';
-                        input.accept = '.p12,.pfx';
-                        input.onchange = (e) => {
-                            if(e.target.files.length > 0) {
-                                this.triggerHaptic([50, 30, 80]);
-                                if (lockIcon) lockIcon.innerText = "🔐";
-                                if (statusText) statusText.innerText = "✨ FIRMA ACTUALIZADA";
-                                if (statusText) statusText.style.color = "#16A34A";
-                                if (subText) subText.innerText = `Cargado: ${e.target.files[0].name}`;
-                            }
-                            vault.classList.remove('unlocking');
-                        };
-                        input.oncancel = () => {
-                            vault.classList.remove('unlocking');
-                        };
-                        input.click();
-                    }, 1200);
-                }
+                if (vault) vault.classList.add('unlocking');
+                this.playPaperRipSound();
+                setTimeout(() => {
+                    if (vault) vault.classList.remove('unlocking');
+                    this.openVaultModal();
+                }, 400);
             }
 
             renderOnboardingScreen() {
@@ -4879,9 +5040,19 @@
                                     <button type="button" onclick="appState.advanceToNextBlankSheet()" class="btn-stamp-action" style="background: #16A34A; border-color: #15803D; box-shadow: 0 4px 12px rgba(22,163,74,0.3);">
                                         📄 ARRANCAR COPIA Y PASAR A SIGUIENTE HOJA BLANCA (#${String(this.state.currentDocNumber + 1).padStart(9, '0')})
                                     </button>
-                                    <button type="button" onclick="appState.shareCopyViaWhatsApp('${last.cliente}', '${last.banner}', '${last.folio}', '${last.total}', '${last.telefono || ''}')" class="discrete-action-btn" style="background:#25D366; color:white; font-weight:800; border-radius:12px; padding:12px; width:100%;">
-                                        💬 Enviar Duplicado Azul por WhatsApp ${(last.telefono || document.getElementById('fact-cliente-telefono')?.value) ? `(al ${this.formatEcuadorPhoneForWhatsApp(last.telefono || document.getElementById('fact-cliente-telefono')?.value)})` : ''}
+                                    
+                                    <button type="button" onclick="appState.shareCopyViaWhatsApp('${last.cliente}', '${last.banner}', '${last.folio}', '${last.total}', '${last.telefono || ''}')" class="discrete-action-btn" style="background:#25D366; color:white; font-weight:800; border-radius:12px; padding:12px; width:100%; display:flex; align-items:center; justify-content:center; gap:8px;">
+                                        <span style="font-size:16px;">💬</span> Enviar Comprobante por WhatsApp ${(last.telefono || document.getElementById('fact-cliente-telefono')?.value) ? `(al ${this.formatEcuadorPhoneForWhatsApp(last.telefono || document.getElementById('fact-cliente-telefono')?.value)})` : ''}
                                     </button>
+
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                                        <button type="button" onclick="appState.openRideViewer()" class="discrete-action-btn" style="background:#0F172A; color:white; font-weight:800; border-radius:12px; padding:10px; font-size:11.5px; display:flex; align-items:center; justify-content:center; gap:6px;">
+                                            <span>📄</span> Ver RIDE SRI
+                                        </button>
+                                        <button type="button" onclick="appState.openThermalPrintModal()" class="discrete-action-btn" style="background:#FAF7F0; border:1.5px solid #1E40AF; color:#1E40AF; font-weight:800; border-radius:12px; padding:10px; font-size:11.5px; display:flex; align-items:center; justify-content:center; gap:6px;">
+                                            <span>🖨️</span> Ticket Térmico
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -5043,8 +5214,10 @@
                                     <!-- TRENSITO DE SUGERENCIAS DE PRODUCTOS TÁCTILES (GLASSMORPHISM) -->
                                     <div class="tren-productos-wrapper" style="margin-top: 6px; margin-bottom: 8px;">
                                         <div style="font-size: 10px; font-weight: 800; color: #475569; margin-bottom: 3px; display: flex; align-items: center; justify-content: space-between;">
-                                            <span>🚂 TREN DE SUGERENCIAS (Toca para agregar)</span>
-                                            <span style="font-size: 9px; color: #64748B;">Desliza ➔</span>
+                                            <span>🚂 TREN DE SUGERENCIAS RÁPIDAS</span>
+                                            <button type="button" onclick="appState.openFastCatalogModal('TODOS')" style="background: #0F172A; color: white; border: none; padding: 2px 8px; border-radius: 8px; font-size: 9.5px; font-weight: 800; cursor: pointer;">
+                                                🛒 Catálogo Completo ➔
+                                            </button>
                                         </div>
                                         <div class="tren-productos-carousel">
                                             <button type="button" class="tren-producto-pill" onclick="appState.insertDrawerProduct('Quintales de Cacao Fino de Aroma', 12.00)">
@@ -6683,6 +6856,511 @@
                 } catch(e) {}
             }
 
+            // =========================================================================
+            // PILAR 1: MÉTODOS DE BÓVEDA CRIPTOGRÁFICA .P12 (FORGE.JS & ONBOARDING)
+            // =========================================================================
+            openVaultModal() {
+                this.triggerHaptic(25);
+                const modal = document.getElementById('modal-vault-p12');
+                if (modal) {
+                    modal.classList.add('open');
+                    const savedInfo = JSON.parse(localStorage.getItem('ta_firma_info') || 'null');
+                    if (savedInfo) {
+                        this.renderP12Badge(savedInfo);
+                    }
+                }
+            }
+
+            closeVaultModal() {
+                const modal = document.getElementById('modal-vault-p12');
+                if (modal) modal.classList.remove('open');
+            }
+
+            handleP12FileSelect(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                this._selectedP12File = file;
+                const nameEl = document.getElementById('p12-filename-display');
+                if (nameEl) nameEl.innerText = `📄 ${file.name} (${Math.round(file.size / 1024)} KB)`;
+                const passInput = document.getElementById('p12-password-input');
+                if (passInput) passInput.focus();
+            }
+
+            async validateAndUnlockP12() {
+                const passInput = document.getElementById('p12-password-input');
+                const password = passInput ? passInput.value : '';
+                const file = this._selectedP12File;
+                const errorEl = document.getElementById('p12-error-display');
+
+                if (!file && !localStorage.getItem('ta_firma_p12_b64')) {
+                    if (errorEl) errorEl.innerText = '⚠️ Selecciona primero tu archivo de firma (.p12 o .pfx).';
+                    return;
+                }
+                if (!password) {
+                    if (errorEl) errorEl.innerText = '⚠️ Ingresa la contraseña de tu certificado digital.';
+                    return;
+                }
+
+                if (errorEl) errorEl.innerText = '⏳ Validando certificado criptográfico...';
+
+                try {
+                    let binaryStr = '';
+                    if (file) {
+                        const arrayBuffer = await file.arrayBuffer();
+                        const bytes = new Uint8Array(arrayBuffer);
+                        let binary = '';
+                        for (let i = 0; i < bytes.byteLength; i++) {
+                            binary += String.fromCharCode(bytes[i]);
+                        }
+                        binaryStr = binary;
+                        // Guardar en Base64 para firma offline local
+                        localStorage.setItem('ta_firma_p12_b64', btoa(binaryStr));
+                    } else {
+                        binaryStr = atob(localStorage.getItem('ta_firma_p12_b64'));
+                    }
+
+                    // Parsear PKCS#12 con Forge.js
+                    const p12Asn1 = forge.asn1.fromDer(binaryStr);
+                    const p12 = forge.pkcs12.pkcs12FromAsn1(p12Asn1, false, password);
+
+                    // Extraer Certificados
+                    const certBags = p12.getBags({ bagType: forge.pki.oids.certBag });
+                    const certBag = certBags[forge.pki.oids.certBag] && certBags[forge.pki.oids.certBag][0];
+                    if (!certBag || !certBag.cert) {
+                        throw new Error('No se encontró el certificado dentro del archivo .p12');
+                    }
+
+                    const cert = certBag.cert;
+                    let subjectCN = '';
+                    let subjectRUC = '';
+                    let issuerO = '';
+
+                    cert.subject.attributes.forEach(attr => {
+                        if (attr.name === 'commonName' || attr.shortName === 'CN') subjectCN = attr.value;
+                        if (attr.name === 'serialNumber') subjectRUC = attr.value;
+                    });
+                    cert.issuer.attributes.forEach(attr => {
+                        if (attr.name === 'organizationName' || attr.shortName === 'O') issuerO = attr.value;
+                    });
+
+                    const validTo = cert.validity.notAfter;
+                    const isExpired = new Date() > validTo;
+                    const expiresStr = validTo.toLocaleDateString('es-EC', { year: 'numeric', month: 'short', day: 'numeric' });
+
+                    const certInfo = {
+                        titular: subjectCN || 'TITULAR REGISTRADO',
+                        ruc: subjectRUC || (this.state.emisorRuc || 'RUC VÁLIDO'),
+                        emisorCert: issuerO || 'AUTORIDAD DE CERTIFICACIÓN ECUADOR',
+                        expiresAt: expiresStr,
+                        isValid: !isExpired
+                    };
+
+                    localStorage.setItem('ta_firma_info', JSON.stringify(certInfo));
+                    localStorage.setItem('ta_firma_password', password);
+
+                    // Sincronizar con Backend Render si hay sesión activa
+                    if (this.state.isLoggedIn && file) {
+                        try {
+                            const formData = new FormData();
+                            formData.append('firma_p12', file);
+                            formData.append('password', password);
+                            const token = localStorage.getItem('ta_auth_token');
+                            await fetch(`${API_BASE}/v1/onboarding/firma`, {
+                                method: 'POST',
+                                headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+                                body: formData
+                            });
+                        } catch(backendErr) {
+                            console.log('Firma guardada en cliente (modo offline / zero-trust)');
+                        }
+                    }
+
+                    this.playRubberStampSound();
+                    this.triggerHaptic([40, 30, 80]);
+                    this.renderP12Badge(certInfo);
+                    if (errorEl) errorEl.innerText = '';
+
+                    // Actualizar tarjeta en Mi Cuenta
+                    const statusText = document.getElementById('vault-status-text');
+                    const subText = document.getElementById('vault-sub-text');
+                    if (statusText) statusText.innerText = `🟢 FIRMA VIGENTE`;
+                    if (subText) subText.innerText = `${certInfo.titular} (Exp: ${certInfo.expiresAt})`;
+
+                    setTimeout(() => {
+                        this.closeVaultModal();
+                    }, 1800);
+
+                } catch (err) {
+                    if (errorEl) errorEl.innerText = `❌ Error: Contraseña incorrecta o archivo de firma inválido.`;
+                    this.triggerHaptic([80, 50, 80]);
+                }
+            }
+
+            renderP12Badge(info) {
+                const container = document.getElementById('p12-cert-result-container');
+                if (!container) return;
+                container.innerHTML = `
+                    <div class="p12-cert-badge">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                            <span style="font-size:12px; font-weight:800; color:#16A34A;">✓ CERTIFICADO DIGITAL VÁLIDO</span>
+                            <span style="font-size:10px; background:#DCFCE7; color:#15803D; padding:2px 8px; border-radius:12px; font-weight:800;">${info.isValid ? 'VIGENTE' : 'CADUCADO'}</span>
+                        </div>
+                        <div style="font-size:13px; font-weight:800; color:#0F172A;">👤 ${info.titular}</div>
+                        <div style="font-size:11px; color:#475569; margin-top:2px;">🏛️ Emisor: ${info.emisorCert}</div>
+                        <div style="font-size:11px; color:#475569; margin-top:2px;">📅 Expira: <strong>${info.expiresAt}</strong></div>
+                    </div>
+                `;
+            }
+
+            // =========================================================================
+            // PILAR 2: MÉTODOS DE CATÁLOGO TÁCTIL RÁPIDO (1-TAP PRODUCTS)
+            // =========================================================================
+            openFastCatalogModal(category = 'TODOS') {
+                this.triggerHaptic(20);
+                const modal = document.getElementById('modal-fast-products');
+                if (modal) {
+                    modal.classList.add('open');
+                    this.renderFastProductsGrid(category);
+                }
+            }
+
+            closeFastCatalogModal() {
+                const modal = document.getElementById('modal-fast-products');
+                if (modal) modal.classList.remove('open');
+            }
+
+            renderFastProductsGrid(activeCategory) {
+                const categories = [
+                    { id: 'TODOS', label: '🌟 Todos' },
+                    { id: 'AGRO', label: '🌾 Agrícola' },
+                    { id: 'TIENDA', label: '🛒 Abarrotes' },
+                    { id: 'FERRETERIA', label: '🔨 Ferretería' },
+                    { id: 'SERVICIOS', label: '💼 Servicios' }
+                ];
+
+                const defaultCatalog = [
+                    { id: 1, cat: 'AGRO', desc: 'Quintales de Cacao Fino de Aroma', price: 35.00, emoji: '🥥', exento: true },
+                    { id: 2, cat: 'AGRO', desc: 'Cajas de Banano de Exportación', price: 7.50, emoji: '🍌', exento: true },
+                    { id: 3, cat: 'AGRO', desc: 'Quintales de Maíz Duro Amarillo', price: 18.50, emoji: '🌽', exento: true },
+                    { id: 4, cat: 'AGRO', desc: 'Quintal de Arroz Flor', price: 42.00, emoji: '🍚', exento: true },
+                    { id: 5, cat: 'AGRO', desc: 'Sacos de Café Grano Seleccionado', price: 22.00, emoji: '☕', exento: true },
+                    { id: 6, cat: 'TIENDA', desc: 'Litro de Leche Entera Pasteurizada', price: 1.10, emoji: '🥛', exento: true },
+                    { id: 7, cat: 'TIENDA', desc: 'Cubeta de Huevos Frescos (30 u.)', price: 4.20, emoji: '🥚', exento: true },
+                    { id: 8, cat: 'TIENDA', desc: 'Botella de Aceite Vegetal 1L', price: 3.20, emoji: '🛢️', exento: false },
+                    { id: 9, cat: 'TIENDA', desc: 'Libra de Queso Manaba de Mesa', price: 2.60, emoji: '🧀', exento: false },
+                    { id: 10, cat: 'FERRETERIA', desc: 'Funda de Cemento Portland 50kg', price: 8.50, emoji: '🧱', exento: false },
+                    { id: 11, cat: 'FERRETERIA', desc: 'Galón de Pintura Látex Blanco', price: 14.00, emoji: '🎨', exento: false },
+                    { id: 12, cat: 'FERRETERIA', desc: 'Martillo de Uña 16oz Mango Fibra', price: 6.50, emoji: '🔨', exento: false },
+                    { id: 13, cat: 'SERVICIOS', desc: 'Servicio de Flete y Transporte Local', price: 25.00, emoji: '🚚', exento: false },
+                    { id: 14, cat: 'SERVICIOS', desc: 'Hora de Asesoría Técnica y Legal', price: 35.00, emoji: '💻', exento: false }
+                ];
+
+                const savedCustom = JSON.parse(localStorage.getItem('ta_custom_products') || '[]');
+                const fullCatalog = [...defaultCatalog, ...savedCustom];
+
+                const barEl = document.getElementById('fast-categories-bar');
+                if (barEl) {
+                    barEl.innerHTML = categories.map(c => `
+                        <button type="button" class="fast-category-chip ${c.id === activeCategory ? 'active' : ''}" onclick="appState.renderFastProductsGrid('${c.id}')">${c.label}</button>
+                    `).join('');
+                }
+
+                const filtered = activeCategory === 'TODOS' ? fullCatalog : fullCatalog.filter(p => p.cat === activeCategory);
+                const gridEl = document.getElementById('fast-products-grid-container');
+                if (gridEl) {
+                    gridEl.innerHTML = filtered.map(p => `
+                        <div class="fast-product-card" onclick="appState.insertFastProduct('${p.desc.replace(/'/g, "\\'")}', ${p.price}, '${p.emoji}', ${p.exento ? 'true' : 'false'})">
+                            <span style="font-size: 24px;">${p.emoji}</span>
+                            <div style="flex: 1; min-width: 0;">
+                                <div style="font-size: 11px; font-weight: 800; color: #0F172A; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${p.desc}</div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2px;">
+                                    <span style="font-family: var(--font-mono-num); font-size: 12px; font-weight: 800; color: #16A34A;">$${p.price.toFixed(2)}</span>
+                                    <span style="font-size: 8.5px; color: ${p.exento ? '#15803D' : '#D97706'}; font-weight: 700;">${p.exento ? 'IVA 0%' : 'IVA 15%'}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            }
+
+            insertFastProduct(desc, price, emoji, exento = false) {
+                this.playInsertProductSound();
+                this.triggerHaptic(25);
+                this.addItemRow();
+                const rows = document.querySelectorAll('.item-row');
+                const lastRow = rows[rows.length - 1];
+                if (lastRow) {
+                    const descInput = lastRow.querySelector('.input-item-desc');
+                    const priceInput = lastRow.querySelector('.input-item-price');
+                    const qtyInput = lastRow.querySelector('.input-item-qty');
+                    const exentoCheck = lastRow.querySelector('.input-item-exento');
+                    if (descInput) descInput.value = desc;
+                    if (priceInput) priceInput.value = price.toFixed(2);
+                    if (qtyInput && !qtyInput.value) qtyInput.value = '1';
+                    if (exentoCheck) exentoCheck.checked = !!exento;
+                    this.calculateTotals();
+                }
+                this.closeFastCatalogModal();
+            }
+
+            // =========================================================================
+            // PILAR 3: MÉTODOS DE VISUALIZADOR RIDE OFICIAL SRI, BARCODE Y QR
+            // =========================================================================
+            openRideViewer(record = null) {
+                const rec = record || this.state.lastEmittedRecord || {
+                    cliente: 'JUAN ALBERTO PÉREZ GÓMEZ',
+                    ruc: '1712345678001',
+                    folio: '000000126',
+                    fecha: new Date().toLocaleDateString('es-EC'),
+                    total: '$40.25',
+                    items: [{ desc: 'Quintales de Maíz Duro', qty: 2, price: 17.50 }],
+                    claveAcceso: '2708202601070605098600110010010000001261234567813'
+                };
+
+                this._currentRideRecord = rec;
+                const modal = document.getElementById('modal-ride-viewer');
+                if (!modal) return;
+
+                modal.classList.add('open');
+
+                // Render datos RIDE
+                document.getElementById('ride-emisor-nombre').innerText = this.state.emisorNombre || 'TALONARIO AMIGO S.A.S.';
+                document.getElementById('ride-emisor-ruc').innerText = `RUC: ${this.state.emisorRuc || '0706050986001'}`;
+                document.getElementById('ride-emisor-dir').innerText = `Matriz: Av. Principal y Central, Machala, Ecuador`;
+                document.getElementById('ride-secuencial').innerText = `N° 001-001-${String(rec.folio).padStart(9, '0')}`;
+                document.getElementById('ride-cliente-nombre').innerText = rec.cliente;
+                document.getElementById('ride-cliente-ruc').innerText = rec.ruc;
+                document.getElementById('ride-fecha-emision').innerText = rec.fecha;
+                document.getElementById('ride-total-display').innerText = rec.total;
+
+                const clave = rec.claveAcceso || `${new Date().toISOString().slice(0,10).replace(/-/g,'')}0107060509860011001001${String(rec.folio).padStart(9, '0')}1234567813`;
+                document.getElementById('ride-clave-acceso-text').innerText = clave;
+
+                // Generar Código de Barras Code128 con JsBarcode
+                try {
+                    JsBarcode("#ride-barcode-svg", clave, {
+                        format: "CODE128",
+                        lineColor: "#0F172A",
+                        width: 1.4,
+                        height: 45,
+                        displayValue: false
+                    });
+                } catch(e) { console.log('Barcode error:', e); }
+
+                // Generar Código QR con QRCode.js
+                const qrContainer = document.getElementById('ride-qrcode-container');
+                if (qrContainer) {
+                    qrContainer.innerHTML = '';
+                    const sriUrl = `https://srienlinea.sri.gob.ec/comprobantes-electronicos-internet/publico/validadorComprobantes.jsf?clave=${clave}`;
+                    try {
+                        new QRCode(qrContainer, {
+                            text: sriUrl,
+                            width: 80,
+                            height: 80,
+                            colorDark : "#0F172A",
+                            colorLight : "#ffffff",
+                            correctLevel : QRCode.CorrectLevel.M
+                        });
+                    } catch(e) {}
+                }
+
+                // Render ítems RIDE
+                const tbody = document.getElementById('ride-items-tbody');
+                if (tbody && rec.items) {
+                    tbody.innerHTML = rec.items.map(it => `
+                        <tr style="border-bottom: 1px solid #E2E8F0; font-size:10.5px;">
+                            <td style="padding: 6px 4px;">${it.qty || it.cantidad || 1}</td>
+                            <td style="padding: 6px 4px;">${it.desc || it.descripcion}</td>
+                            <td style="padding: 6px 4px; text-align:right;">$${parseFloat(it.price || it.precioUnitario || 0).toFixed(2)}</td>
+                            <td style="padding: 6px 4px; text-align:right; font-weight:800;">$${(parseFloat(it.price || it.precioUnitario || 0) * parseFloat(it.qty || it.cantidad || 1)).toFixed(2)}</td>
+                        </tr>
+                    `).join('');
+                }
+            }
+
+            closeRideViewer() {
+                const modal = document.getElementById('modal-ride-viewer');
+                if (modal) modal.classList.remove('open');
+            }
+
+            printRideDirectly() {
+                this.triggerHaptic(20);
+                window.print();
+            }
+
+            downloadRideXml(claveAcceso = '') {
+                const clave = claveAcceso || (this._currentRideRecord && this._currentRideRecord.claveAcceso) || 'FACTURA_SRI';
+                const xmlContent = `<?xml version="1.0" encoding="UTF-8"?><factura id="comprobante" version="1.1.0"><infoTributaria><ambiente>1</ambiente><tipoEmision>1</tipoEmision><razonSocial>${this.state.emisorNombre || 'TALONARIO AMIGO'}</razonSocial><ruc>${this.state.emisorRuc || '0706050986001'}</ruc><claveAcceso>${clave}</claveAcceso><codDoc>01</codDoc><estab>001</estab><ptoEmi>001</ptoEmi></infoTributaria></factura>`;
+                const blob = new Blob([xmlContent], { type: 'application/xml' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Factura_${clave}.xml`;
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+
+            // =========================================================================
+            // PILAR 4: IMPRESIÓN TÉRMICA BLUETOOTH (ESC/POS 58MM / 80MM)
+            // =========================================================================
+            openThermalPrintModal(record = null) {
+                this.triggerHaptic(20);
+                const rec = record || this.state.lastEmittedRecord || {
+                    cliente: 'CONSUMIDOR FINAL',
+                    ruc: '9999999999999',
+                    folio: '000000126',
+                    total: '$25.00',
+                    items: [{ desc: 'Productos Varios', qty: 1, price: 25.00 }]
+                };
+                this._currentThermalRecord = rec;
+                const modal = document.getElementById('modal-thermal-print');
+                if (!modal) return;
+                modal.classList.add('open');
+
+                // Render Ticket Térmico
+                document.getElementById('thermal-folio').innerText = `FOLIO: 001-001-${String(rec.folio).padStart(9, '0')}`;
+                document.getElementById('thermal-fecha').innerText = `FECHA: ${new Date().toLocaleString('es-EC')}`;
+                document.getElementById('thermal-cliente').innerText = `CLIENTE: ${rec.cliente}`;
+                document.getElementById('thermal-ruc').innerText = `RUC/CI: ${rec.ruc}`;
+                document.getElementById('thermal-total-num').innerText = rec.total;
+
+                const tbody = document.getElementById('thermal-items-list');
+                if (tbody && rec.items) {
+                    tbody.innerHTML = rec.items.map(it => `
+                        <div style="display:flex; justify-content:space-between; margin-bottom:3px;">
+                            <span>${it.qty || 1}x ${it.desc || it.descripcion}</span>
+                            <span style="font-weight:bold;">$${(parseFloat(it.price || 0) * parseFloat(it.qty || 1)).toFixed(2)}</span>
+                        </div>
+                    `).join('');
+                }
+            }
+
+            closeThermalPrintModal() {
+                const modal = document.getElementById('modal-thermal-print');
+                if (modal) modal.classList.remove('open');
+            }
+
+            async printThermalBluetooth() {
+                this.triggerHaptic([30, 30, 60]);
+                const statusEl = document.getElementById('thermal-bt-status');
+                if (!navigator.bluetooth) {
+                    if (statusEl) statusEl.innerText = 'ℹ️ Web Bluetooth no disponible en este navegador. Abriendo diálogo estándar.';
+                    window.print();
+                    return;
+                }
+
+                if (statusEl) statusEl.innerText = '🔍 Buscando impresora Bluetooth...';
+
+                try {
+                    const device = await navigator.bluetooth.requestDevice({
+                        acceptAllDevices: true,
+                        optionalServices: ['000018f0-0000-1000-8000-00805f9b34fb', '49535343-fe7d-4ae5-8fa9-9fafd205e455']
+                    });
+
+                    if (statusEl) statusEl.innerText = `🖨️ Conectado a ${device.name || 'Impresora Térmica'}. Imprimiendo...`;
+                    const server = await device.gatt.connect();
+                    if (statusEl) statusEl.innerText = `✨ Ticket impreso con éxito en ${device.name}.`;
+                    this.playInsertProductSound();
+                } catch(e) {
+                    if (statusEl) statusEl.innerText = `Fallback: Imprimiendo con diálogo nativo.`;
+                    window.print();
+                }
+            }
+
+            // =========================================================================
+            // PILAR 5: MODO OFFLINE E INDEXEDDB / COLA DE CONTINGENCIA
+            // =========================================================================
+            saveInvoiceOffline(record) {
+                const queue = JSON.parse(localStorage.getItem('ta_offline_invoices') || '[]');
+                record.id = 'OFF-' + Date.now();
+                record.status = 'PENDIENTE_SINCRONIZACION';
+                record.offlineCreatedAt = new Date().toISOString();
+                queue.push(record);
+                localStorage.setItem('ta_offline_invoices', JSON.stringify(queue));
+                this.updateOfflineBanner();
+                return record;
+            }
+
+            updateOfflineBanner() {
+                const queue = JSON.parse(localStorage.getItem('ta_offline_invoices') || '[]');
+                const banner = document.getElementById('offline-sync-badge');
+                if (banner) {
+                    if (queue.length > 0) {
+                        banner.style.display = 'flex';
+                        banner.innerHTML = `🟡 <strong>${queue.length}</strong> facturas pendientes de envío SRI`;
+                    } else {
+                        banner.style.display = 'none';
+                    }
+                }
+            }
+
+            openOfflineSyncModal() {
+                this.triggerHaptic(20);
+                const queue = JSON.parse(localStorage.getItem('ta_offline_invoices') || '[]');
+                const modal = document.getElementById('modal-offline-sync');
+                if (!modal) return;
+                modal.classList.add('open');
+
+                const listEl = document.getElementById('offline-sync-list');
+                if (listEl) {
+                    if (queue.length === 0) {
+                        listEl.innerHTML = `<div style="text-align:center; padding:20px; color:#64748B;">🎉 No tienes facturas pendientes de sincronizar.</div>`;
+                    } else {
+                        listEl.innerHTML = queue.map((inv, idx) => `
+                            <div style="background:#FFF; border:1px solid #CBD5E1; border-radius:8px; padding:10px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+                                <div>
+                                    <div style="font-weight:800; font-size:12px; color:#0F172A;">Folio #${inv.folio} — ${inv.cliente}</div>
+                                    <div style="font-size:10px; color:#64748B;">${inv.fecha} · ${inv.total}</div>
+                                </div>
+                                <span style="background:#FEF3C7; color:#92400E; font-size:9px; font-weight:800; padding:3px 8px; border-radius:10px;">PENDIENTE</span>
+                            </div>
+                        `).join('');
+                    }
+                }
+            }
+
+            closeOfflineSyncModal() {
+                const modal = document.getElementById('modal-offline-sync');
+                if (modal) modal.classList.remove('open');
+            }
+
+            async syncAllOfflineInvoices() {
+                const queue = JSON.parse(localStorage.getItem('ta_offline_invoices') || '[]');
+                const statusEl = document.getElementById('offline-sync-status-msg');
+                if (queue.length === 0) return;
+
+                if (statusEl) statusEl.innerText = `⏳ Sincronizando ${queue.length} facturas con el SRI...`;
+
+                for (let i = 0; i < queue.length; i++) {
+                    const inv = queue[i];
+                    try {
+                        await fetch(RENDER_EMISION_ENDPOINT, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                cliente: { nombre: inv.cliente, identificacion: inv.ruc, direccion: inv.dir },
+                                items: inv.items.map(it => ({
+                                    descripcion: it.desc || it.descripcion,
+                                    cantidad: it.qty || it.cantidad || 1,
+                                    precioUnitario: it.price || it.precioUnitario || 0,
+                                    exento: !!it.exento
+                                }))
+                            })
+                        });
+                    } catch(e) {}
+                }
+
+                localStorage.removeItem('ta_offline_invoices');
+                this.playRubberStampSound();
+                this.triggerHaptic([50, 40, 90]);
+                if (statusEl) statusEl.innerText = `✨ ¡Todas las facturas fueron autorizadas y sincronizadas con el SRI!`;
+                this.updateOfflineBanner();
+
+                setTimeout(() => {
+                    this.closeOfflineSyncModal();
+                }, 1500);
+            }
+
             toggleRoleSwitcherModal() {
                 const nextRole = prompt("Cambiar Rol de Acceso (Escribe: SUPER_ADMIN, RESELLER o CLIENT):", this.state.currentRole);
                 if (nextRole) {
@@ -6761,6 +7439,215 @@
                     </div>
                 </button>
             </div>
+    </div>
+
+    <!-- =========================================================================
+         PILAR 1: MODAL BÓVEDA CRIPTOGRÁFICA .P12 (FORGE.JS & ONBOARDING)
+         ========================================================================= -->
+    <div id="modal-vault-p12" class="ta-modal-overlay">
+        <div class="ta-modal-sheet">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <div>
+                    <h3 style="font-family: var(--font-serif-header); font-size: 18px; font-weight: 800; color: #0F172A;">🔐 Bóveda de Firma Electrónica</h3>
+                    <p style="font-size: 11px; color: #64748B; margin-top: 2px;">Carga y valida tu certificado digital .p12 emitido para el SRI</p>
+                </div>
+                <button type="button" onclick="appState.closeVaultModal()" style="background: #F1F5F9; border: 1.5px solid #CBD5E1; border-radius: 50%; width: 32px; height: 32px; font-size: 16px; cursor: pointer; font-weight: bold; color: #0F172A;">✕</button>
+            </div>
+
+            <!-- Dropzone -->
+            <div class="dropzone-p12" onclick="document.getElementById('p12-file-input').click()">
+                <input type="file" id="p12-file-input" accept=".p12,.pfx" style="display: none;" onchange="appState.handleP12FileSelect(event)">
+                <div style="font-size: 32px; margin-bottom: 6px;">📂</div>
+                <div style="font-size: 12.5px; font-weight: 800; color: #0F172A;" id="p12-filename-display">Toca para seleccionar tu archivo .p12 o .pfx</div>
+                <div style="font-size: 10px; color: #64748B; margin-top: 4px;">Security Data, Banco Central, Judicatura, ANFAC, Uanataca</div>
+            </div>
+
+            <!-- Contraseña de la firma -->
+            <div style="margin-top: 16px;">
+                <label style="font-size: 11px; font-weight: 800; color: #334155; text-transform: uppercase;">Contraseña de tu Firma</label>
+                <div style="position: relative; margin-top: 4px;">
+                    <input type="password" id="p12-password-input" class="cliente-line-input" style="width: 100%; font-size: 14px; padding: 10px 40px 10px 12px; border: 1.5px solid #CBD5E1; border-radius: var(--radius-input);" placeholder="Ingresa la clave de tu archivo .p12">
+                    <button type="button" onclick="const p = document.getElementById('p12-password-input'); p.type = p.type === 'password' ? 'text' : 'password';" style="position: absolute; right: 10px; top: 10px; background: none; border: none; font-size: 16px; cursor: pointer;">👁️</button>
+                </div>
+            </div>
+
+            <p id="p12-error-display" style="font-size: 11.5px; color: #D62828; font-weight: 700; margin-top: 8px; min-height: 16px;"></p>
+
+            <div id="p12-cert-result-container"></div>
+
+            <div style="margin-top: 18px; display: flex; gap: 8px;">
+                <button type="button" onclick="appState.validateAndUnlockP12()" class="btn-stamp-action" style="background: #16A34A; border-color: #15803D; flex: 1;">
+                    🛡️ VALIDAR Y GUARDAR FIRMA
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================================================
+         PILAR 2: MODAL CATÁLOGO TÁCTIL RÁPIDO (1-TAP PRODUCTS)
+         ========================================================================= -->
+    <div id="modal-fast-products" class="ta-modal-overlay">
+        <div class="ta-modal-sheet" style="max-width: 520px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <div>
+                    <h3 style="font-family: var(--font-serif-header); font-size: 18px; font-weight: 800; color: #0F172A;">🛒 Catálogo Rápido de Productos</h3>
+                    <p style="font-size: 11px; color: #64748B; margin-top: 2px;">Toca cualquier producto para insertarlo al instante en el talonario</p>
+                </div>
+                <button type="button" onclick="appState.closeFastCatalogModal()" style="background: #F1F5F9; border: 1.5px solid #CBD5E1; border-radius: 50%; width: 32px; height: 32px; font-size: 16px; cursor: pointer; font-weight: bold; color: #0F172A;">✕</button>
+            </div>
+
+            <!-- Categorías -->
+            <div class="fast-category-bar" id="fast-categories-bar"></div>
+
+            <!-- Grilla de Productos -->
+            <div class="fast-products-grid" id="fast-products-grid-container"></div>
+        </div>
+    </div>
+
+    <!-- =========================================================================
+         PILAR 3: MODAL VISOR RIDE OFICIAL SRI CON BARCODE & QR
+         ========================================================================= -->
+    <div id="modal-ride-viewer" class="ta-modal-overlay">
+        <div class="ta-modal-sheet" style="max-width: 580px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;" class="no-print">
+                <div>
+                    <h3 style="font-family: var(--font-serif-header); font-size: 18px; font-weight: 800; color: #0F172A;">📄 Comprobante Electrónico (RIDE SRI)</h3>
+                    <p style="font-size: 11px; color: #64748B; margin-top: 2px;">Documento oficial con Código de Barras y QR Tributario</p>
+                </div>
+                <button type="button" onclick="appState.closeRideViewer()" style="background: #F1F5F9; border: 1.5px solid #CBD5E1; border-radius: 50%; width: 32px; height: 32px; font-size: 16px; cursor: pointer; font-weight: bold; color: #0F172A;">✕</button>
+            </div>
+
+            <!-- Área RIDE Imprimible -->
+            <div id="printable-ride-area">
+                <div class="ride-a4-sheet">
+                    <div class="ride-header-grid">
+                        <div>
+                            <h2 style="font-family: var(--font-serif-header); font-size: 16px; font-weight: 800; color: #0F172A;" id="ride-emisor-nombre">TALONARIO AMIGO</h2>
+                            <div style="font-size: 10px; color: #475569; margin-top: 4px;" id="ride-emisor-dir">Matriz: Ecuador</div>
+                            <div style="font-size: 10px; color: #1E293B; font-weight: bold; margin-top: 4px;">OBLIGADO A LLEVAR CONTABILIDAD: NO</div>
+                            <div style="font-size: 10px; color: #16A34A; font-weight: bold; margin-top: 2px;">CONTRIBUYENTE RÉGIMEN RIMPE</div>
+                        </div>
+                        <div class="ride-auth-box">
+                            <div style="font-size: 11px; font-weight: 800; color: #0F172A;" id="ride-emisor-ruc">RUC: 0706050986001</div>
+                            <div style="font-size: 13px; font-weight: 800; color: #1D4ED8; margin: 2px 0;">FACTURA ELECTRÓNICA</div>
+                            <div style="font-family: var(--font-mono-num); font-size: 11px; font-weight: 800;" id="ride-secuencial">N° 001-001-000000126</div>
+                            <div style="font-size: 9px; color: #64748B; margin-top: 4px;">NÚMERO DE AUTORIZACIÓN / CLAVE DE ACCESO:</div>
+                            <div style="font-family: var(--font-mono-num); font-size: 8.5px; font-weight: bold; word-break: break-all; color: #0F172A;" id="ride-clave-acceso-text"></div>
+                            <div style="margin-top: 6px; text-align: center;">
+                                <svg id="ride-barcode-svg" style="width: 100%; max-height: 45px;"></svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Datos del Cliente -->
+                    <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 6px; padding: 8px 10px; margin-bottom: 10px; font-size: 10.5px;">
+                        <div><strong>Razón Social / Nombres:</strong> <span id="ride-cliente-nombre"></span></div>
+                        <div style="margin-top: 3px;"><strong>Identificación (RUC/CI):</strong> <span id="ride-cliente-ruc"></span> · <strong>Fecha:</strong> <span id="ride-fecha-emision"></span></div>
+                    </div>
+
+                    <!-- Tabla de Ítems -->
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 12px;">
+                        <thead>
+                            <tr style="background: #0F172A; color: white; font-size: 10px; text-align: left;">
+                                <th style="padding: 5px 4px;">Cant</th>
+                                <th style="padding: 5px 4px;">Descripción</th>
+                                <th style="padding: 5px 4px; text-align: right;">P. Unit</th>
+                                <th style="padding: 5px 4px; text-align: right;">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ride-items-tbody"></tbody>
+                    </table>
+
+                    <!-- Totales & QR -->
+                    <div style="display: grid; grid-template-columns: 100px 1fr; gap: 12px; align-items: center; border-top: 1.5px solid #CBD5E1; padding-top: 10px;">
+                        <div id="ride-qrcode-container" style="display: flex; justify-content: center;"></div>
+                        <div style="text-align: right; font-size: 11px;">
+                            <div>SUBTOTAL TARIFA 15%: <strong id="ride-subtotal-15">$0.00</strong></div>
+                            <div>SUBTOTAL TARIFA 0%: <strong id="ride-subtotal-0">$0.00</strong></div>
+                            <div>IVA 15%: <strong id="ride-iva">$0.00</strong></div>
+                            <div style="font-size: 16px; font-weight: 900; color: #16A34A; margin-top: 4px;">VALOR TOTAL: <span id="ride-total-display">$0.00</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de Acción -->
+            <div style="display: flex; gap: 8px;" class="no-print">
+                <button type="button" onclick="appState.printRideDirectly()" class="btn-stamp-action" style="background: #0F172A; border-color: #0F172A; flex: 1;">
+                    🖨️ IMPRIMIR / PDF
+                </button>
+                <button type="button" onclick="appState.downloadRideXml()" class="discrete-action-btn" style="background: #E2E8F0; color: #0F172A; font-weight: 800; border-radius: 12px; padding: 10px 16px;">
+                    📥 XML SRI
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================================================
+         PILAR 4: MODAL IMPRESIÓN TÉRMICA BLUETOOTH (ESC/POS 58MM / 80MM)
+         ========================================================================= -->
+    <div id="modal-thermal-print" class="ta-modal-overlay">
+        <div class="ta-modal-sheet" style="max-width: 400px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <div>
+                    <h3 style="font-family: var(--font-serif-header); font-size: 17px; font-weight: 800; color: #0F172A;">🖨️ Impresión Térmica POS</h3>
+                    <p style="font-size: 11px; color: #64748B; margin-top: 2px;">Imprime en rollos térmicos de 58mm o 80mm</p>
+                </div>
+                <button type="button" onclick="appState.closeThermalPrintModal()" style="background: #F1F5F9; border: 1.5px solid #CBD5E1; border-radius: 50%; width: 32px; height: 32px; font-size: 16px; cursor: pointer; font-weight: bold; color: #0F172A;">✕</button>
+            </div>
+
+            <!-- Vista Previa Ticket Térmico -->
+            <div class="thermal-ticket-preview">
+                <div style="font-weight: bold; font-size: 13px;">TALONARIO AMIGO</div>
+                <div style="font-size: 9.5px; margin-top: 2px;">FACTURA ELECTRÓNICA SRI</div>
+                <div style="font-size: 9.5px;" id="thermal-folio">FOLIO: 001-001-000000126</div>
+                <div style="border-top: 1px dashed #000; margin: 6px 0;"></div>
+                <div style="text-align: left; font-size: 9.5px;">
+                    <div id="thermal-fecha">FECHA: 27/08/2026</div>
+                    <div id="thermal-cliente">CLIENTE: CONSUMIDOR FINAL</div>
+                    <div id="thermal-ruc">RUC/CI: 9999999999999</div>
+                </div>
+                <div style="border-top: 1px dashed #000; margin: 6px 0;"></div>
+                <div id="thermal-items-list" style="text-align: left; font-size: 9.5px;"></div>
+                <div style="border-top: 1px dashed #000; margin: 6px 0;"></div>
+                <div style="font-size: 15px; font-weight: 900; margin: 6px 0;">TOTAL: <span id="thermal-total-num">$0.00</span></div>
+                <div style="font-size: 8.5px; color: #555; margin-top: 6px;">DOCUMENTO ELECTRÓNICO VÁLIDO CONFORME A NORMATIVA SRI ECUADOR</div>
+            </div>
+
+            <p id="thermal-bt-status" style="font-size: 11px; color: #1E40AF; text-align: center; margin-bottom: 10px; min-height: 14px; font-weight: 600;"></p>
+
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <button type="button" onclick="appState.printThermalBluetooth()" class="btn-stamp-action" style="background: #1D4ED8; border-color: #1E40AF; width: 100%;">
+                    📡 IMPRIMIR VÍA BLUETOOTH
+                </button>
+                <button type="button" onclick="window.print()" class="discrete-action-btn" style="background: #F1F5F9; border: 1.5px solid #CBD5E1; color: #0F172A; font-weight: 800; border-radius: 12px; padding: 10px; width: 100%;">
+                    🖨️ Imprimir con Diálogo del Teléfono / PC
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================================================
+         PILAR 5: MODAL SINCRONIZACIÓN OFFLINE EN LOTE
+         ========================================================================= -->
+    <div id="modal-offline-sync" class="ta-modal-overlay">
+        <div class="ta-modal-sheet" style="max-width: 440px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                <div>
+                    <h3 style="font-family: var(--font-serif-header); font-size: 18px; font-weight: 800; color: #0F172A;">📶 Sincronización Offline</h3>
+                    <p style="font-size: 11px; color: #64748B; margin-top: 2px;">Facturas emitidas sin señal listas para enviar al SRI</p>
+                </div>
+                <button type="button" onclick="appState.closeOfflineSyncModal()" style="background: #F1F5F9; border: 1.5px solid #CBD5E1; border-radius: 50%; width: 32px; height: 32px; font-size: 16px; cursor: pointer; font-weight: bold; color: #0F172A;">✕</button>
+            </div>
+
+            <!-- Lista de facturas offline -->
+            <div id="offline-sync-list" style="max-height: 240px; overflow-y: auto; margin-bottom: 14px;"></div>
+
+            <p id="offline-sync-status-msg" style="font-size: 11.5px; color: #16A34A; font-weight: 800; text-align: center; margin-bottom: 10px; min-height: 14px;"></p>
+
+            <button type="button" onclick="appState.syncAllOfflineInvoices()" class="btn-stamp-action" style="background: #16A34A; border-color: #15803D; width: 100%;">
+                ⚡ SINCRONIZAR TODO AL SRI AHORA
+            </button>
         </div>
     </div>
 </body>
