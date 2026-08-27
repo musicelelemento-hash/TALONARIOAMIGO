@@ -21,8 +21,17 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-// Health Check público para Render, Uptime Pingers y Diagnóstico de Trinidad Gratuita
+// Health Check público y ultra-rápido para Render y Cron-job Keep-Alive
 Route::get('/health', function () {
+    return response()->json([
+        'status' => 'ok',
+        'service' => 'Talonario Amigo API SRI',
+        'timestamp' => now()->toIso8601String()
+    ]);
+});
+
+// Diagnóstico extendido de base de datos e integraciones
+Route::get('/health/db', function () {
     $dbConnected = false;
     $dbError = null;
     $tables = [];
@@ -37,7 +46,6 @@ Route::get('/health', function () {
 
     return response()->json([
         'status' => 'ok',
-        'service' => 'Talonario Amigo API SRI',
         'database' => [
             'connected' => $dbConnected,
             'tables_count' => count($tables),
