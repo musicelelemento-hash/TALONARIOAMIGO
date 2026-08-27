@@ -57,5 +57,5 @@ COPY nginx.conf /etc/nginx/sites-available/default
 # Exponer puerto HTTP para Render
 EXPOSE 80
 
-# Script de arranque: ajusta el puerto dinámico de Render ($PORT), descubre paquetes y levanta PHP-FPM + Nginx
-CMD ["sh", "-c", "sed -i \"s/listen 80;/listen ${PORT:-80};/g\" /etc/nginx/sites-available/default && php artisan package:discover --ansi && php-fpm -D && nginx -g 'daemon off;'"]
+# Script de arranque: ajusta el puerto dinámico de Render ($PORT) y levanta PHP-FPM + Nginx
+CMD ["sh", "-c", "sed -i \"s/listen 80;/listen ${PORT:-80};/g\" /etc/nginx/sites-available/default && php-fpm -D && nginx -g 'daemon off;'"]

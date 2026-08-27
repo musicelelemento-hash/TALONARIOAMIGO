@@ -17,10 +17,21 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// Ruta pública de Health Check para Render y Monitoreo
+Route::get('/health', function () {
+    return response()->json([
+        'status' => 'ok',
+        'service' => 'Talonario Amigo API SRI',
+        'timestamp' => now()->toIso8601String()
+    ]);
+});
+
+// Tipos de comprobantes SRI (Público para inicializar la app)
+Route::get('/v1/facturacion/tipos', [FacturacionElectronicaController::class, 'tipos']);
+
 // Rutas de Emisión SRI y Firma (Protegidas por Middleware de Estado)
 Route::group(['middleware' => ['auth:sanctum', 'check.account.status']], function () {
     Route::post('/v1/sign/xml', [FirmaController::class,'ProcesarFirma']);
-    Route::get('/v1/facturacion/tipos', [FacturacionElectronicaController::class, 'tipos']);
     Route::post('/v1/facturacion/clave-acceso', [FacturacionElectronicaController::class, 'generarClaveAcceso']);
     Route::post('/v1/facturacion/validar-identificacion', [FacturacionElectronicaController::class, 'validarIdentificacion']);
     Route::post('/v1/facturacion/xml', [FacturacionElectronicaController::class, 'generarXml']);

@@ -5,7 +5,7 @@ services:
     plan: free
     region: oregon
     dockerfilePath: Dockerfile
-    healthCheckPath: /api/v1/facturacion/tipos
+    healthCheckPath: /api/health
     envVars:
       - key: APP_NAME
         value: TalonarioAmigo
