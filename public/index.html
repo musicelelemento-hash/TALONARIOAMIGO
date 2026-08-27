@@ -6049,6 +6049,42 @@
                 this.evaluateStateAndRender();
             }
 
+            exportSalesToExcel() {
+                this.triggerHaptic([30, 20, 40]);
+                const history = this.state.emittedHistory || [];
+                if (history.length === 0) {
+                    alert("⚠️ Aún no tienes facturas emitidas para exportar.");
+                    return;
+                }
+
+                // Encabezados estándar para contabilidad SRI Ecuador
+                const headers = ["Folio", "Fecha", "Tipo Comprobante", "RUC/CI", "Cliente / Razon Social", "Direccion", "Subtotal 15%", "Subtotal 0%", "IVA 15%", "Total Cobrado", "Clave de Acceso SRI"];
+                const rows = history.map(h => [
+                    `="${String(h.folio).padStart(9, '0')}"`,
+                    `"${h.fecha || ''}"`,
+                    `"${h.docType || 'FACTURA'}"`,
+                    `="${h.ruc || ''}"`,
+                    `"${(h.cliente || '').replace(/"/g, '""')}"`,
+                    `"${(h.dir || '').replace(/"/g, '""')}"`,
+                    (parseFloat(h.total || 0) * 0.8695).toFixed(2),
+                    "0.00",
+                    (parseFloat(h.total || 0) * 0.1305).toFixed(2),
+                    parseFloat(h.total || 0).toFixed(2),
+                    `="${h.claveAcceso || ''}"`
+                ]);
+
+                const csvContent = "\uFEFF" + [headers.join(","), ...rows.map(r => r.join(","))].join("\r\n");
+                const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement("a");
+                link.setAttribute("href", url);
+                link.setAttribute("download", `Reporte_Ventas_TalonarioAmigo_${new Date().toISOString().slice(0, 10)}.csv`);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                this.showToast("📊 Reporte contable exportado a Excel exitosamente");
+            }
+
             animateFlipPage(direction) {
                 const el = document.getElementById('flipbook-page-sheet');
                 if (el) {
@@ -6117,8 +6153,31 @@
                 return `
                     <div class="page-flip-turn" style="background: #FCFBF6; border: 2.5px solid var(--paper-border); border-radius: 16px; padding: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
                         <div style="margin-bottom: 12px;">
-                            <h3 style="font-family: var(--font-serif-header); font-size: 20px; font-weight: 800; color: #0F172A;">📚 Talonario Físico de Copias (Flipbook Realista)</h3>
-                            <p style="font-size: 11px; color: #57534E; margin-top: 2px;">Desliza con el dedo verticalmente ↕️ o pulsa los botones para hojear los folios emitidos:</p>
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
+                                <div>
+                                    <h3 style="font-family: var(--font-serif-header); font-size: 20px; font-weight: 800; color: #0F172A;">📚 Tomos del Talonario (Historial SRI)</h3>
+                                    <p style="font-size: 11px; color: #57534E; margin-top: 2px;">Desliza con el dedo verticalmente ↕️ para hojear los comprobantes:</p>
+                                </div>
+                                <button type="button" onclick="appState.exportSalesToExcel()" style="background: #16A34A; color: white; border: none; border-radius: 8px; padding: 6px 12px; font-size: 11px; font-weight: 800; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; box-shadow: 0 2px 8px rgba(22,163,74,0.3); white-space: nowrap;">
+                                    <span>📊</span> Exportar Excel
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- RESUMEN MENSUAL Y VENTAS ACUMULADAS -->
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+                            <div style="background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); color: white; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(212,175,55,0.3);">
+                                <div style="font-size: 9.5px; font-weight: 800; color: #94A3B8; text-transform: uppercase;">Total Acumulado</div>
+                                <div style="font-family: var(--font-mono-num); font-size: 18px; font-weight: 900; color: #10B981; margin-top: 2px;">
+                                    $${filtered.reduce((acc, it) => acc + (parseFloat(it.total) || 0), 0).toFixed(2)}
+                                </div>
+                            </div>
+                            <div style="background: #FFFFFF; border: 1.5px solid var(--paper-border); padding: 10px 12px; border-radius: 10px;">
+                                <div style="font-size: 9.5px; font-weight: 800; color: #64748B; text-transform: uppercase;">Comprobantes</div>
+                                <div style="font-family: var(--font-mono-num); font-size: 18px; font-weight: 900; color: #0F172A; margin-top: 2px;">
+                                    ${totalCount} hojas
+                                </div>
+                            </div>
                         </div>
 
                         <!-- BUSCADOR POR DATOS Y CHIPS DE TOMOS POR MES -->
