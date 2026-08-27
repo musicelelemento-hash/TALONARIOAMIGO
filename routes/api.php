@@ -21,13 +21,55 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-// Health Check público para Render y Uptime Pingers
+// Health Check público para Render, Uptime Pingers y Diagnóstico de Trinidad Gratuita
 Route::get('/health', function () {
+    $dbConnected = false;
+    $dbError = null;
+    $tables = [];
+    try {
+        DB::connection()->getPdo();
+        $dbConnected = true;
+        $tableRows = DB::select("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'");
+        $tables = array_map(function ($row) { return $row->table_name ?? $row->TABLE_NAME ?? ''; }, $tableRows);
+    } catch (\Throwable $e) {
+        $dbError = $e->getMessage();
+    }
+
     return response()->json([
         'status' => 'ok',
         'service' => 'Talonario Amigo API SRI',
+        'database' => [
+            'connected' => $dbConnected,
+            'tables_count' => count($tables),
+            'tables' => $tables,
+            'error' => $dbError
+        ],
+        'integrations' => [
+            'resend_email' => !empty(env('RESEND_API_KEY')),
+            'r2_vault' => !empty(env('R2_ACCESS_KEY_ID')),
+            'keep_alive' => true
+        ],
         'timestamp' => now()->toIso8601String()
     ]);
+});
+
+// Endpoint seguro para ejecutar migraciones pendientes en Supabase Postgres
+Route::get('/health/migrate', function (Request $request) {
+    if ($request->get('key') !== env('APP_KEY', 'talonario_secret_key')) {
+        return response()->json(['error' => 'Unauthorized'], 403);
+    }
+    try {
+        \Artisan::call('migrate', ['--force' => true]);
+        return response()->json([
+            'status' => 'success',
+            'output' => \Artisan::output()
+        ]);
+    } catch (\Throwable $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => $e->getMessage()
+        ], 500);
+    }
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
