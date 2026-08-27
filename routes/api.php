@@ -4,20 +4,24 @@ use App\Http\Controllers\FirmaController;
 use App\Http\Controllers\FacturacionElectronicaController;
 use App\Http\Controllers\OwnerController;
 use App\Http\Controllers\ResellerController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\OnboardingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
-| API Routes — Talonario Amigo
+| API Routes
 |--------------------------------------------------------------------------
+|
+| Here is where you can register API routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| is assigned the "api" middleware group. Enjoy building your API!
+|
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
 
-// Ruta pública de Health Check para Render y Monitoreo
+// Health Check público para Render y Uptime Pingers
 Route::get('/health', function () {
     return response()->json([
         'status' => 'ok',
@@ -26,33 +30,56 @@ Route::get('/health', function () {
     ]);
 });
 
-// Tipos de comprobantes SRI (Público para inicializar la app)
-Route::get('/v1/facturacion/tipos', [FacturacionElectronicaController::class, 'tipos']);
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
 
-// Rutas de Emisión SRI y Firma (Protegidas por Middleware de Estado)
-Route::group(['middleware' => ['auth:sanctum', 'check.account.status']], function () {
+// 6 intentos por minuto por IP — evita fuerza bruta de contraseñas sin molestar a un usuario real.
+Route::post('/v1/auth/login', [AuthController::class, 'login'])->middleware('throttle:6,1');
+Route::middleware('auth:sanctum')->post('/v1/auth/logout', [AuthController::class, 'logout']);
+
+// Firma directa de XML suelto (usada por integraciones externas, no por el flujo normal del talonario)
+Route::group(['middleware' => 'app'], function () {
     Route::post('/v1/sign/xml', [FirmaController::class,'ProcesarFirma']);
-    Route::post('/v1/facturacion/clave-acceso', [FacturacionElectronicaController::class, 'generarClaveAcceso']);
-    Route::post('/v1/facturacion/validar-identificacion', [FacturacionElectronicaController::class, 'validarIdentificacion']);
-    Route::post('/v1/facturacion/xml', [FacturacionElectronicaController::class, 'generarXml']);
-    Route::post('/v1/facturacion/firmar', [FacturacionElectronicaController::class, 'firmarXml']);
-    Route::post('/v1/facturacion/generar-firmar', [FacturacionElectronicaController::class, 'generarYFirmarXml']);
-    Route::post('/v1/facturacion/sri/enviar', [FacturacionElectronicaController::class, 'enviarSri']);
-    Route::post('/v1/facturacion/sri/autorizar', [FacturacionElectronicaController::class, 'autorizarSri']);
 });
 
-// Rutas Panel SuperAdmin (Dueño - Control Total Global)
-Route::group(['middleware' => ['auth:sanctum'], 'prefix' => 'v1/admin/owner'], function () {
+// Rutas de Onboarding (configurar RUC del emisor + subir firma .p12)
+Route::middleware(['auth:sanctum'])->prefix('v1/onboarding')->group(function () {
+    Route::get('/estado', [OnboardingController::class, 'estado']);
+    Route::post('/emisor', [OnboardingController::class, 'setupEmisor']);
+    Route::post('/firma', [OnboardingController::class, 'uploadFirma']);
+});
+
+// Emisión real de comprobantes SRI - requiere sesión real y emisor+firma configurados
+Route::middleware(['auth:sanctum', 'account.status'])->prefix('v1/facturacion')->group(function () {
+    Route::get('/tipos', [FacturacionElectronicaController::class, 'tipos']);
+    Route::post('/clave-acceso', [FacturacionElectronicaController::class, 'generarClaveAcceso']);
+    Route::post('/validar-identificacion', [FacturacionElectronicaController::class, 'validarIdentificacion']);
+    Route::post('/xml', [FacturacionElectronicaController::class, 'generarXml']);
+    Route::post('/firmar', [FacturacionElectronicaController::class, 'firmarXml']);
+    Route::post('/generar-firmar', [FacturacionElectronicaController::class, 'generarYFirmarXml']);
+    Route::post('/sri/enviar', [FacturacionElectronicaController::class, 'enviarSri']);
+    Route::post('/sri/autorizar', [FacturacionElectronicaController::class, 'autorizarSri']);
+
+    // Pipeline real orquestado: arma el XML con los datos del emisor logueado, firma, envía y
+    // autoriza en un solo llamado. Esto es lo que usa el frontend para emitir un comprobante.
+    Route::post('/emitir', [FacturacionElectronicaController::class, 'emitirFactura']);
+    Route::get('/estado/{claveAcceso}', [FacturacionElectronicaController::class, 'consultarEstado']);
+});
+
+// Rutas del Dueño (SUPER_ADMIN)
+Route::middleware(['auth:sanctum', 'role:SUPER_ADMIN'])->prefix('v1/owner')->group(function () {
     Route::get('/dashboard', [OwnerController::class, 'getGlobalDashboard']);
-    Route::post('/create-reseller', [OwnerController::class, 'createReseller']);
-    Route::post('/toggle-account/{id}', [OwnerController::class, 'toggleAccountStatus']);
-    Route::post('/assign-package', [OwnerController::class, 'assignResellerPackage']);
+    Route::post('/resellers', [OwnerController::class, 'createReseller']);
+    Route::post('/users/{id}/toggle-status', [OwnerController::class, 'toggleAccountStatus']);
+    Route::post('/resellers/assign-package', [OwnerController::class, 'assignResellerPackage']);
 });
 
-// Rutas Panel Reseller (Imprenta Aliada)
-Route::group(['middleware' => ['auth:sanctum'], 'prefix' => 'v1/admin/reseller'], function () {
+// Rutas de la Imprenta (RESELLER)
+Route::middleware(['auth:sanctum', 'role:RESELLER'])->prefix('v1/reseller')->group(function () {
     Route::get('/dashboard', [ResellerController::class, 'getResellerDashboard']);
-    Route::post('/create-client', [ResellerController::class, 'createClient']);
-    Route::post('/toggle-client/{id}', [ResellerController::class, 'toggleClientStatus']);
-    Route::post('/update-whatsapp', [ResellerController::class, 'updateWhatsappSupport']);
+    Route::post('/clients', [ResellerController::class, 'createClient']);
+    Route::post('/clients/{clientId}/toggle-status', [ResellerController::class, 'toggleClientStatus']);
+    Route::post('/whatsapp-support', [ResellerController::class, 'updateWhatsappSupport']);
 });
+
