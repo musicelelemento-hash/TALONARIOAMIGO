@@ -1,0 +1,18 @@
+{
+  "name": "talonario-amigo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Frontend SPA de Talonario Amigo (módulos ES vanilla). Se sirve desde el backend Laravel y se empaqueta con Capacitor para Android.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.4.0"
+  },
+  "dependencies": {
+    "pdfjs-dist": "^6.2.108"
+  }
+}

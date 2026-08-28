@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Emisor;
+use App\Models\PuntoEmision;
 use App\Models\User;
 use App\Models\ResellerPackage;
 use Illuminate\Http\Request;
@@ -70,7 +72,14 @@ class ResellerController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6',
-            'phone' => 'nullable|string'
+            'phone' => 'nullable|string',
+            'emisor' => 'nullable|array',
+            'emisor.ruc' => 'nullable|string|size:13',
+            'emisor.razon_social' => 'nullable|string|max:255',
+            'emisor.nombre_comercial' => 'nullable|string|max:255',
+            'emisor.direccion_matriz' => 'nullable|string',
+            'emisor.tipo_regimen' => 'nullable|in:RIMPE_POPULAR,RIMPE_EMPRENDEDOR,GENERAL',
+            'emisor.obligado_contabilidad' => 'nullable|boolean',
         ]);
 
         $client = User::create([
@@ -87,6 +96,38 @@ class ResellerController extends Controller
 
         // Incrementar el contador de cuentas usadas en el paquete
         $package->increment('used_accounts');
+
+        // Si la imprenta subió el RUC (autocompletado), dejar el facturador del cliente LISTO.
+        if ($request->filled('emisor.ruc')) {
+            $emisor = Emisor::create([
+                'user_id' => $client->id,
+                'ruc' => $request->input('emisor.ruc'),
+                'razon_social' => $request->input('emisor.razon_social') ?: $client->name,
+                'nombre_comercial' => $request->input('emisor.nombre_comercial') ?: $client->name,
+                'direccion_matriz' => $request->input('emisor.direccion_matriz') ?: '',
+                'obligado_contabilidad' => (bool) $request->input('emisor.obligado_contabilidad', false),
+                'tipo_regimen' => $request->input('emisor.tipo_regimen', 'GENERAL'),
+                'ambiente' => '1',
+                'tipo_emision' => '1',
+            ]);
+
+            PuntoEmision::create([
+                'emisor_id' => $emisor->id,
+                'establecimiento' => '001',
+                'punto_emision' => '001',
+                'nombre_sucursal' => 'Matriz Principal',
+                'direccion_sucursal' => $request->input('emisor.direccion_matriz', ''),
+                'secuencial_factura' => 1,
+                'secuencial_nota_credito' => 1,
+                'secuencial_retencion' => 1,
+                'secuencial_liquidacion' => 1,
+                'secuencial_guia_remision' => 1,
+                'is_active' => true,
+            ]);
+
+            $client->status = 'ACTIVE';
+            $client->save();
+        }
 
         return response()->json([
             'success' => true,

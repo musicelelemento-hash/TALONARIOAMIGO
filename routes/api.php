@@ -86,6 +86,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 // 6 intentos por minuto por IP — evita fuerza bruta de contraseñas sin molestar a un usuario real.
 Route::post('/v1/auth/login', [AuthController::class, 'login'])->middleware('throttle:6,1');
+// Alta pública de cuentas CLIENT (auto-registro con facturador listo).
+Route::post('/v1/auth/register', [AuthController::class, 'register'])->middleware('throttle:6,1');
 Route::middleware('auth:sanctum')->post('/v1/auth/logout', [AuthController::class, 'logout']);
 
 // Firma directa de XML suelto (usada por integraciones externas, no por el flujo normal del talonario)

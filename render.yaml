@@ -39,6 +39,19 @@ services:
         fromDatabase:
           name: talonario-amigo-db
           property: password
+      # Clave de cifrado de Laravel (obligatoria para Sanctum y sesiones). CAMBIALA por una propia cuando quieras.
+      - key: APP_KEY
+        value: base64:e1sMEij+daFa6GVHd9ldMpB/mMpZ5obe3n5fvD2HAhM=
+      # Configuración de la librería firmadora SRI (la emisión usa el .p12 del emisor logueado;
+      # estos valores cubren SOAP/ambiente/envío).
+      - key: FACTURACION_AMBIENTE
+        value: "1"
+      - key: FACTURACION_SOAP_TIMEOUT
+        value: "30"
+      - key: FACTURACION_CA_FILE
+        value: ""
+      - key: DEFAULT_SUPPORT_WHATSAPP
+        value: "593993050689"
 
 databases:
   - name: talonario-amigo-db
