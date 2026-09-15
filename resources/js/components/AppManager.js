@@ -26,6 +26,8 @@ export class AppManager {
             isActive: true,             // Estado activo/desactivado
             currentDocNumber: 126,
             supportWhatsapp: "0993050689",
+            experienceMode: 'comerciante', // 'tranquilo', 'comerciante', 'pro'
+            isShowingBlueCopy: false,
             
             // Datos Reseller & Licencias
             resellerQuota: {
@@ -100,7 +102,53 @@ export class AppManager {
             return;
         }
 
-        this.container.innerHTML = renderFacturadorRealista(this.state, this.state.currentDocNumber);
+        this.container.innerHTML = renderFacturadorRealista(this.state, this.state.currentDocNumber, this.state.experienceMode, this.state.isShowingBlueCopy);
+    }
+
+    // GESTIÓN DE MODOS DE EXPERIENCIA (Tranquilo 👴 / Comerciante 🏪 / Pro ⚡)
+    setExperienceMode(mode) {
+        this.triggerHaptic(15);
+        this.state.experienceMode = mode;
+        this.evaluateStateAndRender();
+    }
+
+    // INSERCIÓN DE PRODUCTOS TÁCTILES RÁPIDOS
+    addQuickProduct(descripcion, precio) {
+        this.triggerHaptic(20);
+        const tbody = document.getElementById('realista-items-body');
+        if (!tbody) return;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td style="text-align: center;"><input type="number" class="table-input" value="1" oninput="window.appState.recalculateTotals()" onfocus="window.appState.triggerHaptic(10)"></td>
+            <td><input type="text" class="table-input" value="${descripcion}" onfocus="window.appState.triggerHaptic(10)"></td>
+            <td style="text-align: right;"><input type="number" step="0.01" class="table-input" value="${Number(precio).toFixed(2)}" style="text-align:right;" oninput="window.appState.recalculateTotals()" onfocus="window.appState.triggerHaptic(10)"></td>
+            <td style="text-align: right; padding-right: 6px;" class="row-total">$${Number(precio).toFixed(2)}</td>
+        `;
+        tbody.appendChild(tr);
+        this.recalculateTotals();
+        this.showToast(`🌽 Agregado: ${descripcion}`);
+    }
+
+    addEmptyRow() {
+        this.triggerHaptic(10);
+        const tbody = document.getElementById('realista-items-body');
+        if (!tbody) return;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td style="text-align: center;"><input type="number" class="table-input" value="1" oninput="window.appState.recalculateTotals()" onfocus="window.appState.triggerHaptic(10)"></td>
+            <td><input type="text" class="table-input" placeholder="Descripción del producto..." onfocus="window.appState.triggerHaptic(10)"></td>
+            <td style="text-align: right;"><input type="number" step="0.01" class="table-input" value="0.00" style="text-align:right;" oninput="window.appState.recalculateTotals()" onfocus="window.appState.triggerHaptic(10)"></td>
+            <td style="text-align: right; padding-right: 6px;" class="row-total">$0.00</td>
+        `;
+        tbody.appendChild(tr);
+        this.recalculateTotals();
+    }
+
+    finishBlueCopyPreview() {
+        if (this.blueCopyTimer) clearTimeout(this.blueCopyTimer);
+        this.state.isShowingBlueCopy = false;
+        this.state.currentDocNumber += 1;
+        this.evaluateStateAndRender();
     }
 
     // SOPORTE VIBRACIÓN HÁPTICA MÓVIL
@@ -129,7 +177,7 @@ export class AppManager {
         return { cliente: { nombre, identificacion, direccion }, items };
     }
 
-    // SECUENCIA DE EMISIÓN REAL: reúne el formulario, llama al pipeline SRI y muestra el resultado.
+    // SECUENCIA DE EMISIÓN REAL CON DESPRENDIMIENTO 3D Y REVELADO DE COPIA AZUL
     async executeEmit3DSequence() {
         this.triggerHaptic([40, 30, 80]);
         this.showToast('⏳ Firmando y transmitiendo al SRI…');
@@ -155,14 +203,29 @@ export class AppManager {
                 stampBadge.classList.add('slam-anim');
             }
 
-            this.triggerHaptic(30);
-            this.state.currentDocNumber += 1;
-            const secuencial = String(res.secuencial || this.state.currentDocNumber - 1).padStart(9, '0');
-            this.showToast(`🎉 Comprobante N° 001-001-${secuencial} ${res.estado === 'AUTORIZADO' ? 'AUTORIZADO' : 'ENVIADO'} por el SRI.`
-                + (res.numeroAutorizacion ? `\nAutorización: ${res.numeroAutorizacion}` : ''));
+            this.triggerHaptic([40, 20, 60]);
+            const paperCard = document.getElementById('receipt-paper-card');
+            if (paperCard) {
+                paperCard.classList.add('paper-tear-off-anim');
+            }
 
-            // Nueva hoja en blanco con deslizado 3D
-            setTimeout(() => this.evaluateStateAndRender(), 900);
+            const secuencial = String(res.secuencial || this.state.currentDocNumber).padStart(9, '0');
+            this.showToast(`🎉 Comprobante N° 001-001-${secuencial} ${res.estado === 'AUTORIZADO' ? 'AUTORIZADO' : 'ENVIADO'} por el SRI.`);
+
+            // Tras la animación física del desprendimiento, revelar la copia azul tradicional
+            setTimeout(() => {
+                this.state.isShowingBlueCopy = true;
+                this.evaluateStateAndRender();
+
+                // Regreso automático tras 3.5 segundos
+                if (this.blueCopyTimer) clearTimeout(this.blueCopyTimer);
+                this.blueCopyTimer = setTimeout(() => {
+                    if (this.state.isShowingBlueCopy) {
+                        this.finishBlueCopyPreview();
+                    }
+                }, 3500);
+            }, 750);
+
         } catch (e) {
             this.triggerHaptic(50);
             const msg = (e.code === 'PENDING_ONBOARDING')
@@ -565,9 +628,37 @@ export class AppManager {
         }
     }
 
+    filterSuperAdminResellers(query) {
+        const q = (query || '').toLowerCase().trim();
+        const cards = document.querySelectorAll('.reseller-item-card');
+        cards.forEach(card => {
+            const name = card.getAttribute('data-reseller-name') || '';
+            const text = card.innerText.toLowerCase();
+            if (!q || name.includes(q) || text.includes(q)) {
+                card.style.display = 'flex';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+    filterResellerClients(query) {
+        const q = (query || '').toLowerCase().trim();
+        const rows = document.querySelectorAll('.reseller-client-row');
+        rows.forEach(row => {
+            const text = (row.getAttribute('data-client-text') || '') + ' ' + row.innerText.toLowerCase();
+            if (!q || text.includes(q)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
     setSimulatedState(key, val) {
         this.triggerHaptic(10);
         this.state[key] = val;
         this.evaluateStateAndRender();
     }
 }
+
