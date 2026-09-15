@@ -47,7 +47,12 @@ export function renderResellerPanel(resellerData) {
         <div class="factura-talonario-container" style="max-width: 760px; margin: 0 auto;">
             <!-- Header Panel Imprenta -->
             <div class="receipt-header">
-                <div class="receipt-number">PANEL IMPRENTA RESELLER</div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div class="receipt-number">PANEL IMPRENTA RESELLER</div>
+                    <button type="button" class="mode-chip-btn" style="background:#1E293B; color:#FFF; font-size:11px;" onclick="window.appState.setRole('CLIENT')">
+                        ✒️ Ir al Talonario
+                    </button>
+                </div>
                 <div class="emisor-title">${esc(info.name)}</div>
                 <div class="emisor-meta">Gestión de Lote Mayorista de Licencias y Clientes Propios</div>
             </div>

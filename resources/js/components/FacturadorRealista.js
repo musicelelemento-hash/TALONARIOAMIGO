@@ -372,6 +372,16 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                     ✒️ FIRMAR Y EMITIR AL SRI (XAdES-BES)
                 </button>
             </div>
+
+            <!-- Acceso Rápido a Gobernanza y 12 Agentes (Modo Dueño/Imprenta) -->
+            <div style="margin-top: 16px; padding-top: 12px; border-top: 1px dashed #CBD5E1; text-align: center; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;">
+                <button type="button" class="mode-chip-btn" style="background: rgba(15, 23, 42, 0.05); border: 1px solid #CBD5E1; color: #475569; font-size: 10px; padding: 4px 10px;" onclick="window.appState.setRole('SUPER_ADMIN')">
+                    🏛️ Centro de Mando (12 Agentes)
+                </button>
+                <button type="button" class="mode-chip-btn" style="background: rgba(15, 23, 42, 0.05); border: 1px solid #CBD5E1; color: #475569; font-size: 10px; padding: 4px 10px;" onclick="window.appState.setRole('RESELLER')">
+                    🏭 Panel Imprenta Aliada
+                </button>
+            </div>
         </div>
     `;
 }
