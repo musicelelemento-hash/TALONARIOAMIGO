@@ -30,8 +30,13 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
 
                 <div class="header-grid">
                     <div>
-                        <div class="rimpe-badge" style="background:#DBEAFE; color:#1E40AF; border-color:#93C5FD;">
-                            "CONTRIBUYENTE NEGOCIO POPULAR - RÉGIMEN RIMPE"
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 4px;">
+                            ${emisorData?.businessLogo ? `
+                                <img src="${esc(emisorData.businessLogo)}" alt="Logo" style="max-height: 44px; max-width: 100px; object-fit: contain; filter: contrast(1.4) grayscale(0.8) sepia(1) hue-rotate(180deg);">
+                            ` : ''}
+                            <div class="rimpe-badge" style="background:#DBEAFE; color:#1E40AF; border-color:#93C5FD;">
+                                "CONTRIBUYENTE NEGOCIO POPULAR - RÉGIMEN RIMPE"
+                            </div>
                         </div>
                         <div class="emisor-nombre" style="color:#1E3A8A;">Carlos Alexander Balladares Gómez</div>
                         <div class="emisor-actividad" style="color:#2563EB;">VENTA AL POR MAYOR DE CACAO.</div>
@@ -56,11 +61,16 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                         ✓ Comprobante Transmitido y Registrado Exitosamente
                     </h3>
                     <p style="font-size: 13px; color: #1D4ED8; margin-bottom: 14px;">
-                        Esta copia queda archivada en tu tomo físico digital. Preparando siguiente hoja del talonario...
+                        Esta copia queda archivada en tu tomo físico digital. Puedes enviarla por WhatsApp al cliente o pasar a la siguiente hoja.
                     </p>
-                    <button class="btn-stamp" style="background: #1D4ED8; border-color: #1D4ED8; width: auto; padding: 8px 24px; font-size: 12px;" onclick="window.appState.finishBlueCopyPreview()">
-                        ✒️ PASAR A NUEVA HOJA AHORA
-                    </button>
+                    <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                        <button class="btn-whatsapp-direct" style="padding: 10px 20px; font-size: 12px;" onclick="window.appState.shareFacturaWhatsapp()">
+                            📲 Enviar Factura al Cliente por WhatsApp
+                        </button>
+                        <button class="btn-stamp" style="background: #1D4ED8; border-color: #1D4ED8; width: auto; padding: 10px 22px; font-size: 12px;" onclick="window.appState.finishBlueCopyPreview()">
+                            ✒️ Pasar a Nueva Hoja
+                        </button>
+                    </div>
                 </div>
             </div>
         `;
@@ -102,7 +112,18 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
             <div class="header-grid">
                 <!-- Bloque Izquierdo: Emisor -->
                 <div>
-                    <div class="rimpe-badge">"CONTRIBUYENTE NEGOCIO POPULAR - RÉGIMEN RIMPE"</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            ${emisorData?.businessLogo ? `
+                                <img src="${esc(emisorData.businessLogo)}" alt="Logo" style="max-height: 42px; max-width: 90px; object-fit: contain; border-radius: 4px;">
+                            ` : ''}
+                            <div class="rimpe-badge">"CONTRIBUYENTE NEGOCIO POPULAR - RÉGIMEN RIMPE"</div>
+                        </div>
+                        <label for="business-logo-input" style="cursor: pointer; font-size: 10px; font-weight: 800; color: #1D4ED8; background: #EBF3FF; padding: 3px 8px; border-radius: 6px; border: 1px solid #BFDBFE; white-space: nowrap;">
+                            🏷️ ${emisorData?.businessLogo ? 'Cambiar Logo' : '+ Tu Logo'}
+                        </label>
+                        <input type="file" id="business-logo-input" accept="image/*" style="display: none;" onchange="window.appState.handleLogoUpload(this)">
+                    </div>
                     <div class="emisor-nombre">Carlos Alexander Balladares Gómez</div>
                     <div class="emisor-actividad">VENTA AL POR MAYOR DE CACAO.</div>
                     <div class="emisor-detalles">

@@ -28,6 +28,8 @@ export class AppManager {
             supportWhatsapp: "0993050689",
             experienceMode: 'comerciante', // 'tranquilo', 'comerciante', 'pro'
             isShowingBlueCopy: false,
+            businessLogo: localStorage.getItem('ta_business_logo') || '',
+            lastReceipt: null,
             
             // Datos Reseller & Licencias
             resellerQuota: {
@@ -151,6 +153,48 @@ export class AppManager {
         this.evaluateStateAndRender();
     }
 
+    // CARGA DE LOGOTIPO PERSONALIZADO DEL NEGOCIO
+    handleLogoUpload(input) {
+        if (!input.files || !input.files[0]) return;
+        const file = input.files[0];
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const dataUrl = e.target.result;
+            try {
+                localStorage.setItem('ta_business_logo', dataUrl);
+            } catch (err) {
+                console.warn('LocalStorage quota limit', err);
+            }
+            this.state.businessLogo = dataUrl;
+            this.showToast('✅ Logotipo de tu negocio aplicado al talonario.');
+            this.evaluateStateAndRender();
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // COMPARTIR FACTURA O NOTA DE VENTA DIRECTA POR WHATSAPP AL CLIENTE
+    shareFacturaWhatsapp() {
+        const rc = this.state.lastReceipt;
+        const emisorNombre = 'Carlos Alexander Balladares Gómez';
+        const docNum = rc ? rc.secuencial : String(this.state.currentDocNumber).padStart(9, '0');
+        const total = rc ? rc.total : '$85.00';
+        const clienteNombre = rc?.cliente?.nombre || 'Cliente Frecuente';
+        const clave = rc?.claveAcceso || '2807202601070605098600120010010000001261234567813';
+
+        const msg = `*COMPROBANTE ELECTRÓNICO — TALONARIO AMIGO SRI*\n\n`
+            + `🏪 *Emisor:* ${emisorNombre}\n`
+            + `📄 *Documento:* Nota de Venta N° 001-001-${docNum}\n`
+            + `👤 *Cliente:* ${clienteNombre}\n`
+            + `💰 *Total a Pagar:* ${total}\n`
+            + `🔑 *Clave de Acceso SRI:*\n${clave}\n\n`
+            + `_Comprobante emitido electrónicamente y autorizado por el SRI._\n`
+            + `_¡Gracias por su preferencia!_`;
+
+        const waUrl = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+        window.open(waUrl, '_blank');
+        this.showToast('📲 Abriendo WhatsApp para compartir comprobante...');
+    }
+
     // SOPORTE VIBRACIÓN HÁPTICA MÓVIL
     triggerHaptic(pattern = 15) {
         if ('vibrate' in navigator) {
@@ -210,6 +254,14 @@ export class AppManager {
             }
 
             const secuencial = String(res.secuencial || this.state.currentDocNumber).padStart(9, '0');
+            this.state.lastReceipt = {
+                cliente: payload.cliente,
+                items: payload.items,
+                total: document.getElementById('grand-total-display')?.innerText || '$85.00',
+                secuencial: secuencial,
+                claveAcceso: res.claveAcceso || '2807202601070605098600120010010000001261234567813',
+                numeroAutorizacion: res.numeroAutorizacion || ''
+            };
             this.showToast(`🎉 Comprobante N° 001-001-${secuencial} ${res.estado === 'AUTORIZADO' ? 'AUTORIZADO' : 'ENVIADO'} por el SRI.`);
 
             // Tras la animación física del desprendimiento, revelar la copia azul tradicional
