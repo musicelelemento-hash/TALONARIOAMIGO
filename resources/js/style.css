@@ -2641,4 +2641,124 @@
     font-weight: 800;
 }
 
+/* PRINCIPIO 9: DICTADO POR VOZ EN RENGLÓN & ONDA SONORA VIVA */
+.voice-dictation-banner {
+    background: #0F172A;
+    color: #FFFFFF;
+    border-radius: 12px;
+    padding: 10px 14px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.25);
+    animation: fadeIn 0.2s ease-out;
+}
+
+.voice-wave-container {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    height: 20px;
+}
+
+.voice-wave-bar {
+    width: 3px;
+    background: #16A34A;
+    border-radius: 999px;
+    animation: wavePulse 0.8s ease-in-out infinite alternate;
+}
+
+.voice-wave-bar:nth-child(1) { height: 6px; animation-delay: 0.1s; }
+.voice-wave-bar:nth-child(2) { height: 16px; animation-delay: 0.3s; }
+.voice-wave-bar:nth-child(3) { height: 22px; animation-delay: 0.0s; }
+.voice-wave-bar:nth-child(4) { height: 14px; animation-delay: 0.4s; }
+.voice-wave-bar:nth-child(5) { height: 8px; animation-delay: 0.2s; }
+
+@keyframes wavePulse {
+    0% { transform: scaleY(0.4); opacity: 0.6; }
+    100% { transform: scaleY(1.3); opacity: 1; }
+}
+
+.btn-voice-dictate {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #FEF3C7;
+    border: 1px solid #F59E0B;
+    color: #92400E;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.btn-voice-dictate:hover {
+    background: #FDE68A;
+    transform: translateY(-1px);
+}
+
+.btn-voice-dictate:active {
+    transform: scale(0.96);
+}
+
+.btn-voice-dictate.listening {
+    background: #DC2626;
+    border-color: #B91C1C;
+    color: #FFFFFF;
+    animation: pulseMic 1.2s infinite ease-in-out;
+}
+
+@keyframes pulseMic {
+    0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+    70% { box-shadow: 0 0 0 8px rgba(220, 38, 38, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+}
+
+/* PRINCIPIO 16: GROSOR DEL BLOC Y CARGA POR HOJAS APILADAS */
+.bloc-stack-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(241, 245, 249, 0.8);
+    border: 1px solid #CBD5E1;
+    border-radius: 10px;
+    padding: 6px 12px;
+    margin-bottom: 8px;
+    font-size: 11px;
+    color: #475569;
+}
+
+.bloc-progress-track {
+    width: 80px;
+    height: 6px;
+    background: #CBD5E1;
+    border-radius: 999px;
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 6px;
+}
+
+.bloc-progress-bar {
+    height: 100%;
+    background: #16A34A;
+    border-radius: 999px;
+    transition: width 0.3s ease;
+}
+
+/* REALISMO TÁCTIL: SOMBRAS DE HOJAS APILADAS BAJO EL TALONARIO */
+.factura-talonario-container.stacked-bloc-depth {
+    box-shadow: 
+        0 1px 0 #EDEAE1,
+        0 2px 0 #E5E1D7,
+        0 3px 0 #DBD7CC,
+        0 4px 0 #D1CDC1,
+        0 12px 32px rgba(15, 23, 42, 0.16);
+}
+
+
 

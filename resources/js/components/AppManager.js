@@ -13,6 +13,7 @@ import { renderTomosModal } from './TomosModal.js';
 import { api } from '../api.js';
 import { extractDataFromSriPdf } from '../services/sriPdf.js';
 import { soundFx } from '../services/soundFx.js';
+import { voiceDictation } from '../services/voiceDictation.js';
 
 export class AppManager {
     constructor(containerId) {
@@ -35,6 +36,8 @@ export class AppManager {
             isTomosModalOpen: false,
             activeTomoMonth: 'AGOSTO 2026',
             audioEnabled: soundFx.isSoundEnabled(),
+            isListeningVoice: false,
+            voiceLiveTranscript: '',
             
             // Datos Reseller & Licencias
             resellerQuota: {
@@ -183,18 +186,83 @@ export class AppManager {
         this.showToast('📲 Compartiendo comprobante archivado por WhatsApp...');
     }
 
+    // CONTROL DE DICTADO POR VOZ (PRINCIPIO 9)
+    toggleVoiceDictation() {
+        if (this.state.isListeningVoice) {
+            this.stopVoiceDictation();
+        } else {
+            this.startVoiceDictation();
+        }
+    }
+
+    startVoiceDictation() {
+        this.triggerHaptic(20);
+        soundFx.playPencil();
+        this.state.isListeningVoice = true;
+        this.state.voiceLiveTranscript = '';
+        this.evaluateStateAndRender();
+
+        const success = voiceDictation.start({
+            onStart: () => {
+                this.state.isListeningVoice = true;
+                this.evaluateStateAndRender();
+            },
+            onTranscript: (transcript, isFinal) => {
+                this.state.voiceLiveTranscript = transcript;
+                const bannerText = document.querySelector('.voice-dictation-banner strong + div');
+                if (bannerText) {
+                    bannerText.innerText = `"${transcript}"`;
+                }
+            },
+            onParsed: (parsed, raw) => {
+                this.triggerHaptic([30, 20, 50]);
+                soundFx.playPencil();
+                this.state.isListeningVoice = false;
+                this.state.voiceLiveTranscript = '';
+                this.addQuickProduct(parsed.descripcion, parsed.precioUnitario, parsed.cantidad);
+                this.showToast(`🎙️ Dictado agregado: ${parsed.cantidad}x ${parsed.descripcion} ($${parsed.precioUnitario.toFixed(2)})`);
+                this.evaluateStateAndRender();
+            },
+            onError: (err) => {
+                this.state.isListeningVoice = false;
+                this.state.voiceLiveTranscript = '';
+                this.showToast('⚠️ No se detectó audio o el micrófono requiere permisos.');
+                this.evaluateStateAndRender();
+            },
+            onEnd: () => {
+                this.state.isListeningVoice = false;
+                this.evaluateStateAndRender();
+            }
+        });
+
+        if (!success) {
+            this.state.isListeningVoice = false;
+            this.showToast('⚠️ Tu dispositivo no tiene habilitado el reconocimiento de voz web.');
+            this.evaluateStateAndRender();
+        }
+    }
+
+    stopVoiceDictation() {
+        voiceDictation.stop();
+        this.state.isListeningVoice = false;
+        this.state.voiceLiveTranscript = '';
+        this.evaluateStateAndRender();
+    }
+
     // INSERCIÓN DE PRODUCTOS TÁCTILES RÁPIDOS
-    addQuickProduct(descripcion, precio) {
+    addQuickProduct(descripcion, precio, cantidad = 1) {
         this.triggerHaptic(20);
         soundFx.playPencil();
         const tbody = document.getElementById('realista-items-body');
         if (!tbody) return;
+        const cant = parseInt(cantidad, 10) || 1;
+        const total = (cant * Number(precio)).toFixed(2);
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td style="text-align: center;"><input type="number" class="table-input" value="1" oninput="window.appState.recalculateTotals()" onfocus="window.appState.onInputFocus()"></td>
+            <td style="text-align: center;"><input type="number" class="table-input" value="${cant}" oninput="window.appState.recalculateTotals()" onfocus="window.appState.onInputFocus()"></td>
             <td><input type="text" class="table-input" value="${descripcion}" onfocus="window.appState.onInputFocus()"></td>
             <td style="text-align: right;"><input type="number" step="0.01" class="table-input" value="${Number(precio).toFixed(2)}" style="text-align:right;" oninput="window.appState.recalculateTotals()" onfocus="window.appState.onInputFocus()"></td>
-            <td style="text-align: right; padding-right: 6px;" class="row-total">$${Number(precio).toFixed(2)}</td>
+            <td style="text-align: right; padding-right: 6px;" class="row-total">$${total}</td>
         `;
         tbody.appendChild(tr);
         this.recalculateTotals();

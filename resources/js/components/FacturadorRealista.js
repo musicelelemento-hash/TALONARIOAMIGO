@@ -15,6 +15,15 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
     const docNumStr = String(currentDocNumber || 126).padStart(9, '0');
     const mode = experienceMode || 'comerciante';
 
+    // Cálculo del estado y grosor del bloc (Principio 16: Hojas apiladas)
+    const docNum = parseInt(currentDocNumber || 126, 10);
+    const blocStart = 101;
+    const blocEnd = 150;
+    const totalSheetsInBloc = blocEnd - blocStart + 1; // 50 hojas por bloc
+    const currentSheetInBloc = Math.min(Math.max(docNum - blocStart + 1, 1), totalSheetsInBloc);
+    const remainingSheets = Math.max(totalSheetsInBloc - currentSheetInBloc, 0);
+    const blocPercent = Math.round((currentSheetInBloc / totalSheetsInBloc) * 100);
+
     // RENDERIZADO DE LA COPIA AZUL AUTOCOPIATIVA
     if (isShowingBlueCopy) {
         return `
@@ -101,7 +110,23 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
             </div>
         </div>
 
-        <div class="factura-talonario-container paper-glide-in ${mode === 'tranquilo' ? 'mode-tranquilo-view' : ''}" id="receipt-paper-card">
+        <!-- Principio 16: Grosor y Estado del Bloc Físico de 50 Hojas -->
+        <div class="bloc-stack-info">
+            <div>
+                <strong>📒 Bloc Físico N° 01</strong> <span style="color:#64748B;">(N° 00000101 al 00000150)</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+                <span>Hoja <strong>${currentSheetInBloc}</strong> de ${totalSheetsInBloc} (${remainingSheets} hojas restantes)</span>
+                <div class="bloc-progress-track" title="${blocPercent}% emitido">
+                    <div class="bloc-progress-bar" style="width: ${blocPercent}%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="factura-talonario-container stacked-bloc-depth paper-glide-in ${mode === 'tranquilo' ? 'mode-tranquilo-view' : ''}" id="receipt-paper-card">
+            <!-- Principio 3: Esquina Doblada 3D Interactiva (Leaf Corner Curl) -->
+            <div class="leaf-corner-curl" title="Tocar para ojear tomos físicos archivados" onclick="window.appState.openTomosModal()"></div>
+
             <!-- Saludo Cálido para Modo Tranquilo -->
             ${mode === 'tranquilo' ? `
                 <div class="mode-tranquilo-greeting">
@@ -206,6 +231,39 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                     <input type="text" id="cliente-guia-input" class="cliente-line-input" placeholder="Opcional" onfocus="window.appState.onInputFocus()">
                 </div>
             </div>
+
+            <!-- Principio 9: Dictado por Voz en Renglón & Onda Sonora Viva -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin: 10px 0 6px 0;">
+                <span style="font-size: 11px; font-weight: 800; color: #475569;">
+                    ${mode === 'comerciante' ? 'Renglón de Productos Rápidos:' : 'Detalle de Facturación:'}
+                </span>
+                <button type="button" class="btn-voice-dictate ${emisorData?.isListeningVoice ? 'listening' : ''}" onclick="window.appState.toggleVoiceDictation()">
+                    ${emisorData?.isListeningVoice ? '🛑 Detener Dictado' : '🎙️ Dictar por Voz'}
+                </button>
+            </div>
+
+            ${emisorData?.isListeningVoice ? `
+                <div class="voice-dictation-banner">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div class="voice-wave-container">
+                            <div class="voice-wave-bar"></div>
+                            <div class="voice-wave-bar"></div>
+                            <div class="voice-wave-bar"></div>
+                            <div class="voice-wave-bar"></div>
+                            <div class="voice-wave-bar"></div>
+                        </div>
+                        <div>
+                            <strong style="font-size: 12px; color: #4ADE80;">🎙️ Escuchando... Di en voz alta:</strong>
+                            <div style="font-size: 11px; color: #E2E8F0; margin-top: 2px;">
+                                ${emisorData?.voiceLiveTranscript ? `"${esc(emisorData.voiceLiveTranscript)}"` : 'Ej: "Dos quintales de cacao a sesenta dólares" o "3 sacos de maíz a 18.50"'}
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" onclick="window.appState.stopVoiceDictation()" style="background: rgba(255,255,255,0.2); border: none; color: white; border-radius: 6px; padding: 4px 10px; font-size: 11px; cursor: pointer;">
+                        ✕ Cancelar
+                    </button>
+                </div>
+            ` : ''}
 
             <!-- Chips Rápidos de Productos Táctiles (Modo Comerciante) -->
             ${mode === 'comerciante' ? `
