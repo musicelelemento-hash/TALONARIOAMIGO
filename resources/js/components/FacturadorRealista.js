@@ -79,16 +79,26 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
     // MODO NORMAL (HOJA MARFIL) CON SELECTOR DE EXPERIENCIA
     return `
         <!-- Barra Selector de Experiencia (Tranquilo / Comerciante / Pro) -->
-        <div class="mode-switcher-bar">
-            <button class="mode-chip-btn ${mode === 'tranquilo' ? 'active' : ''}" onclick="window.appState.setExperienceMode('tranquilo')">
-                👴 Modo Tranquilo
-            </button>
-            <button class="mode-chip-btn ${mode === 'comerciante' ? 'active' : ''}" onclick="window.appState.setExperienceMode('comerciante')">
-                🏪 Modo Comerciante
-            </button>
-            <button class="mode-chip-btn ${mode === 'pro' ? 'active' : ''}" onclick="window.appState.setExperienceMode('pro')">
-                ⚡ Modo Pro
-            </button>
+        <div class="mode-switcher-bar" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+            <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                <button class="mode-chip-btn ${mode === 'tranquilo' ? 'active' : ''}" onclick="window.appState.setExperienceMode('tranquilo')">
+                    👴 Tranquilo
+                </button>
+                <button class="mode-chip-btn ${mode === 'comerciante' ? 'active' : ''}" onclick="window.appState.setExperienceMode('comerciante')">
+                    🏪 Comerciante
+                </button>
+                <button class="mode-chip-btn ${mode === 'pro' ? 'active' : ''}" onclick="window.appState.setExperienceMode('pro')">
+                    ⚡ Pro
+                </button>
+            </div>
+            <div style="display: flex; gap: 6px; align-items: center;">
+                <button type="button" class="mode-chip-btn" style="background: transparent; border: 1px solid #CBD5E1; color: #475569; font-size: 11px;" onclick="window.appState.toggleAudio()" title="Activar/Silenciar Efectos de Sonido">
+                    ${emisorData?.audioEnabled !== false ? '🔊 Sonido' : '🔇 Silencio'}
+                </button>
+                <button type="button" class="mode-chip-btn" style="background: #0F172A; color: #F8FAFC; border: 1px solid #334155; font-size: 11px;" onclick="window.appState.openTomosModal()">
+                    📒 Mis Tomos Físicos
+                </button>
+            </div>
         </div>
 
         <div class="factura-talonario-container paper-glide-in ${mode === 'tranquilo' ? 'mode-tranquilo-view' : ''}" id="receipt-paper-card">
@@ -155,21 +165,45 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                 </div>
             </div>
 
+            <!-- Principio 14: Tarjetas de Clientes Frecuentes -->
+            <div class="frequent-clients-wrapper">
+                <div class="frequent-clients-label">
+                    <span>👥 Clientes Frecuentes:</span>
+                </div>
+                <div class="frequent-clients-bar">
+                    <button type="button" class="frequent-client-chip" onclick="window.appState.selectFrequentClient('Juan Alberto Pérez Gómez', 'Av. Central N12-45 y Rocafuerte', '1712345678')">
+                        <span>👤 Juan Pérez</span>
+                        <span class="frequent-client-badge">14 compras</span>
+                    </button>
+                    <button type="button" class="frequent-client-chip" onclick="window.appState.selectFrequentClient('María Elena Loor', 'Barrio Las Peñas y Malecón', '0928374651')">
+                        <span>👤 María Loor</span>
+                        <span class="frequent-client-badge">8 compras</span>
+                    </button>
+                    <button type="button" class="frequent-client-chip" onclick="window.appState.selectFrequentClient('Ab. Carlos Zambrano', 'Edif. La Previsora Of. 402', '0704938291')">
+                        <span>👤 Carlos Zambrano</span>
+                        <span class="frequent-client-badge">22 compras</span>
+                    </button>
+                    <button type="button" class="frequent-client-chip" onclick="window.appState.selectFrequentClient('Consumidor Final', 'Sin dirección', '9999999999999')">
+                        <span>👤 Consumidor Final</span>
+                    </button>
+                </div>
+            </div>
+
             <!-- Sección Datos del Cliente Receptor con Efecto Escritura Analógica -->
             <div class="cliente-seccion">
                 <div class="cliente-row">
                     <span class="cliente-label">Sr. (s)</span>
-                    <input type="text" class="cliente-line-input" value="Juan Alberto Pérez Gómez" placeholder="Nombre completo" onfocus="window.appState.triggerHaptic(10)">
+                    <input type="text" id="cliente-nombre-input" class="cliente-line-input" value="Juan Alberto Pérez Gómez" placeholder="Nombre completo" onfocus="window.appState.onInputFocus()">
                 </div>
                 <div class="cliente-row">
                     <span class="cliente-label">Dirección</span>
-                    <input type="text" class="cliente-line-input" value="Av. Central N12-45 y Rocafuerte" placeholder="Dirección del cliente" onfocus="window.appState.triggerHaptic(10)">
+                    <input type="text" id="cliente-direccion-input" class="cliente-line-input" value="Av. Central N12-45 y Rocafuerte" placeholder="Dirección del cliente" onfocus="window.appState.onInputFocus()">
                 </div>
                 <div class="cliente-row">
                     <span class="cliente-label">RUC / CI #</span>
-                    <input type="text" class="cliente-line-input" style="max-width: 150px;" value="1712345678" placeholder="Identificación" onfocus="window.appState.triggerHaptic(10)">
+                    <input type="text" id="cliente-ruc-input" class="cliente-line-input" style="max-width: 150px;" value="1712345678" placeholder="Identificación" onfocus="window.appState.onInputFocus()">
                     <span class="cliente-label" style="margin-left: 8px;">Guía de Remisión</span>
-                    <input type="text" class="cliente-line-input" placeholder="Opcional" onfocus="window.appState.triggerHaptic(10)">
+                    <input type="text" id="cliente-guia-input" class="cliente-line-input" placeholder="Opcional" onfocus="window.appState.onInputFocus()">
                 </div>
             </div>
 
@@ -202,15 +236,15 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                     </thead>
                     <tbody id="realista-items-body">
                         <tr>
-                            <td style="text-align: center;"><input type="number" class="table-input" value="500" oninput="window.appState.recalculateTotals()" onfocus="window.appState.triggerHaptic(10)"></td>
-                            <td><input type="text" class="table-input" value="Quintales de Cacao Fino de Aroma (Exportación)" onfocus="window.appState.triggerHaptic(10)"></td>
-                            <td style="text-align: right;"><input type="number" step="0.01" class="table-input" value="0.12" style="text-align:right;" oninput="window.appState.recalculateTotals()" onfocus="window.appState.triggerHaptic(10)"></td>
+                            <td style="text-align: center;"><input type="number" class="table-input" value="500" oninput="window.appState.recalculateTotals()" onfocus="window.appState.onInputFocus()"></td>
+                            <td><input type="text" class="table-input" value="Quintales de Cacao Fino de Aroma (Exportación)" onfocus="window.appState.onInputFocus()"></td>
+                            <td style="text-align: right;"><input type="number" step="0.01" class="table-input" value="0.12" style="text-align:right;" oninput="window.appState.recalculateTotals()" onfocus="window.appState.onInputFocus()"></td>
                             <td style="text-align: right; padding-right: 6px;" class="row-total">$60.00</td>
                         </tr>
                         <tr>
-                            <td style="text-align: center;"><input type="number" class="table-input" value="1" oninput="window.appState.recalculateTotals()" onfocus="window.appState.triggerHaptic(10)"></td>
-                            <td><input type="text" class="table-input" value="Licencia Digital Talonario Amigo SRI" onfocus="window.appState.triggerHaptic(10)"></td>
-                            <td style="text-align: right;"><input type="number" step="0.01" class="table-input" value="25.00" style="text-align:right;" oninput="window.appState.recalculateTotals()" onfocus="window.appState.triggerHaptic(10)"></td>
+                            <td style="text-align: center;"><input type="number" class="table-input" value="1" oninput="window.appState.recalculateTotals()" onfocus="window.appState.onInputFocus()"></td>
+                            <td><input type="text" class="table-input" value="Licencia Digital Talonario Amigo SRI" onfocus="window.appState.onInputFocus()"></td>
+                            <td style="text-align: right;"><input type="number" step="0.01" class="table-input" value="25.00" style="text-align:right;" oninput="window.appState.recalculateTotals()" onfocus="window.appState.onInputFocus()"></td>
                             <td style="text-align: right; padding-right: 6px;" class="row-total">$25.00</td>
                         </tr>
                     </tbody>

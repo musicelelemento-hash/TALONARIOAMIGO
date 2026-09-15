@@ -2114,21 +2114,33 @@
         }
 
         /* 7. ESTILOS DE IMPRESIÃ“N */
+        /* 7. ESTILOS DE IMPRESIÓN RIDE / TALONARIO TÁCTIL */
         @media print {
-            body * { visibility: hidden; }
-            #printable-ride-area, #printable-ride-area * {
-                visibility: visible;
+            body {
+                background: #FFFFFF !important;
+                color: #000000 !important;
             }
-            #printable-ride-area {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                margin: 0;
-                padding: 0;
-                background: white;
+            body * {
+                visibility: hidden !important;
             }
-            .no-print { display: none !important; }
+            #receipt-paper-card, #receipt-paper-card * {
+                visibility: visible !important;
+            }
+            #receipt-paper-card {
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 6mm !important;
+                background: #FFFFFF !important;
+                border: 1.5px solid #0F172A !important;
+                box-shadow: none !important;
+            }
+            .mode-switcher-bar, .no-print, button, .btn-stamp-action, .quick-chips-wrapper, input[type="file"], label[for="business-logo-input"] {
+                display: none !important;
+            }
         }
         /* ConfiguraciÃ³n (Mi Cuenta) Minimalista */
         body.minimalist-mode #account-settings-container {
@@ -2539,4 +2551,94 @@
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06);
 }
+
+/* PRINCIPIO 6: CONTADOR MECÁNICO (ODOMETER SPIN) */
+@keyframes odometerSpin {
+    0% {
+        transform: translateY(-90%);
+        opacity: 0;
+        filter: blur(1.5px);
+    }
+    55% {
+        transform: translateY(8%);
+        opacity: 0.95;
+        filter: none;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.odometer-spin {
+    display: inline-block;
+    animation: odometerSpin 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* PRINCIPIO 14: TARJETAS DE CLIENTES FRECUENTES */
+.frequent-clients-wrapper {
+    margin-bottom: 8px;
+}
+
+.frequent-clients-label {
+    font-size: 10px;
+    font-weight: 800;
+    color: #64748B;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.frequent-clients-bar {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding: 2px 0 6px 0;
+    scrollbar-width: none;
+}
+
+.frequent-clients-bar::-webkit-scrollbar {
+    display: none;
+}
+
+.frequent-client-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #FFFFFF;
+    border: 1px solid #CBD5E1;
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #1E293B;
+    cursor: pointer;
+    white-space: nowrap;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    transition: all 0.15s ease;
+}
+
+.frequent-client-chip:hover {
+    background: #F1F5F9;
+    border-color: #94A3B8;
+    color: #0F172A;
+    transform: translateY(-1px);
+}
+
+.frequent-client-chip:active {
+    transform: scale(0.96);
+}
+
+.frequent-client-badge {
+    background: #E2E8F0;
+    color: #475569;
+    font-size: 9px;
+    padding: 1px 6px;
+    border-radius: 999px;
+    font-weight: 800;
+}
+
 

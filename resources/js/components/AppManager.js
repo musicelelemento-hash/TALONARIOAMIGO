@@ -9,8 +9,10 @@ import { renderSupportLockScreen } from './SupportLockScreen.js';
 import { renderFacturadorRealista } from './FacturadorRealista.js';
 import { renderSuperAdminPanel } from './SuperAdminPanel.js';
 import { renderResellerPanel } from './ResellerPanel.js';
+import { renderTomosModal } from './TomosModal.js';
 import { api } from '../api.js';
 import { extractDataFromSriPdf } from '../services/sriPdf.js';
+import { soundFx } from '../services/soundFx.js';
 
 export class AppManager {
     constructor(containerId) {
@@ -30,6 +32,9 @@ export class AppManager {
             isShowingBlueCopy: false,
             businessLogo: localStorage.getItem('ta_business_logo') || '',
             lastReceipt: null,
+            isTomosModalOpen: false,
+            activeTomoMonth: 'AGOSTO 2026',
+            audioEnabled: soundFx.isSoundEnabled(),
             
             // Datos Reseller & Licencias
             resellerQuota: {
@@ -105,6 +110,9 @@ export class AppManager {
         }
 
         this.container.innerHTML = renderFacturadorRealista(this.state, this.state.currentDocNumber, this.state.experienceMode, this.state.isShowingBlueCopy);
+        if (this.state.isTomosModalOpen) {
+            this.container.innerHTML += renderTomosModal(this.state.activeTomoMonth);
+        }
     }
 
     // GESTIÓN DE MODOS DE EXPERIENCIA (Tranquilo 👴 / Comerciante 🏪 / Pro ⚡)
@@ -114,16 +122,78 @@ export class AppManager {
         this.evaluateStateAndRender();
     }
 
+    // EFECTOS DE ENFOQUE Y ESCRITURA ANALÓGICA
+    onInputFocus() {
+        this.triggerHaptic(10);
+        soundFx.playPencil();
+    }
+
+    // CONMUTADOR DE EFECTOS SONOROS ORGÁNICOS (PRINCIPIO 5)
+    toggleAudio() {
+        const enabled = soundFx.toggleSound();
+        this.state.audioEnabled = enabled;
+        this.showToast(enabled ? '🔊 Efectos sonoros activados' : '🔇 Efectos sonoros silenciados');
+        this.evaluateStateAndRender();
+    }
+
+    // SELECCIÓN DE CLIENTE FRECUENTE (PRINCIPIO 14)
+    selectFrequentClient(nombre, direccion, identificacion) {
+        this.triggerHaptic(15);
+        soundFx.playPencil();
+        const nomInput = document.getElementById('cliente-nombre-input');
+        const dirInput = document.getElementById('cliente-direccion-input');
+        const rucInput = document.getElementById('cliente-ruc-input');
+        if (nomInput) nomInput.value = nombre;
+        if (dirInput) dirInput.value = direccion;
+        if (rucInput) rucInput.value = identificacion;
+        this.showToast(`👤 Cliente seleccionado: ${nombre}`);
+    }
+
+    // GESTIÓN DE TOMOS FÍSICOS (PRINCIPIO 13)
+    openTomosModal() {
+        this.triggerHaptic(15);
+        soundFx.playPaperSlide();
+        this.state.isTomosModalOpen = true;
+        this.evaluateStateAndRender();
+    }
+
+    closeTomosModal() {
+        this.triggerHaptic(10);
+        this.state.isTomosModalOpen = false;
+        this.evaluateStateAndRender();
+    }
+
+    switchTomoMonth(nombre) {
+        this.triggerHaptic(15);
+        soundFx.playPaperSlide();
+        this.state.activeTomoMonth = nombre;
+        this.evaluateStateAndRender();
+    }
+
+    shareHistoricalFactura(num, cliente, total) {
+        this.triggerHaptic(15);
+        const msg = `*COMPROBANTE ARCHIVADO — TALONARIO AMIGO SRI*\n\n`
+            + `📄 *Factura / Nota de Venta:* N° 001-001-${num}\n`
+            + `👤 *Cliente:* ${cliente}\n`
+            + `💰 *Total:* ${total}\n`
+            + `✓ *Estado:* AUTORIZADO POR EL SRI\n\n`
+            + `_Copia digital del archivo de tomos físicos._`;
+        const waUrl = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+        window.open(waUrl, '_blank');
+        this.showToast('📲 Compartiendo comprobante archivado por WhatsApp...');
+    }
+
     // INSERCIÓN DE PRODUCTOS TÁCTILES RÁPIDOS
     addQuickProduct(descripcion, precio) {
         this.triggerHaptic(20);
+        soundFx.playPencil();
         const tbody = document.getElementById('realista-items-body');
         if (!tbody) return;
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td style="text-align: center;"><input type="number" class="table-input" value="1" oninput="window.appState.recalculateTotals()" onfocus="window.appState.triggerHaptic(10)"></td>
-            <td><input type="text" class="table-input" value="${descripcion}" onfocus="window.appState.triggerHaptic(10)"></td>
-            <td style="text-align: right;"><input type="number" step="0.01" class="table-input" value="${Number(precio).toFixed(2)}" style="text-align:right;" oninput="window.appState.recalculateTotals()" onfocus="window.appState.triggerHaptic(10)"></td>
+            <td style="text-align: center;"><input type="number" class="table-input" value="1" oninput="window.appState.recalculateTotals()" onfocus="window.appState.onInputFocus()"></td>
+            <td><input type="text" class="table-input" value="${descripcion}" onfocus="window.appState.onInputFocus()"></td>
+            <td style="text-align: right;"><input type="number" step="0.01" class="table-input" value="${Number(precio).toFixed(2)}" style="text-align:right;" oninput="window.appState.recalculateTotals()" onfocus="window.appState.onInputFocus()"></td>
             <td style="text-align: right; padding-right: 6px;" class="row-total">$${Number(precio).toFixed(2)}</td>
         `;
         tbody.appendChild(tr);
@@ -133,13 +203,14 @@ export class AppManager {
 
     addEmptyRow() {
         this.triggerHaptic(10);
+        soundFx.playPencil();
         const tbody = document.getElementById('realista-items-body');
         if (!tbody) return;
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td style="text-align: center;"><input type="number" class="table-input" value="1" oninput="window.appState.recalculateTotals()" onfocus="window.appState.triggerHaptic(10)"></td>
-            <td><input type="text" class="table-input" placeholder="Descripción del producto..." onfocus="window.appState.triggerHaptic(10)"></td>
-            <td style="text-align: right;"><input type="number" step="0.01" class="table-input" value="0.00" style="text-align:right;" oninput="window.appState.recalculateTotals()" onfocus="window.appState.triggerHaptic(10)"></td>
+            <td style="text-align: center;"><input type="number" class="table-input" value="1" oninput="window.appState.recalculateTotals()" onfocus="window.appState.onInputFocus()"></td>
+            <td><input type="text" class="table-input" placeholder="Descripción del producto..." onfocus="window.appState.onInputFocus()"></td>
+            <td style="text-align: right;"><input type="number" step="0.01" class="table-input" value="0.00" style="text-align:right;" oninput="window.appState.recalculateTotals()" onfocus="window.appState.onInputFocus()"></td>
             <td style="text-align: right; padding-right: 6px;" class="row-total">$0.00</td>
         `;
         tbody.appendChild(tr);
@@ -150,7 +221,18 @@ export class AppManager {
         if (this.blueCopyTimer) clearTimeout(this.blueCopyTimer);
         this.state.isShowingBlueCopy = false;
         this.state.currentDocNumber += 1;
+        soundFx.playPaperSlide();
         this.evaluateStateAndRender();
+
+        // Animación de Tacómetro Odometer
+        setTimeout(() => {
+            const numEl = document.getElementById('doc-secuencial-num');
+            if (numEl) {
+                numEl.classList.remove('odometer-spin');
+                void numEl.offsetWidth;
+                numEl.classList.add('odometer-spin');
+            }
+        }, 60);
     }
 
     // CARGA DE LOGOTIPO PERSONALIZADO DEL NEGOCIO
@@ -240,6 +322,7 @@ export class AppManager {
 
             const stampBadge = document.getElementById('stamp-sri-badge');
             if (stampBadge) {
+                soundFx.playStamp();
                 const clave = res.claveAcceso || '...';
                 const estado = res.estado === 'AUTORIZADO' ? 'AUTORIZADO' : 'ENVIADO';
                 stampBadge.innerHTML = `✓ ${estado} SRI<br><small style="font-size:9px; font-weight:normal;">CLAVE ACCESO: ${clave.slice(0, 20)}...</small>`;
@@ -248,6 +331,7 @@ export class AppManager {
             }
 
             this.triggerHaptic([40, 20, 60]);
+            soundFx.playPaperTear();
             const paperCard = document.getElementById('receipt-paper-card');
             if (paperCard) {
                 paperCard.classList.add('paper-tear-off-anim');
