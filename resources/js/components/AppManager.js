@@ -14,6 +14,8 @@ import { api } from '../api.js';
 import { extractDataFromSriPdf } from '../services/sriPdf.js';
 import { soundFx } from '../services/soundFx.js';
 import { voiceDictation } from '../services/voiceDictation.js';
+import { gravityScanner } from '../services/gravityScanner.js';
+import { offlineQueue } from '../services/offlineQueue.js';
 
 export class AppManager {
     constructor(containerId) {
@@ -39,6 +41,8 @@ export class AppManager {
             isListeningVoice: false,
             voiceLiveTranscript: '',
             superAdminTab: 'resellers',
+            isScanningGravity: false,
+            offlinePendingCount: offlineQueue.getPendingCount(),
             
             // Datos Reseller & Licencias
             resellerQuota: {
@@ -54,6 +58,35 @@ export class AppManager {
                 active_licensed_slots: 240
             }
         };
+
+        // Escucha cambios en la cola de contingencia offline rural
+        offlineQueue.onQueueChange((count) => {
+            this.state.offlinePendingCount = count;
+            const badge = document.querySelector('.offline-queue-badge');
+            if (badge) {
+                if (count > 0) {
+                    badge.innerText = `📡 ${count} en cola offline`;
+                    badge.style.display = 'inline-flex';
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+        });
+
+        // Sincronización automática al recuperar cobertura de red
+        if (typeof window !== 'undefined') {
+            window.addEventListener('online', async () => {
+                if (offlineQueue.getPendingCount() > 0) {
+                    this.showToast('📡 Señal recuperada: Sincronizando comprobantes offline con el SRI…');
+                    const res = await offlineQueue.syncQueue(api);
+                    if (res.synced > 0) {
+                        this.showToast(`✅ ${res.synced} comprobante(s) sincronizados con el SRI.`);
+                    }
+                    this.state.offlinePendingCount = offlineQueue.getPendingCount();
+                    this.evaluateStateAndRender();
+                }
+            });
+        }
 
         window.appState = this;
     }
@@ -354,6 +387,61 @@ export class AppManager {
         this.evaluateStateAndRender();
     }
 
+    // PRINCIPIO 10: ESCANEO POR GRAVEDAD (ASIENTA DATOS SOBRE LAS LÍNEAS DEL TALONARIO)
+    async handleGravityScan(input) {
+        const file = input.files && input.files[0];
+        if (!file) return;
+
+        this.triggerHaptic(25);
+        soundFx.playPaperSlide();
+        this.state.isScanningGravity = true;
+        this.evaluateStateAndRender();
+
+        try {
+            const data = await gravityScanner.scanDocument(file);
+            this.state.isScanningGravity = false;
+            this.evaluateStateAndRender();
+
+            // Poblamos campos del cliente
+            const nomInput = document.getElementById('cliente-nombre-input');
+            const dirInput = document.getElementById('cliente-direccion-input');
+            const rucInput = document.getElementById('cliente-ruc-input');
+            if (nomInput && data.cliente?.nombre) nomInput.value = data.cliente.nombre;
+            if (dirInput && data.cliente?.direccion) dirInput.value = data.cliente.direccion;
+            if (rucInput && data.cliente?.identificacion) rucInput.value = data.cliente.identificacion;
+
+            // Poblamos filas de productos
+            const tbody = document.getElementById('realista-items-body');
+            if (tbody && data.items && data.items.length) {
+                tbody.innerHTML = '';
+                data.items.forEach((item) => {
+                    const tr = document.createElement('tr');
+                    const rowTotal = (item.cantidad * item.precioUnitario).toFixed(2);
+                    tr.innerHTML = `
+                        <td style="text-align: center;"><input type="number" class="table-input" value="${item.cantidad}" oninput="window.appState.recalculateTotals()" onfocus="window.appState.onInputFocus()"></td>
+                        <td><input type="text" class="table-input" value="${item.descripcion}" onfocus="window.appState.onInputFocus()"></td>
+                        <td style="text-align: right;"><input type="number" step="0.01" class="table-input" value="${Number(item.precioUnitario).toFixed(2)}" style="text-align:right;" oninput="window.appState.recalculateTotals()" onfocus="window.appState.onInputFocus()"></td>
+                        <td style="text-align: right; padding-right: 6px;" class="row-total">$${rowTotal}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+                this.recalculateTotals();
+            }
+
+            // Animación física de asentamiento y efecto de escritura
+            soundFx.playPencil();
+            gravityScanner.applyGravityDropAnimation();
+            this.triggerHaptic([30, 20, 60]);
+            this.showToast('📄 ¡Datos asentados por gravedad sobre el talonario!');
+        } catch (err) {
+            this.state.isScanningGravity = false;
+            this.evaluateStateAndRender();
+            this.showToast('❌ No se pudo procesar el documento para escaneo por gravedad.');
+        } finally {
+            if (input) input.value = '';
+        }
+    }
+
     // INSERCIÓN DE PRODUCTOS TÁCTILES RÁPIDOS
     addQuickProduct(descripcion, precio, cantidad = 1) {
         this.triggerHaptic(20);
@@ -476,10 +564,10 @@ export class AppManager {
         return { cliente: { nombre, identificacion, direccion }, items };
     }
 
-    // SECUENCIA DE EMISIÓN REAL CON DESPRENDIMIENTO 3D Y REVELADO DE COPIA AZUL
+    // SECUENCIA DE EMISIÓN REAL CON DESPRENDIMIENTO 3D Y REVELADO DE COPIA AZUL (PRINCIPIO 12 & COLA OFFLINE)
     async executeEmit3DSequence() {
         this.triggerHaptic([40, 30, 80]);
-        this.showToast('⏳ Firmando y transmitiendo al SRI…');
+        this.showToast('⏳ Firmando y procesando en el talonario…');
 
         let payload;
         try {
@@ -491,15 +579,52 @@ export class AppManager {
                 throw new Error('Agrega al menos un producto a la factura.');
             }
 
-            const res = await api.emitirFactura(payload);
+            let res;
+            const isOffline = !offlineQueue.isOnline();
+
+            if (isOffline) {
+                // Modo Rural Offline: Guarda en talonario local sin error
+                offlineQueue.enqueue(payload);
+                this.state.offlinePendingCount = offlineQueue.getPendingCount();
+                const offlineSecuencial = String(this.state.currentDocNumber).padStart(9, '0');
+                res = {
+                    secuencial: offlineSecuencial,
+                    claveAcceso: 'OFFLINE-' + Date.now() + '-RURAL-SRI',
+                    estado: 'OFFLINE_LOCAL',
+                    numeroAutorizacion: 'PENDIENTE_SINCRONIZACION'
+                };
+            } else {
+                try {
+                    res = await api.emitirFactura(payload);
+                } catch (netErr) {
+                    // Si se pierde la conexión durante el envío, encola localmente sin bloquear al comerciante
+                    if (!navigator.onLine || netErr.message?.includes('Failed to fetch') || netErr.message?.includes('NetworkError')) {
+                        offlineQueue.enqueue(payload);
+                        this.state.offlinePendingCount = offlineQueue.getPendingCount();
+                        const offlineSecuencial = String(this.state.currentDocNumber).padStart(9, '0');
+                        res = {
+                            secuencial: offlineSecuencial,
+                            claveAcceso: 'OFFLINE-' + Date.now() + '-RURAL-SRI',
+                            estado: 'OFFLINE_LOCAL',
+                            numeroAutorizacion: 'PENDIENTE_SINCRONIZACION'
+                        };
+                    } else {
+                        throw netErr;
+                    }
+                }
+            }
 
             const stampBadge = document.getElementById('stamp-sri-badge');
             if (stampBadge) {
                 soundFx.playStamp();
                 const clave = res.claveAcceso || '...';
-                const estado = res.estado === 'AUTORIZADO' ? 'AUTORIZADO' : 'ENVIADO';
-                stampBadge.innerHTML = `✓ ${estado} SRI<br><small style="font-size:9px; font-weight:normal;">CLAVE ACCESO: ${clave.slice(0, 20)}...</small>`;
-                stampBadge.style.borderColor = '#16A34A';
+                const isOfflineMode = res.estado === 'OFFLINE_LOCAL';
+                const estadoText = isOfflineMode ? '✓ TALONARIO LOCAL (OFFLINE)' : (res.estado === 'AUTORIZADO' ? '✓ AUTORIZADO SRI' : '✓ ENVIADO SRI');
+                const subText = isOfflineMode ? 'GUARDADO EN DISPOSITIVO · SE ENVIARÁ AL DETECTAR SEÑAL' : `CLAVE ACCESO: ${clave.slice(0, 20)}...`;
+
+                stampBadge.innerHTML = `${estadoText}<br><small style="font-size:9px; font-weight:normal;">${subText}</small>`;
+                stampBadge.style.borderColor = isOfflineMode ? '#D97706' : '#16A34A';
+                stampBadge.style.color = isOfflineMode ? '#B45309' : '#16A34A';
                 stampBadge.classList.add('slam-anim');
             }
 
@@ -519,7 +644,12 @@ export class AppManager {
                 claveAcceso: res.claveAcceso || '2807202601070605098600120010010000001261234567813',
                 numeroAutorizacion: res.numeroAutorizacion || ''
             };
-            this.showToast(`🎉 Comprobante N° 001-001-${secuencial} ${res.estado === 'AUTORIZADO' ? 'AUTORIZADO' : 'ENVIADO'} por el SRI.`);
+
+            if (res.estado === 'OFFLINE_LOCAL') {
+                this.showToast(`📡 Sin conexión: Comprobante N° 001-001-${secuencial} guardado en tu talonario local.`);
+            } else {
+                this.showToast(`🎉 Comprobante N° 001-001-${secuencial} ${res.estado === 'AUTORIZADO' ? 'AUTORIZADO' : 'ENVIADO'} por el SRI.`);
+            }
 
             // Tras la animación física del desprendimiento, revelar la copia azul tradicional
             setTimeout(() => {
@@ -592,12 +722,6 @@ export class AppManager {
         toast.innerText = message;
         toast.style.display = 'block';
         setTimeout(() => { toast.style.display = 'none'; }, 4000);
-    }
-
-    // ACCIONES PANELS & ESTADO
-    setRole(role) {
-        this.state.currentRole = role;
-        this.evaluateStateAndRender();
     }
 
     async handleLogin() {

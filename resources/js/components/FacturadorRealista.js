@@ -112,8 +112,13 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
 
         <!-- Principio 16: Grosor y Estado del Bloc Físico de 50 Hojas -->
         <div class="bloc-stack-info">
-            <div>
+            <div style="display: flex; align-items: center; gap: 8px;">
                 <strong>📒 Bloc Físico N° 01</strong> <span style="color:#64748B;">(N° 00000101 al 00000150)</span>
+                ${emisorData?.offlinePendingCount > 0 ? `
+                    <span class="offline-queue-badge" title="Comprobantes guardados localmente sin conexión">
+                        📡 ${emisorData.offlinePendingCount} en cola offline
+                    </span>
+                ` : ''}
             </div>
             <div style="display: flex; align-items: center; gap: 6px;">
                 <span>Hoja <strong>${currentSheetInBloc}</strong> de ${totalSheetsInBloc} (${remainingSheets} hojas restantes)</span>
@@ -232,14 +237,21 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                 </div>
             </div>
 
-            <!-- Principio 9: Dictado por Voz en Renglón & Onda Sonora Viva -->
-            <div style="display: flex; justify-content: space-between; align-items: center; margin: 10px 0 6px 0;">
+            <!-- Principio 9: Dictado por Voz & Principio 10: Escaneo por Gravedad -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin: 10px 0 6px 0; flex-wrap: wrap; gap: 6px;">
                 <span style="font-size: 11px; font-weight: 800; color: #475569;">
                     ${mode === 'comerciante' ? 'Renglón de Productos Rápidos:' : 'Detalle de Facturación:'}
                 </span>
-                <button type="button" class="btn-voice-dictate ${emisorData?.isListeningVoice ? 'listening' : ''}" onclick="window.appState.toggleVoiceDictation()">
-                    ${emisorData?.isListeningVoice ? '🛑 Detener Dictado' : '🎙️ Dictar por Voz'}
-                </button>
+                <div style="display: flex; gap: 6px; align-items: center;">
+                    <label for="scanner-file-input" class="btn-voice-dictate" style="background: #E0F2FE; border-color: #38BDF8; color: #0369A1; cursor: pointer;" title="Subir proforma o foto para asentar datos por gravedad">
+                        📷 Escaneo Gravedad
+                    </label>
+                    <input type="file" id="scanner-file-input" accept="image/*,application/pdf" style="display: none;" onchange="window.appState.handleGravityScan(this)">
+
+                    <button type="button" class="btn-voice-dictate ${emisorData?.isListeningVoice ? 'listening' : ''}" onclick="window.appState.toggleVoiceDictation()">
+                        ${emisorData?.isListeningVoice ? '🛑 Detener Dictado' : '🎙️ Dictar por Voz'}
+                    </button>
+                </div>
             </div>
 
             ${emisorData?.isListeningVoice ? `
@@ -383,5 +395,22 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                 </button>
             </div>
         </div>
+
+        ${emisorData?.isScanningGravity ? `
+            <div class="scanner-sweep-modal">
+                <div class="scanner-laser-box">
+                    <div class="scanner-laser-beam"></div>
+                    <div style="display: flex; height: 100%; align-items: center; justify-content: center; color: #94A3B8; font-size: 13px; font-weight: 700;">
+                        📄 Escaneando proforma / documento...
+                    </div>
+                </div>
+                <h3 style="color: #FFFFFF; font-size: 16px; font-weight: 800; margin-bottom: 4px;">
+                    Principio 10: Escaneo por Gravedad
+                </h3>
+                <p style="color: #94A3B8; font-size: 12px; margin-bottom: 12px;">
+                    Asentando datos con gravedad sobre las líneas del talonario...
+                </p>
+            </div>
+        ` : ''}
     `;
 }
