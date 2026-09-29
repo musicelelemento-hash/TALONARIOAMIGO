@@ -141,12 +141,12 @@ export class AppManager {
 
         this.container.innerHTML = renderFacturadorRealista(this.state, this.state.currentDocNumber, this.state.experienceMode, this.state.isShowingBlueCopy);
         if (this.state.isTomosModalOpen) {
-            this.container.innerHTML += renderTomosModal(this.state.activeTomoMonth);
-        }
-
-        this.container.innerHTML = renderFacturadorRealista(this.state, this.state.currentDocNumber, this.state.experienceMode, this.state.isShowingBlueCopy);
-        if (this.state.isTomosModalOpen) {
-            this.container.innerHTML += renderTomosModal(this.state.activeTomoMonth);
+            this.container.innerHTML += renderTomosModal(
+                this.state.activeTomoMonth,
+                this.state.tomosList,
+                this.state.comprobantesList,
+                this.state.tomosSearchQuery
+            );
         }
     }
 
@@ -326,11 +326,12 @@ export class AppManager {
     }
 
     // GESTIÓN DE TOMOS FÍSICOS (PRINCIPIO 13)
-    openTomosModal() {
+    async openTomosModal() {
         this.triggerHaptic(15);
         soundFx.playPaperSlide();
         this.state.isTomosModalOpen = true;
         this.evaluateStateAndRender();
+        await this.loadTomosFromBackend();
     }
 
     closeTomosModal() {
@@ -339,24 +340,109 @@ export class AppManager {
         this.evaluateStateAndRender();
     }
 
-    switchTomoMonth(nombre) {
+    async switchTomoMonth(monthId) {
         this.triggerHaptic(15);
         soundFx.playPaperSlide();
-        this.state.activeTomoMonth = nombre;
+        this.state.activeTomoMonth = monthId;
+        this.evaluateStateAndRender();
+        await this.loadComprobantesForMonth(monthId);
+    }
+
+    handleTomosSearch(query) {
+        this.state.tomosSearchQuery = query;
         this.evaluateStateAndRender();
     }
 
-    shareHistoricalFactura(num, cliente, total) {
+    shareHistoricalFactura(num, cliente, total, claveAcceso = '') {
         this.triggerHaptic(15);
         const msg = `*COMPROBANTE ARCHIVADO — TALONARIO AMIGO SRI*\n\n`
-            + `📄 *Factura / Nota de Venta:* N° 001-001-${num}\n`
+            + `📄 *Factura Electrónica:* N° ${num}\n`
             + `👤 *Cliente:* ${cliente}\n`
-            + `💰 *Total:* ${total}\n`
-            + `✓ *Estado:* AUTORIZADO POR EL SRI\n\n`
-            + `_Copia digital del archivo de tomos físicos._`;
+            + `💰 *Total Facturado:* ${total}\n`
+            + `✓ *Estado SRI:* AUTORIZADO\n`
+            + (claveAcceso ? `🔑 *Clave de Acceso:* ${claveAcceso}\n` : '')
+            + `\n_Copia fiel archivada en tu talonario digital._`;
         const waUrl = `https://wa.me/?text=${encodeURIComponent(msg)}`;
         window.open(waUrl, '_blank');
-        this.showToast('📲 Compartiendo comprobante archivado por WhatsApp...');
+        this.showToast('📲 Compartiendo comprobante por WhatsApp...');
+    }
+
+    downloadXmlFactura(claveAcceso) {
+        this.triggerHaptic(15);
+        const apiBase = window.location.hostname.includes('talonarioamigo.com')
+            ? 'https://talonario-amigo-api.onrender.com'
+            : '';
+        const url = `${apiBase}/api/v1/facturacion/comprobantes/${encodeURIComponent(claveAcceso)}/xml`;
+        window.open(url, '_blank');
+        this.showToast('⬇️ Descargando XML firmado SRI...');
+    }
+
+    printHistoricalFactura(num) {
+        this.triggerHaptic(15);
+        window.print();
+    }
+
+    async loadTomosFromBackend() {
+        const token = localStorage.getItem('ta_auth_token');
+        if (!token) {
+            this.state.tomosList = [
+                { id: '2026-08', anio_mes: '2026-08', nombre: 'AGOSTO 2026', hojas_count: 3, total_monto: 154.50 },
+                { id: '2026-07', anio_mes: '2026-07', nombre: 'JULIO 2026', hojas_count: 5, total_monto: 420.00 }
+            ];
+            this.state.comprobantesList = [
+                { secuencial: '000000126', numero_comprobante: '001-001-000000126', fecha_emision: '2026-08-28', cliente_nombre: 'Juan Alberto Pérez Gómez', cliente_identificacion: '0928374615', importe_total: 85.00, estado: 'AUTORIZADO', clave_acceso: '2808202601092837461500110010010000001261234567812' },
+                { secuencial: '000000125', numero_comprobante: '001-001-000000125', fecha_emision: '2026-08-28', cliente_nombre: 'María Elena Loor', cliente_identificacion: '1309876543', importe_total: 45.00, estado: 'AUTORIZADO', clave_acceso: '2808202601130987654300110010010000001251234567819' },
+                { secuencial: '000000124', numero_comprobante: '001-001-000000124', fecha_emision: '2026-08-27', cliente_nombre: 'Ab. Carlos Zambrano', cliente_identificacion: '1712345678', importe_total: 24.50, estado: 'AUTORIZADO', clave_acceso: '2708202601171234567800110010010000001241234567813' }
+            ];
+            this.evaluateStateAndRender();
+            return;
+        }
+
+        try {
+            const apiBase = window.location.hostname.includes('talonarioamigo.com')
+                ? 'https://talonario-amigo-api.onrender.com'
+                : '';
+            const resTomos = await fetch(`${apiBase}/api/v1/facturacion/tomos`, {
+                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+            });
+            if (resTomos.ok) {
+                const data = await resTomos.json();
+                if (data.tomos && data.tomos.length) {
+                    this.state.tomosList = data.tomos;
+                    if (!this.state.activeTomoMonth && data.tomos[0]) {
+                        this.state.activeTomoMonth = data.tomos[0].id || data.tomos[0].anio_mes;
+                    }
+                }
+            }
+
+            await this.loadComprobantesForMonth(this.state.activeTomoMonth);
+        } catch (e) {
+            console.warn('[AppManager] Error cargando tomos de backend:', e);
+        }
+    }
+
+    async loadComprobantesForMonth(monthId) {
+        const token = localStorage.getItem('ta_auth_token');
+        if (!token) return;
+
+        try {
+            const apiBase = window.location.hostname.includes('talonarioamigo.com')
+                ? 'https://talonario-amigo-api.onrender.com'
+                : '';
+            const url = monthId ? `${apiBase}/api/v1/facturacion/comprobantes?mes=${encodeURIComponent(monthId)}` : `${apiBase}/api/v1/facturacion/comprobantes`;
+            const res = await fetch(url, {
+                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                if (data.comprobantes) {
+                    this.state.comprobantesList = data.comprobantes;
+                    this.evaluateStateAndRender();
+                }
+            }
+        } catch (e) {
+            console.warn('[AppManager] Error cargando comprobantes del mes:', e);
+        }
     }
 
     // CONTROL DE DICTADO POR VOZ (PRINCIPIO 9)

@@ -117,6 +117,10 @@ Route::middleware(['auth:sanctum', 'account.status'])->prefix('v1/facturacion')-
     // autoriza en un solo llamado. Esto es lo que usa el frontend para emitir un comprobante.
     Route::post('/emitir', [FacturacionElectronicaController::class, 'emitirFactura']);
     Route::get('/estado/{claveAcceso}', [FacturacionElectronicaController::class, 'consultarEstado']);
+    Route::get('/comprobantes', [FacturacionElectronicaController::class, 'listarComprobantes']);
+    Route::get('/tomos', [FacturacionElectronicaController::class, 'listarTomos']);
+    Route::get('/clientes-frecuentes', [FacturacionElectronicaController::class, 'listarClientesFrecuentes']);
+    Route::get('/comprobantes/{claveAcceso}/xml', [FacturacionElectronicaController::class, 'descargarXml']);
 });
 
 // Rutas del Dueño (SUPER_ADMIN)

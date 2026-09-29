@@ -3,8 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\PuntoEmision;
+use App\Models\Comprobante;
+use App\Models\ComprobanteItem;
+use App\Models\ClienteFrecuente;
 use App\Services\FacturacionElectronicaLibrary;
 use App\Services\InvoiceValidationService;
+use App\Services\R2StorageService;
+use App\Services\ResendService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -157,6 +162,7 @@ class FacturacionElectronicaController extends Controller
                 return [
                     'claveAcceso' => $claveAcceso,
                     'secuencial' => $secuencial,
+                    'xmlFirmado' => $xmlFirmado,
                     'envio' => $envio,
                     'autorizacion' => $autorizacion,
                 ];
@@ -171,11 +177,20 @@ class FacturacionElectronicaController extends Controller
         // 3. Diagnóstico Inteligente de la Respuesta SRI
         $diagnostico = $this->validator->diagnosticarRespuestaSri($resultado['autorizacion']);
 
+        // Guardar XML firmado en almacenamiento local / R2 Vault
+        $xmlPath = null;
+        try {
+            $r2 = app(R2StorageService::class);
+            $xmlPath = $r2->guardarXml($resultado['claveAcceso'], $resultado['xmlFirmado'] ?? '');
+        } catch (\Throwable $xmlEx) {
+            \Log::warning("[FacturacionController] Advertencia al persistir XML: " . $xmlEx->getMessage());
+        }
+
         // Despacho transaccional automático vía Resend si el cliente o comercio proveyó correo
         $emailEnviado = false;
         if ($diagnostico['esAutorizado'] && !empty($data['cliente']['email'])) {
             try {
-                $resend = app(\App\Services\ResendService::class);
+                $resend = app(ResendService::class);
                 $emailEnviado = $resend->enviarComprobante(
                     $data['cliente']['email'],
                     $data['cliente']['nombre'],
@@ -186,6 +201,89 @@ class FacturacionElectronicaController extends Controller
             } catch (\Throwable $mailEx) {
                 \Log::warning("[FacturacionController] Advertencia al despachar Resend: " . $mailEx->getMessage());
             }
+        }
+
+        // 4. Persistencia en Base de Datos (Comprobantes, Ítems y Clientes Frecuentes)
+        try {
+            $fechaAut = null;
+            if (!empty($diagnostico['fechaAutorizacion'])) {
+                try {
+                    $fechaAut = \Carbon\Carbon::parse($diagnostico['fechaAutorizacion']);
+                } catch (\Throwable $t) {
+                    $fechaAut = now();
+                }
+            } elseif ($diagnostico['esAutorizado']) {
+                $fechaAut = now();
+            }
+
+            $comprobante = Comprobante::create([
+                'emisor_id' => $emisor->id,
+                'user_id' => $user->id,
+                'tipo_comprobante' => '01',
+                'establecimiento' => $puntoEmision->establecimiento,
+                'punto_emision' => $puntoEmision->punto_emision,
+                'secuencial' => $resultado['secuencial'],
+                'numero_comprobante' => sprintf('%03d-%03d-%09d', (int)$puntoEmision->establecimiento, (int)$puntoEmision->punto_emision, (int)$resultado['secuencial']),
+                'clave_acceso' => $resultado['claveAcceso'],
+                'fecha_emision' => $fechaEmision,
+                'fecha_autorizacion' => $fechaAut,
+                'numero_autorizacion' => $diagnostico['numeroAutorizacion'] ?: ($diagnostico['esAutorizado'] ? $resultado['claveAcceso'] : null),
+                'cliente_tipo_identificacion' => $tipoIdentificacion,
+                'cliente_identificacion' => $identificacion,
+                'cliente_nombre' => $data['cliente']['nombre'],
+                'cliente_direccion' => $data['cliente']['direccion'] ?? null,
+                'cliente_telefono' => $data['cliente']['telefono'] ?? null,
+                'cliente_email' => $data['cliente']['email'] ?? null,
+                'subtotal_gravado' => $subtotalGravado,
+                'subtotal_exento' => $subtotalExento,
+                'total_descuento' => 0.00,
+                'total_iva' => $ivaValor,
+                'importe_total' => $importeTotal,
+                'tarifa_iva_porcentaje' => 15,
+                'estado' => $diagnostico['estado'] ?? 'AUTORIZADO',
+                'ambiente' => $emisor->ambiente,
+                'tipo_emision' => $emisor->tipo_emision,
+                'xml_path' => $xmlPath,
+                'email_enviado' => $emailEnviado,
+                'email_enviado_at' => $emailEnviado ? now() : null,
+                'sri_mensaje' => $diagnostico['mensajeHumano'] ?? null,
+            ]);
+
+            foreach ($detalle as $item) {
+                $isExento = isset($item->impuestos) && is_array($item->impuestos) && count($item->impuestos) > 0 && ($item->impuestos[0]->codigoPorcentaje ?? '') === '0';
+                ComprobanteItem::create([
+                    'comprobante_id' => $comprobante->id,
+                    'codigo_principal' => $item->codigoPrincipal ?? null,
+                    'descripcion' => $item->descripcion,
+                    'cantidad' => $item->cantidad,
+                    'precio_unitario' => $item->precioUnitario,
+                    'descuento' => $item->descuento ?? 0.00,
+                    'precio_total_sin_impuesto' => $item->precioTotalSinImpuesto,
+                    'impuesto_codigo' => '2',
+                    'impuesto_porcentaje_codigo' => $isExento ? '0' : '4',
+                    'impuesto_tarifa' => $isExento ? 0.00 : 15.00,
+                    'impuesto_valor' => $isExento ? 0.00 : round($item->precioTotalSinImpuesto * 0.15, 2),
+                    'exento' => $isExento,
+                ]);
+            }
+
+            // Actualizar o crear Cliente Frecuente (Principio 14)
+            if (!in_array($identificacion, ['9999999999999', '9999999999'])) {
+                $clienteFrecuente = ClienteFrecuente::firstOrNew([
+                    'emisor_id' => $emisor->id,
+                    'identificacion' => $identificacion,
+                ]);
+                $clienteFrecuente->tipo_identificacion = $tipoIdentificacion;
+                $clienteFrecuente->nombre = $data['cliente']['nombre'];
+                if (!empty($data['cliente']['direccion'])) $clienteFrecuente->direccion = $data['cliente']['direccion'];
+                if (!empty($data['cliente']['telefono'])) $clienteFrecuente->telefono = $data['cliente']['telefono'];
+                if (!empty($data['cliente']['email'])) $clienteFrecuente->email = $data['cliente']['email'];
+                $clienteFrecuente->compras_count = ($clienteFrecuente->exists ? $clienteFrecuente->compras_count : 0) + 1;
+                $clienteFrecuente->ultima_compra_at = now();
+                $clienteFrecuente->save();
+            }
+        } catch (\Throwable $dbEx) {
+            \Log::error("[FacturacionController] Error guardando comprobante en Postgres: " . $dbEx->getMessage());
         }
 
         return response()->json([
@@ -199,6 +297,7 @@ class FacturacionElectronicaController extends Controller
             'solucion' => $diagnostico['solucion'] ?? null,
             'diagnostico' => $diagnostico,
             'email_enviado' => $emailEnviado,
+            'xml_guardado' => !empty($xmlPath),
             'envio_raw' => $resultado['envio'],
             'autorizacion_raw' => $resultado['autorizacion'],
         ], Response::HTTP_OK);
@@ -495,5 +594,160 @@ class FacturacionElectronicaController extends Controller
         }
 
         return public_path($certificado);
+    }
+
+    /**
+     * Listado de Comprobantes emitidos con filtros por mes o término de búsqueda.
+     */
+    public function listarComprobantes(Request $request)
+    {
+        $user = $request->user();
+        $emisor = $user->emisor;
+        if (!$emisor) {
+            return response()->json(['success' => true, 'comprobantes' => [], 'total' => 0]);
+        }
+
+        $query = Comprobante::with('items')
+            ->where('emisor_id', $emisor->id);
+
+        if ($request->filled('mes')) {
+            $mes = $request->get('mes');
+            $query->whereRaw("TO_CHAR(fecha_emision, 'YYYY-MM') = ?", [$mes]);
+        }
+
+        if ($request->filled('buscar')) {
+            $term = '%' . trim($request->get('buscar')) . '%';
+            $query->where(function($q) use ($term) {
+                $q->where('cliente_nombre', 'ILIKE', $term)
+                  ->orWhere('cliente_identificacion', 'LIKE', $term)
+                  ->orWhere('numero_comprobante', 'LIKE', $term)
+                  ->orWhere('clave_acceso', 'LIKE', $term);
+            });
+        }
+
+        $comprobantes = $query->orderBy('fecha_emision', 'desc')->paginate(30);
+
+        return response()->json([
+            'success' => true,
+            'comprobantes' => $comprobantes->items(),
+            'total' => $comprobantes->total(),
+            'current_page' => $comprobantes->currentPage(),
+            'last_page' => $comprobantes->lastPage(),
+        ]);
+    }
+
+    /**
+     * Historial agrupado por Tomos Físicos (Principio 13)
+     */
+    public function listarTomos(Request $request)
+    {
+        $user = $request->user();
+        $emisor = $user->emisor;
+        if (!$emisor) {
+            return response()->json(['success' => true, 'tomos' => []]);
+        }
+
+        $mesesEspanol = [
+            '01' => 'ENERO', '02' => 'FEBRERO', '03' => 'MARZO', '04' => 'ABRIL',
+            '05' => 'MAYO', '06' => 'JUNIO', '07' => 'JULIO', '08' => 'AGOSTO',
+            '09' => 'SEPTIEMBRE', '10' => 'OCTUBRE', '11' => 'NOVIEMBRE', '12' => 'DICIEMBRE'
+        ];
+
+        $tomosRaw = Comprobante::where('emisor_id', $emisor->id)
+            ->selectRaw("TO_CHAR(fecha_emision, 'YYYY-MM') as anio_mes, COUNT(*) as hojas_count, SUM(importe_total) as total_monto")
+            ->groupBy('anio_mes')
+            ->orderBy('anio_mes', 'desc')
+            ->get();
+
+        $tomos = [];
+        foreach ($tomosRaw as $row) {
+            $parts = explode('-', $row->anio_mes);
+            $anio = $parts[0] ?? date('Y');
+            $mesNum = $parts[1] ?? date('m');
+            $mesNom = $mesesEspanol[$mesNum] ?? 'MES';
+
+            $tomos[] = [
+                'tomo_id' => $row->anio_mes,
+                'nombre' => "{$mesNom} {$anio}",
+                'anio_mes' => $row->anio_mes,
+                'hojas_count' => (int) $row->hojas_count,
+                'total_monto' => (float) $row->total_monto,
+                'label' => "{$mesNom} 📒 {$row->hojas_count} Hojas",
+            ];
+        }
+
+        if (empty($tomos)) {
+            $mesActual = date('m');
+            $anioActual = date('Y');
+            $mesNom = $mesesEspanol[$mesActual] ?? 'MES';
+            $tomos[] = [
+                'tomo_id' => date('Y-m'),
+                'nombre' => "{$mesNom} {$anioActual}",
+                'anio_mes' => date('Y-m'),
+                'hojas_count' => 0,
+                'total_monto' => 0.00,
+                'label' => "{$mesNom} 📒 0 Hojas",
+            ];
+        }
+
+        return response()->json([
+            'success' => true,
+            'tomos' => $tomos,
+        ]);
+    }
+
+    /**
+     * Clientes Frecuentes (Principio 14)
+     */
+    public function listarClientesFrecuentes(Request $request)
+    {
+        $user = $request->user();
+        $emisor = $user->emisor;
+        if (!$emisor) {
+            return response()->json(['success' => true, 'clientes' => []]);
+        }
+
+        $clientes = ClienteFrecuente::where('emisor_id', $emisor->id)
+            ->orderBy('compras_count', 'desc')
+            ->orderBy('ultima_compra_at', 'desc')
+            ->limit(30)
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'clientes' => $clientes,
+        ]);
+    }
+
+    /**
+     * Descarga de XML firmado
+     */
+    public function descargarXml(Request $request, $claveAcceso)
+    {
+        $user = $request->user();
+        $emisor = $user->emisor;
+        if (!$emisor) {
+            return response()->json(['error' => 'No autorizado'], 403);
+        }
+
+        $comprobante = Comprobante::where('emisor_id', $emisor->id)
+            ->where('clave_acceso', $claveAcceso)
+            ->first();
+
+        if (!$comprobante) {
+            return response()->json(['error' => 'Comprobante no encontrado'], 404);
+        }
+
+        $r2 = app(R2StorageService::class);
+        $xmlContent = $r2->obtenerXml($claveAcceso);
+
+        if (!$xmlContent) {
+            return response()->json(['error' => 'XML no encontrado en almacenamiento'], 404);
+        }
+
+        return response($xmlContent, 200, [
+            'Content-Type' => 'application/xml',
+            'Content-Disposition' => "attachment; filename=\"{$comprobante->numero_comprobante}.xml\"",
+        ]);
     }
 }
