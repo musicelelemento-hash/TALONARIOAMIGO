@@ -24,6 +24,15 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
     const remainingSheets = Math.max(totalSheetsInBloc - currentSheetInBloc, 0);
     const blocPercent = Math.round((currentSheetInBloc / totalSheetsInBloc) * 100);
 
+    const emisor = emisorData?.user?.emisor || emisorData?.emisor || {};
+    const nombreEmisor = emisor.razon_social || 'Carlos Alexander Balladares Gómez';
+    const rucEmisor = emisor.ruc || '0706050986001';
+    const actividadEmisor = emisor.nombre_comercial || 'VENTA AL POR MAYOR DE CACAO.';
+    const direccionEmisor = emisor.direccion_matriz || 'VIA PRINCIPAL SN Y CALLE SN';
+    const telefonoEmisor = emisorData?.supportWhatsapp || '0993050689';
+    const regimenEmisor = emisor.tipo_regimen === 'GENERAL' ? '"RÉGIMEN GENERAL"' : '"CONTRIBUYENTE NEGOCIO POPULAR - RÉGIMEN RIMPE"';
+    const docTypeLabel = emisor.tipo_regimen === 'GENERAL' ? 'FACTURA ELECTRÓNICA' : 'NOTA DE VENTA';
+
     // RENDERIZADO DE LA COPIA AZUL AUTOCOPIATIVA
     if (isShowingBlueCopy) {
         return `
@@ -44,20 +53,20 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                                 <img src="${esc(emisorData.businessLogo)}" alt="Logo" style="max-height: 44px; max-width: 100px; object-fit: contain; filter: contrast(1.4) grayscale(0.8) sepia(1) hue-rotate(180deg);">
                             ` : ''}
                             <div class="rimpe-badge" style="background:#DBEAFE; color:#1E40AF; border-color:#93C5FD;">
-                                "CONTRIBUYENTE NEGOCIO POPULAR - RÉGIMEN RIMPE"
+                                ${esc(regimenEmisor)}
                             </div>
                         </div>
-                        <div class="emisor-nombre" style="color:#1E3A8A;">Carlos Alexander Balladares Gómez</div>
-                        <div class="emisor-actividad" style="color:#2563EB;">VENTA AL POR MAYOR DE CACAO.</div>
+                        <div class="emisor-nombre" style="color:#1E3A8A;">${esc(nombreEmisor)}</div>
+                        <div class="emisor-actividad" style="color:#2563EB;">${esc(actividadEmisor)}</div>
                         <div class="emisor-detalles" style="color:#1D4ED8;">
-                            <strong>Dirección:</strong> VIA PRINCIPAL SN Y CALLE SN<br>
-                            <strong>Celular:</strong> 0993050689<br>
+                            <strong>Dirección:</strong> ${esc(direccionEmisor)}<br>
+                            <strong>Celular:</strong> ${esc(telefonoEmisor)}<br>
                             <strong>EL GUABO - EL ORO - ECUADOR</strong>
                         </div>
                     </div>
 
                     <div class="ruc-box-container" style="border-color:#1D4ED8; color:#1D4ED8;">
-                        <div class="ruc-title-row" style="color:#1D4ED8;">R U C: 0706050986001</div>
+                        <div class="ruc-title-row" style="color:#1D4ED8;">R U C: ${esc(rucEmisor)}</div>
                         <div class="document-type-banner" style="background:#1D4ED8; color:#FFFFFF;">COPIA AZUL AUTOCOPIATIVA</div>
                         <div class="serie-row" style="color:#1D4ED8;">SERIE: 001-001</div>
                         <div class="numeralia-roja" style="color:#1E40AF;">${docNumStr}</div>
@@ -157,26 +166,26 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                             ${emisorData?.businessLogo ? `
                                 <img src="${esc(emisorData.businessLogo)}" alt="Logo" style="max-height: 42px; max-width: 90px; object-fit: contain; border-radius: 4px;">
                             ` : ''}
-                            <div class="rimpe-badge">"CONTRIBUYENTE NEGOCIO POPULAR - RÉGIMEN RIMPE"</div>
+                            <div class="rimpe-badge">${esc(regimenEmisor)}</div>
                         </div>
                         <label for="business-logo-input" style="cursor: pointer; font-size: 10px; font-weight: 800; color: #1D4ED8; background: #EBF3FF; padding: 3px 8px; border-radius: 6px; border: 1px solid #BFDBFE; white-space: nowrap;">
                             🏷️ ${emisorData?.businessLogo ? 'Cambiar Logo' : '+ Tu Logo'}
                         </label>
                         <input type="file" id="business-logo-input" accept="image/*" style="display: none;" onchange="window.appState.handleLogoUpload(this)">
                     </div>
-                    <div class="emisor-nombre">Carlos Alexander Balladares Gómez</div>
-                    <div class="emisor-actividad">VENTA AL POR MAYOR DE CACAO.</div>
+                    <div class="emisor-nombre">${esc(nombreEmisor)}</div>
+                    <div class="emisor-actividad">${esc(actividadEmisor)}</div>
                     <div class="emisor-detalles">
-                        <strong>Dirección:</strong> VIA PRINCIPAL SN Y CALLE SN<br>
-                        <strong>Celular:</strong> 0993050689<br>
+                        <strong>Dirección:</strong> ${esc(direccionEmisor)}<br>
+                        <strong>Celular:</strong> ${esc(telefonoEmisor)}<br>
                         <strong>EL GUABO - EL ORO - ECUADOR</strong>
                     </div>
                 </div>
 
                 <!-- Bloque Derecho: Cuadro RUC & Nota de Venta / Factura -->
                 <div class="ruc-box-container">
-                    <div class="ruc-title-row">R U C: 0706050986001</div>
-                    <div class="document-type-banner">NOTA DE VENTA</div>
+                    <div class="ruc-title-row">R U C: ${esc(rucEmisor)}</div>
+                    <div class="document-type-banner">${esc(docTypeLabel)}</div>
                     <div class="serie-row">
                         ${mode === 'pro' ? `
                             SERIE: <select id="pro-serie-select" style="font-family: inherit; font-size: 11px; font-weight: 800; border: none; background: transparent; cursor: pointer;">
