@@ -230,19 +230,41 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
 
             <!-- Sección Datos del Cliente Receptor con Efecto Escritura Analógica -->
             <div class="cliente-seccion">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 6px;">
+                    <span style="font-size: 11px; font-weight: 800; color: #1E293B; text-transform: uppercase; letter-spacing: 0.5px;">
+                        Datos del Cliente Receptor
+                    </span>
+                    <div style="display: flex; gap: 6px; align-items: center;">
+                        <label for="scanner-camera-input" class="btn-voice-dictate" style="background: #FEF3C7; border-color: #F59E0B; color: #B45309; cursor: pointer; padding: 4px 10px; font-size: 11px;" title="Tomar foto con cámara de la tablet/móvil a la Cédula o RUC">
+                            📷 Foto Cédula / RUC
+                        </label>
+                        <input type="file" id="scanner-camera-input" accept="image/*" capture="environment" style="display: none;" onchange="window.appState.handleGravityScan(this)">
+
+                        <button type="button" class="btn-voice-dictate ${emisorData?.isListeningVoice ? 'listening' : ''}" style="background: #F0FDF4; border-color: #86EFAC; color: #15803D; padding: 4px 10px; font-size: 11px;" onclick="window.appState.startVoiceDictation('client')">
+                            🎙️ Dictar Cliente
+                        </button>
+                    </div>
+                </div>
+
                 <div class="cliente-row">
                     <span class="cliente-label">Sr. (s)</span>
-                    <input type="text" id="cliente-nombre-input" class="cliente-line-input" value="Juan Alberto Pérez Gómez" placeholder="Nombre completo" onfocus="window.appState.onInputFocus()">
+                    <input type="text" id="cliente-nombre-input" class="cliente-line-input" value="Juan Alberto Pérez Gómez" placeholder="Nombre completo o Razón Social" onfocus="window.appState.onInputFocus()">
+                </div>
+                <div class="cliente-row">
+                    <span class="cliente-label">RUC / CI #</span>
+                    <input type="text" id="cliente-ruc-input" class="cliente-line-input" style="max-width: 140px;" value="1712345678" placeholder="10 o 13 dígitos" onfocus="window.appState.onInputFocus()">
+                    <span class="cliente-label" style="margin-left: 6px;">Tel / Cel:</span>
+                    <input type="text" id="cliente-telefono-input" class="cliente-line-input" style="max-width: 130px;" value="0993050689" placeholder="099..." onfocus="window.appState.onInputFocus()">
+                    <span class="cliente-label" style="margin-left: 6px;">Guía:</span>
+                    <input type="text" id="cliente-guia-input" class="cliente-line-input" style="max-width: 80px;" placeholder="Opcional" onfocus="window.appState.onInputFocus()">
                 </div>
                 <div class="cliente-row">
                     <span class="cliente-label">Dirección</span>
                     <input type="text" id="cliente-direccion-input" class="cliente-line-input" value="Av. Central N12-45 y Rocafuerte" placeholder="Dirección del cliente" onfocus="window.appState.onInputFocus()">
                 </div>
                 <div class="cliente-row">
-                    <span class="cliente-label">RUC / CI #</span>
-                    <input type="text" id="cliente-ruc-input" class="cliente-line-input" style="max-width: 150px;" value="1712345678" placeholder="Identificación" onfocus="window.appState.onInputFocus()">
-                    <span class="cliente-label" style="margin-left: 8px;">Guía de Remisión</span>
-                    <input type="text" id="cliente-guia-input" class="cliente-line-input" placeholder="Opcional" onfocus="window.appState.onInputFocus()">
+                    <span class="cliente-label">Correo / Email</span>
+                    <input type="email" id="cliente-email-input" class="cliente-line-input" value="juanperez@ejemplo.com" placeholder="correo@ejemplo.com" onfocus="window.appState.onInputFocus()">
                 </div>
             </div>
 
@@ -252,13 +274,13 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                     ${mode === 'comerciante' ? 'Renglón de Productos Rápidos:' : 'Detalle de Facturación:'}
                 </span>
                 <div style="display: flex; gap: 6px; align-items: center;">
-                    <label for="scanner-file-input" class="btn-voice-dictate" style="background: #E0F2FE; border-color: #38BDF8; color: #0369A1; cursor: pointer;" title="Subir proforma o foto para asentar datos por gravedad">
-                        📷 Escaneo Gravedad
+                    <label for="scanner-file-input" class="btn-voice-dictate" style="background: #E0F2FE; border-color: #38BDF8; color: #0369A1; cursor: pointer;" title="Subir proforma, factura física o archivo para asentar datos por gravedad">
+                        📷 Foto / Proforma
                     </label>
                     <input type="file" id="scanner-file-input" accept="image/*,application/pdf" style="display: none;" onchange="window.appState.handleGravityScan(this)">
 
-                    <button type="button" class="btn-voice-dictate ${emisorData?.isListeningVoice ? 'listening' : ''}" onclick="window.appState.toggleVoiceDictation()">
-                        ${emisorData?.isListeningVoice ? '🛑 Detener Dictado' : '🎙️ Dictar por Voz'}
+                    <button type="button" class="btn-voice-dictate ${emisorData?.isListeningVoice ? 'listening' : ''}" onclick="window.appState.startVoiceDictation('product')">
+                        ${emisorData?.isListeningVoice ? '🛑 Detener Dictado' : '🎙️ Dictar Productos'}
                     </button>
                 </div>
             </div>
@@ -276,12 +298,17 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                         <div>
                             <strong style="font-size: 12px; color: #4ADE80;">🎙️ Escuchando... Di en voz alta:</strong>
                             <div style="font-size: 11px; color: #E2E8F0; margin-top: 2px;">
-                                ${emisorData?.voiceLiveTranscript ? `"${esc(emisorData.voiceLiveTranscript)}"` : 'Ej: "Dos quintales de cacao a sesenta dólares" o "3 sacos de maíz a 18.50"'}
+                                ${emisorData?.voiceLiveTranscript ? `"${esc(emisorData.voiceLiveTranscript)}"` : 'Ej: "Cliente Juan Pérez cédula 0928374651 teléfono 0993050689 correo juan@gmail.com" o "2 quintales de café a 45"'}
                             </div>
+                            ${emisorData?.detectedVoiceTags && emisorData.detectedVoiceTags.length ? `
+                                <div style="display: flex; gap: 4px; margin-top: 4px; flex-wrap: wrap;">
+                                    ${emisorData.detectedVoiceTags.map(t => `<span style="background: rgba(56,189,248,0.25); border: 1px solid #38BDF8; color: #BAE6FD; font-size: 10px; font-weight: 700; border-radius: 4px; padding: 1px 6px;">${esc(t)}</span>`).join('')}
+                                </div>
+                            ` : ''}
                         </div>
                     </div>
                     <button type="button" onclick="window.appState.stopVoiceDictation()" style="background: rgba(255,255,255,0.2); border: none; color: white; border-radius: 6px; padding: 4px 10px; font-size: 11px; cursor: pointer;">
-                        ✕ Cancelar
+                        ✕ Cerrar
                     </button>
                 </div>
             ` : ''}
@@ -409,15 +436,21 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
             <div class="scanner-sweep-modal">
                 <div class="scanner-laser-box">
                     <div class="scanner-laser-beam"></div>
-                    <div style="display: flex; height: 100%; align-items: center; justify-content: center; color: #94A3B8; font-size: 13px; font-weight: 700;">
-                        📄 Escaneando proforma / documento...
+                    <div style="display: flex; flex-direction: column; height: 100%; align-items: center; justify-content: center; color: #FFFFFF; font-size: 13px; font-weight: 700; text-align: center; padding: 20px;">
+                        <div style="font-size: 34px; margin-bottom: 8px;">📷</div>
+                        <div style="font-size: 14px; font-weight: 800; color: #38BDF8;">
+                            ${emisorData?.scannerStatusText || 'Analizando Cédula / RUC / Proforma (OCR)...'}
+                        </div>
+                        <div style="width: 85%; background: rgba(255,255,255,0.15); height: 7px; border-radius: 999px; margin-top: 14px; overflow: hidden;">
+                            <div style="width: ${emisorData?.scannerProgressPct || 45}%; background: linear-gradient(90deg, #38BDF8, #10B981); height: 100%; transition: width 0.25s ease;"></div>
+                        </div>
                     </div>
                 </div>
                 <h3 style="color: #FFFFFF; font-size: 16px; font-weight: 800; margin-bottom: 4px;">
-                    Principio 10: Escaneo por Gravedad
+                    Principio 10: Escaneo por Gravedad con OCR Real
                 </h3>
                 <p style="color: #94A3B8; font-size: 12px; margin-bottom: 12px;">
-                    Asentando datos con gravedad sobre las líneas del talonario...
+                    Extrayendo Cédula, RUC, Nombre, Dirección, Teléfono, Correo y Productos...
                 </p>
             </div>
         ` : ''}

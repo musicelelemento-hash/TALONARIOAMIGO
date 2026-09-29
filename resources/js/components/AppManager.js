@@ -40,8 +40,11 @@ export class AppManager {
             audioEnabled: soundFx.isSoundEnabled(),
             isListeningVoice: false,
             voiceLiveTranscript: '',
+            detectedVoiceTags: [],
             superAdminTab: 'resellers',
             isScanningGravity: false,
+            scannerStatusText: '',
+            scannerProgressPct: 0,
             offlinePendingCount: offlineQueue.getPendingCount(),
             
             // Datos Reseller & Licencias
@@ -278,15 +281,20 @@ export class AppManager {
     }
 
     // SELECCIÓN DE CLIENTE FRECUENTE (PRINCIPIO 14)
-    selectFrequentClient(nombre, direccion, identificacion) {
+    selectFrequentClient(nombre, direccion, identificacion, telefono = '0993050689', email = 'cliente@talonarioamigo.com') {
         this.triggerHaptic(15);
         soundFx.playPencil();
         const nomInput = document.getElementById('cliente-nombre-input');
         const dirInput = document.getElementById('cliente-direccion-input');
         const rucInput = document.getElementById('cliente-ruc-input');
+        const telInput = document.getElementById('cliente-telefono-input');
+        const emailInput = document.getElementById('cliente-email-input');
         if (nomInput) nomInput.value = nombre;
         if (dirInput) dirInput.value = direccion;
         if (rucInput) rucInput.value = identificacion;
+        if (telInput) telInput.value = telefono;
+        if (emailInput) emailInput.value = email;
+        gravityScanner.applyGravityDropAnimation();
         this.showToast(`👤 Cliente seleccionado: ${nombre}`);
     }
 
@@ -329,15 +337,16 @@ export class AppManager {
         if (this.state.isListeningVoice) {
             this.stopVoiceDictation();
         } else {
-            this.startVoiceDictation();
+            this.startVoiceDictation('all');
         }
     }
 
-    startVoiceDictation() {
+    startVoiceDictation(target = 'all') {
         this.triggerHaptic(20);
         soundFx.playPencil();
         this.state.isListeningVoice = true;
         this.state.voiceLiveTranscript = '';
+        this.state.detectedVoiceTags = [];
         this.evaluateStateAndRender();
 
         const success = voiceDictation.start({
@@ -357,8 +366,56 @@ export class AppManager {
                 soundFx.playPencil();
                 this.state.isListeningVoice = false;
                 this.state.voiceLiveTranscript = '';
-                this.addQuickProduct(parsed.descripcion, parsed.precioUnitario, parsed.cantidad);
-                this.showToast(`🎙️ Dictado agregado: ${parsed.cantidad}x ${parsed.descripcion} ($${parsed.precioUnitario.toFixed(2)})`);
+                this.state.detectedVoiceTags = parsed.detectedTags || [];
+
+                const feedback = [];
+
+                // Asentar campos del cliente si fueron detectados
+                if (parsed.isClient && parsed.cliente) {
+                    const nomInput = document.getElementById('cliente-nombre-input');
+                    const dirInput = document.getElementById('cliente-direccion-input');
+                    const rucInput = document.getElementById('cliente-ruc-input');
+                    const telInput = document.getElementById('cliente-telefono-input');
+                    const emailInput = document.getElementById('cliente-email-input');
+
+                    if (nomInput && parsed.cliente.nombre) {
+                        nomInput.value = parsed.cliente.nombre;
+                        feedback.push(`👤 ${parsed.cliente.nombre}`);
+                    }
+                    if (rucInput && parsed.cliente.identificacion) {
+                        rucInput.value = parsed.cliente.identificacion;
+                        feedback.push(`🆔 ${parsed.cliente.identificacion}`);
+                    }
+                    if (telInput && parsed.cliente.telefono) {
+                        telInput.value = parsed.cliente.telefono;
+                        feedback.push(`📞 ${parsed.cliente.telefono}`);
+                    }
+                    if (emailInput && parsed.cliente.email) {
+                        emailInput.value = parsed.cliente.email;
+                        feedback.push(`✉️ ${parsed.cliente.email}`);
+                    }
+                    if (dirInput && parsed.cliente.direccion) {
+                        dirInput.value = parsed.cliente.direccion;
+                        feedback.push(`📍 ${parsed.cliente.direccion}`);
+                    }
+
+                    gravityScanner.applyGravityDropAnimation();
+                }
+
+                // Asentar productos si fueron detectados
+                if (parsed.isProduct && parsed.items && parsed.items.length) {
+                    parsed.items.forEach((item) => {
+                        this.addQuickProduct(item.descripcion, item.precioUnitario, item.cantidad);
+                        feedback.push(`📦 ${item.cantidad}x ${item.descripcion} ($${item.precioUnitario.toFixed(2)})`);
+                    });
+                }
+
+                if (feedback.length > 0) {
+                    this.showToast(`🎙️ Reconocido: ${feedback.join(' · ')}`);
+                } else {
+                    this.showToast(`🎙️ Audio capturado: "${raw}"`);
+                }
+
                 this.evaluateStateAndRender();
             },
             onError: (err) => {
@@ -375,7 +432,7 @@ export class AppManager {
 
         if (!success) {
             this.state.isListeningVoice = false;
-            this.showToast('⚠️ Tu dispositivo no tiene habilitado el reconocimiento de voz web.');
+            this.showToast('⚠️ Tu dispositivo o navegador no tiene habilitado el reconocimiento de voz.');
             this.evaluateStateAndRender();
         }
     }
@@ -395,10 +452,20 @@ export class AppManager {
         this.triggerHaptic(25);
         soundFx.playPaperSlide();
         this.state.isScanningGravity = true;
+        this.state.scannerStatusText = 'Iniciando escaneo inteligente...';
+        this.state.scannerProgressPct = 20;
         this.evaluateStateAndRender();
 
         try {
-            const data = await gravityScanner.scanDocument(file);
+            const data = await gravityScanner.scanDocument(file, (msg, pct) => {
+                this.state.scannerStatusText = msg;
+                this.state.scannerProgressPct = pct;
+                const statusEl = document.querySelector('.scanner-sweep-modal [style*="color: #38BDF8"]');
+                const barEl = document.querySelector('.scanner-sweep-modal [style*="background: linear-gradient"]');
+                if (statusEl) statusEl.innerText = msg;
+                if (barEl) barEl.style.width = pct + '%';
+            });
+
             this.state.isScanningGravity = false;
             this.evaluateStateAndRender();
 
@@ -406,11 +473,16 @@ export class AppManager {
             const nomInput = document.getElementById('cliente-nombre-input');
             const dirInput = document.getElementById('cliente-direccion-input');
             const rucInput = document.getElementById('cliente-ruc-input');
+            const telInput = document.getElementById('cliente-telefono-input');
+            const emailInput = document.getElementById('cliente-email-input');
+
             if (nomInput && data.cliente?.nombre) nomInput.value = data.cliente.nombre;
             if (dirInput && data.cliente?.direccion) dirInput.value = data.cliente.direccion;
             if (rucInput && data.cliente?.identificacion) rucInput.value = data.cliente.identificacion;
+            if (telInput && data.cliente?.telefono) telInput.value = data.cliente.telefono;
+            if (emailInput && data.cliente?.email) emailInput.value = data.cliente.email;
 
-            // Poblamos filas de productos
+            // Poblamos filas de productos si las hay
             const tbody = document.getElementById('realista-items-body');
             if (tbody && data.items && data.items.length) {
                 tbody.innerHTML = '';
@@ -432,11 +504,11 @@ export class AppManager {
             soundFx.playPencil();
             gravityScanner.applyGravityDropAnimation();
             this.triggerHaptic([30, 20, 60]);
-            this.showToast('📄 ¡Datos asentados por gravedad sobre el talonario!');
+            this.showToast(`📄 ¡Datos extraídos por gravedad! ID: ${data.cliente?.identificacion || 'Detectada'}`);
         } catch (err) {
             this.state.isScanningGravity = false;
             this.evaluateStateAndRender();
-            this.showToast('❌ No se pudo procesar el documento para escaneo por gravedad.');
+            this.showToast('❌ Error en escaneo por gravedad: ' + (err.message || ''));
         } finally {
             if (input) input.value = '';
         }
@@ -547,9 +619,12 @@ export class AppManager {
 
     // Recolecta el payload de emisión desde el formulario del talonario (cliente + items)
     collectEmitPayload() {
-        const nombre = document.querySelector('#receipt-paper-card .cliente-line-input')?.value || '';
-        const direccion = document.querySelectorAll('#receipt-paper-card .cliente-line-input')[1]?.value || '';
-        const identificacion = document.querySelectorAll('#receipt-paper-card .cliente-line-input')[2]?.value || '';
+        const nombre = document.getElementById('cliente-nombre-input')?.value.trim() || '';
+        const identificacion = document.getElementById('cliente-ruc-input')?.value.trim() || '';
+        const direccion = document.getElementById('cliente-direccion-input')?.value.trim() || '';
+        const telefono = document.getElementById('cliente-telefono-input')?.value.trim() || '';
+        const email = document.getElementById('cliente-email-input')?.value.trim() || '';
+
         const rows = document.querySelectorAll('#realista-items-body tr');
         const items = [];
         rows.forEach((row) => {
@@ -561,7 +636,7 @@ export class AppManager {
             if (!descripcion || isNaN(cantidad) || isNaN(precioUnitario)) return;
             items.push({ descripcion, cantidad, precioUnitario, exento: false });
         });
-        return { cliente: { nombre, identificacion, direccion }, items };
+        return { cliente: { nombre, identificacion, direccion, telefono, email }, items };
     }
 
     // SECUENCIA DE EMISIÓN REAL CON DESPRENDIMIENTO 3D Y REVELADO DE COPIA AZUL (PRINCIPIO 12 & COLA OFFLINE)

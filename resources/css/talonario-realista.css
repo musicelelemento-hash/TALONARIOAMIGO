@@ -33,7 +33,7 @@
 /* CONTENEDOR BLOQUE DE 50 HOJAS CON TAPA TRASERA DE CARTÓN KRAFT 3D */
 .factura-paper-container {
     width: 100%;
-    max-width: 420px;
+    max-width: 440px;
     height: auto;
     background: #FDFBF7;
     border-radius: 6px 6px 4px 4px;
@@ -49,6 +49,25 @@
         -8px 8px 0 #BBA47E, /* 50 Hojas apiladas */
         -10px 10px 0 #8C6239, /* Tapa Kraft Trasera Sobresaliendo */
         -14px 14px 35px rgba(0, 0, 0, 0.5); /* Sombra 3D */
+    transition: max-width 0.3s ease;
+}
+
+@media (min-width: 640px) {
+    .factura-paper-container {
+        max-width: 580px;
+    }
+}
+
+@media (min-width: 768px) {
+    .factura-paper-container {
+        max-width: 680px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .factura-paper-container {
+        max-width: 760px;
+    }
 }
 
 /* LOMO ENGOMADO TRADICIONAL SUPERIOR (FRANJA LIMPIA MARRÓN KRAFT REALISTA) */
