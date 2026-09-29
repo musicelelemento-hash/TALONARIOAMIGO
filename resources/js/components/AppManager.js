@@ -109,6 +109,26 @@ export class AppManager {
         }
 
         if (this.state.currentRole === 'SUPER_ADMIN') {
+            if (this.state.isDemoGuest) {
+                const demoOwnerData = {
+                    metrics: {
+                        total_users: 142,
+                        total_resellers: 8,
+                        total_clients: 134,
+                        active_licensed_slots: 240,
+                        monthly_invoices_emitted: 3840,
+                        sri_success_rate: "99.8%",
+                        offline_sync_count: 512
+                    },
+                    resellers: [
+                        { id: 1, name: "Imprenta Moderna Guayaquil", email: "contacto@imprentamoderna.ec", phone: "0991234567", whatsapp_support: "0991234567", allocated_accounts: 50, total_clients: 38, is_active: true },
+                        { id: 2, name: "Artes Gráficas Pichincha", email: "ventas@graficaspichincha.com", phone: "0987654321", whatsapp_support: "0987654321", allocated_accounts: 30, total_clients: 21, is_active: true },
+                        { id: 3, name: "Litografía Austral Cuenca", email: "info@litoaustral.ec", phone: "0971122334", whatsapp_support: "0971122334", allocated_accounts: 40, total_clients: 19, is_active: true }
+                    ]
+                };
+                this.container.innerHTML = this.renderDemoTopStrip('SUPER_ADMIN') + renderSuperAdminPanel(demoOwnerData, this.state.superAdminTab || 'resellers');
+                return;
+            }
             this.container.innerHTML = '<div style="padding:40px;text-align:center;color:#57534E;">Cargando panel global…</div>';
             try {
                 const data = await api.getOwnerDashboard();
@@ -121,6 +141,26 @@ export class AppManager {
         }
 
         if (this.state.currentRole === 'RESELLER') {
+            if (this.state.isDemoGuest) {
+                const demoResellerData = {
+                    reseller_info: {
+                        name: "Imprenta Moderna Guayaquil (Distribuidor Autorizado)",
+                        whatsapp_support: "0993050689"
+                    },
+                    quota: {
+                        total_allocated: 50,
+                        total_used: 38,
+                        available_slots: 12
+                    },
+                    clients: [
+                        { id: 101, name: "Comercial Don Lucho (Abarrotes)", email: "donlucho@gmail.com", emisor: { ruc: "0912345678001", firma_p12_path: "signatures/101.p12", telefono: "0991112233" }, is_active: true },
+                        { id: 102, name: "Ferretería El Tornillo de Oro", email: "eltornillo@outlook.com", emisor: { ruc: "0923456789001", firma_p12_path: "signatures/102.p12", telefono: "0992223344" }, is_active: true },
+                        { id: 103, name: "Café & Cacao La Delicia", email: "delicia.cacao@gmail.com", emisor: { ruc: "0934567890001", firma_p12_path: null, telefono: "0993334455" }, is_active: true }
+                    ]
+                };
+                this.container.innerHTML = this.renderDemoTopStrip('RESELLER') + renderResellerPanel(demoResellerData);
+                return;
+            }
             this.container.innerHTML = '<div style="padding:40px;text-align:center;color:#57534E;">Cargando panel de imprenta…</div>';
             try {
                 const data = await api.getResellerDashboard();
@@ -290,6 +330,69 @@ export class AppManager {
     // =========================================================================
     // MODO DEMOSTRACIÓN INTERACTIVO (PRUEBA EN VIVO SIN REGISTRO)
     // =========================================================================
+    renderDemoTopStrip(activeRole) {
+        return `
+            <div class="demo-top-strip" style="position: sticky; top: 0; z-index: 9999; box-shadow: 0 4px 20px rgba(0,0,0,0.35);">
+                <div class="demo-top-strip-inner" style="display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 1080px; margin: 0 auto; padding: 4px 12px; flex-wrap: wrap; gap: 8px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span class="demo-top-strip-badge">
+                            <span class="live-dot-pulse"></span>
+                            DEMO EN VIVO
+                        </span>
+                        <span style="font-size: 12px; color: #FFFFFF; font-weight: 700;">
+                            Vista actual: <strong style="color: #FDE68A;">${activeRole === 'CLIENT' ? '🏪 Comerciante' : activeRole === 'RESELLER' ? '🏭 Imprenta Aliada' : '🏛️ Administrador'}</strong>
+                        </span>
+                    </div>
+
+                    <div class="demo-top-strip-actions">
+                        <button type="button" class="demo-chip-btn ${activeRole === 'CLIENT' ? 'demo-chip-btn-primary' : ''}" onclick="window.appState.exploreRole('CLIENT')" title="Ver como comerciante">
+                            🏪 Comerciante
+                        </button>
+                        <button type="button" class="demo-chip-btn ${activeRole === 'RESELLER' ? 'demo-chip-btn-primary' : ''}" onclick="window.appState.exploreRole('RESELLER')" title="Ver como imprenta">
+                            🏭 Imprenta Aliada
+                        </button>
+                        <button type="button" class="demo-chip-btn ${activeRole === 'SUPER_ADMIN' ? 'demo-chip-btn-primary' : ''}" onclick="window.appState.exploreRole('SUPER_ADMIN')" title="Ver como administrador">
+                            🏛️ Administrador
+                        </button>
+                        <button type="button" class="demo-chip-btn demo-chip-btn-primary" onclick="window.appState.openRegister()" title="Crear cuenta real con RUC">
+                            🚀 Crear Cuenta Real
+                        </button>
+                        <button type="button" class="demo-chip-btn demo-chip-btn-exit" onclick="window.appState.exitDemoMode()" title="Volver al portal">
+                            ✕ Salir al Portal
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    exploreRole(role) {
+        this.triggerHaptic([25, 20, 45]);
+        soundFx.playPaperSlide();
+        this.state.isDemoGuest = true;
+        this.state.isDemoMode = true;
+        this.state.currentRole = role;
+        this.state.isConfigured = true;
+        this.state.hasSignature = true;
+        this.state.isShowingBlueCopy = false;
+
+        if (role === 'CLIENT') {
+            this.state.experienceMode = 'comerciante';
+            this.state.currentDocNumber = 126;
+            this.evaluateStateAndRender();
+            setTimeout(() => {
+                this.loadDemoSampleData(false);
+                this.showToast('🏪 ¡Mostrador Comerciante listo! Toca el papel o dicta por voz 🎙️');
+            }, 120);
+        } else if (role === 'RESELLER') {
+            this.evaluateStateAndRender();
+            this.showToast('🏭 ¡Bienvenido al Panel de Imprenta Aliada! Explora clientes, lotes y márgenes B2B.');
+        } else if (role === 'SUPER_ADMIN') {
+            this.evaluateStateAndRender();
+            this.showToast('🏛️ ¡Centro de Mando Administrador activo! Explora los 20 Agentes y Métricas.');
+        }
+    }
+
     enterDemoMode() {
         this.triggerHaptic([30, 20, 50]);
         soundFx.playPaperSlide();
@@ -1161,25 +1264,6 @@ export class AppManager {
     closeOnboardingModal() {
         this.triggerHaptic(15);
         this.state.isOnboardingModalOpen = false;
-        this.evaluateStateAndRender();
-    }
-
-    enterDemoMode() {
-        this.triggerHaptic(20);
-        soundFx.playPaperSlide();
-        this.state.isLoggedIn = true;
-        this.state.isDemoMode = true;
-        this.state.currentRole = 'CLIENT';
-        this.state.isConfigured = true;
-        this.state.hasSignature = true;
-        this.state.isActive = true;
-        this.state.user = {
-            id: 999,
-            name: 'Don Carlos (Comerciante)',
-            email: 'carlos.comercio@talonarioamigo.com',
-            role: 'CLIENT'
-        };
-        this.showToast('🏪 Mostrador Tablet de Demostración Activo');
         this.evaluateStateAndRender();
     }
 
