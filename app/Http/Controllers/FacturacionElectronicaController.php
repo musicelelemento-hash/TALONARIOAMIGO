@@ -49,6 +49,8 @@ class FacturacionElectronicaController extends Controller
             'cliente.nombre' => 'required|string|max:255',
             'cliente.identificacion' => 'required|string',
             'cliente.direccion' => 'nullable|string',
+            'cliente.telefono' => 'nullable|string',
+            'cliente.email' => 'nullable|string',
             'items' => 'required|array|min:1',
             'items.*.descripcion' => 'required|string',
             'items.*.cantidad' => 'required|numeric|min:0.000001',
@@ -219,6 +221,23 @@ class FacturacionElectronicaController extends Controller
 
         $estado = $this->extraerEstadoAutorizacion($resultado['autorizacion']);
 
+        // Despacho transaccional automático vía Resend si el cliente o comercio proveyó correo
+        $emailEnviado = false;
+        if (!empty($data['cliente']['email'])) {
+            try {
+                $resend = app(\App\Services\ResendService::class);
+                $emailEnviado = $resend->enviarComprobante(
+                    $data['cliente']['email'],
+                    $data['cliente']['nombre'],
+                    "001-001-" . $resultado['secuencial'],
+                    "Factura Electrónica",
+                    $importeTotal
+                );
+            } catch (\Throwable $mailEx) {
+                \Log::warning("[FacturacionController] Advertencia al despachar Resend: " . $mailEx->getMessage());
+            }
+        }
+
         return response()->json([
             'success' => true,
             'estado' => $estado['estado'],
@@ -227,6 +246,7 @@ class FacturacionElectronicaController extends Controller
             'numeroAutorizacion' => $estado['numeroAutorizacion'],
             'fechaAutorizacion' => $estado['fechaAutorizacion'],
             'mensaje' => $estado['mensaje'],
+            'email_enviado' => $emailEnviado,
             'envio_raw' => $resultado['envio'],
             'autorizacion_raw' => $resultado['autorizacion'],
         ], Response::HTTP_OK);

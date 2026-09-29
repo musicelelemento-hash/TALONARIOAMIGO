@@ -52,7 +52,7 @@ Transformar la transición tributaria de los pequeños comerciantes de Ecuador e
 
 ---
 
-## 🏛️ Sistema Multi-Agente Operativo (12 Agentes en 4 Niveles)
+## 🏛️ Sistema Multi-Agente Operativo (19 Agentes de Élite)
 Consulta la arquitectura completa y contratos en [SISTEMA_MULTI_AGENTES.md](file:///c:/Programacion/Aplicaciones/Talonario%20Amigo/SISTEMA_MULTI_AGENTES.md) y las fichas en [.agents/agents/](file:///c:/Programacion/Aplicaciones/Talonario%20Amigo/.agents/agents/):
 
 - **NIVEL 0 (Comando Maestro):**
@@ -61,15 +61,22 @@ Consulta la arquitectura completa y contratos en [SISTEMA_MULTI_AGENTES.md](file
   - [02_sri_compliance_officer.md](file:///c:/Programacion/Aplicaciones/Talonario%20Amigo/.agents/agents/02_sri_compliance_officer.md)
   - [03_p12_vault_security.md](file:///c:/Programacion/Aplicaciones/Talonario%20Amigo/.agents/agents/03_p12_vault_security.md)
   - [04_soap_sri_pipeline.md](file:///c:/Programacion/Aplicaciones/Talonario%20Amigo/.agents/agents/04_soap_sri_pipeline.md)
-- **NIVEL 1 (Escuadrón Producto & Móvil):**
+- **NIVEL 1 (Escuadrón Producto, Táctil, Voz & Móvil):**
   - [05_tactile_design_system.md](file:///c:/Programacion/Aplicaciones/Talonario%20Amigo/.agents/agents/05_tactile_design_system.md)
   - [06_frontend_spa_engineer.md](file:///c:/Programacion/Aplicaciones/Talonario%20Amigo/.agents/agents/06_frontend_spa_engineer.md)
   - [07_mobile_capacitor_engineer.md](file:///c:/Programacion/Aplicaciones/Talonario%20Amigo/.agents/agents/07_mobile_capacitor_engineer.md)
-- **NIVEL 1 (Escuadrón B2B & Crecimiento):**
+  - [13_voice_ai_tactile_officer.md](file:///c:/Programacion/Aplicaciones/Talonario%20Amigo/.agents/agents/13_voice_ai_tactile_officer.md)
+- **NIVEL 1 (Escuadrón Visión & Despacho Omnicanal):**
+  - [14_ocr_gravity_vision_specialist.md](file:///c:/Programacion/Aplicaciones/Talonario%20Amigo/.agents/agents/14_ocr_gravity_vision_specialist.md)
+  - [15_resend_ride_dispatch_officer.md](file:///c:/Programacion/Aplicaciones/Talonario%20Amigo/.agents/agents/15_resend_ride_dispatch_officer.md)
+- **NIVEL 1 (Escuadrón B2B, Imprentas & Crecimiento):**
   - [08_b2b_reseller_director.md](file:///c:/Programacion/Aplicaciones/Talonario%20Amigo/.agents/agents/08_b2b_reseller_director.md)
   - [09_viral_growth_marketer.md](file:///c:/Programacion/Aplicaciones/Talonario%20Amigo/.agents/agents/09_viral_growth_marketer.md)
   - [10_metrics_retention_analyst.md](file:///c:/Programacion/Aplicaciones/Talonario%20Amigo/.agents/agents/10_metrics_retention_analyst.md)
-- **NIVEL 2 (Escuadrón Infraestructura & Calidad):**
+  - [19_b2b_imprentas_network_architect.md](file:///c:/Programacion/Aplicaciones/Talonario%20Amigo/.agents/agents/19_b2b_imprentas_network_architect.md)
+- **NIVEL 2 (Escuadrón Infraestructura Cloud, Bóvedas, Datos & Resiliencia):**
   - [11_edge_infra_engineer.md](file:///c:/Programacion/Aplicaciones/Talonario%20Amigo/.agents/agents/11_edge_infra_engineer.md)
   - [12_qa_test_guardian.md](file:///c:/Programacion/Aplicaciones/Talonario%20Amigo/.agents/agents/12_qa_test_guardian.md)
-
+  - [16_cloud_vault_r2_architect.md](file:///c:/Programacion/Aplicaciones/Talonario%20Amigo/.agents/agents/16_cloud_vault_r2_architect.md)
+  - [17_supabase_data_governor.md](file:///c:/Programacion/Aplicaciones/Talonario%20Amigo/.agents/agents/17_supabase_data_governor.md)
+  - [18_micro_billing_queues_specialist.md](file:///c:/Programacion/Aplicaciones/Talonario%20Amigo/.agents/agents/18_micro_billing_queues_specialist.md)
