@@ -24,8 +24,10 @@ export function renderLoginScreen() {
                 </div>
 
                 <div style="display: flex; align-items: center; gap: 10px;">
-                    <button type="button" onclick="window.appState.enterDemoMode()" style="background: linear-gradient(135deg, #10B981, #059669); color: #FFFFFF; border: none; padding: 8px 16px; border-radius: 999px; font-size: 12px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 12px rgba(16,185,129,0.3); transition: all 0.2s ease;">
-                        🏪 Probar Talonario en Vivo
+                    <button type="button" onclick="window.appState.enterDemoMode()" class="btn-demo-live-nav" title="Prueba el talonario táctil de inmediato sin registrarte">
+                        <span class="live-dot-pulse"></span>
+                        <span>🏪 Probar Talonario en Vivo</span>
+                        <span class="demo-tag-free">Sin Registro · Gratis</span>
                     </button>
                 </div>
             </header>
@@ -79,8 +81,12 @@ export function renderLoginScreen() {
 
                         <!-- CTA Estelar Demostración Abierta -->
                         <div style="margin-top: 8px;">
-                            <button type="button" onclick="window.appState.enterDemoMode()" style="width: 100%; padding: 15px 22px; background: linear-gradient(135deg, #10B981, #059669); color: #FFFFFF; border: none; border-radius: 14px; font-weight: 900; font-size: 15px; cursor: pointer; box-shadow: 0 10px 30px rgba(16,185,129,0.35); display: flex; align-items: center; justify-content: center; gap: 10px; transition: transform 0.15s ease;">
-                                🏪 PROBAR TALONARIO INTERACTIVO (DEMOSTRACIÓN INMEDIATA) ➔
+                            <button type="button" onclick="window.appState.enterDemoMode()" class="btn-hero-demo-glow">
+                                <span style="font-size: 26px;">🏪</span>
+                                <div style="text-align: left;">
+                                    <div style="font-size: 15px; font-weight: 900; letter-spacing: -0.01em;">PROBAR TALONARIO TÁCTIL EN VIVO ➔</div>
+                                    <div style="font-size: 11px; opacity: 0.95; font-weight: 700; color: #ECFDF5; margin-top: 2px;">Acceso Inmediato · Cero Registro · Prueba dictado por voz y desprendimiento 3D</div>
+                                </div>
                             </button>
                         </div>
                     </div>

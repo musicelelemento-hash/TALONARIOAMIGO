@@ -389,3 +389,177 @@
     from { transform: translateY(20px); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }
 }
+
+/* ==========================================================================
+   ESTILOS PARA MODO DEMOSTRACIÓN EN VIVO (DEMO MODE & PROBAR TALONARIO)
+   ========================================================================== */
+
+/* Botón Navbar "Probar Talonario en Vivo" */
+.btn-demo-live-nav {
+    background: linear-gradient(135deg, #10B981, #059669);
+    color: #FFFFFF;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-demo-live-nav:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.55);
+    background: linear-gradient(135deg, #34D399, #059669);
+}
+
+.btn-demo-live-nav:active {
+    transform: scale(0.96);
+}
+
+.live-dot-pulse {
+    width: 8px;
+    height: 8px;
+    background: #FFFFFF;
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 8px #FFFFFF;
+    animation: pulseLive 1.5s infinite;
+}
+
+@keyframes pulseLive {
+    0% { transform: scale(0.9); opacity: 0.8; box-shadow: 0 0 4px #FFFFFF; }
+    50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 12px #34D399; }
+    100% { transform: scale(0.9); opacity: 0.8; box-shadow: 0 0 4px #FFFFFF; }
+}
+
+.demo-tag-free {
+    font-size: 10px;
+    background: rgba(0, 0, 0, 0.25);
+    padding: 2px 7px;
+    border-radius: 999px;
+    font-weight: 700;
+    color: #DCFCE7;
+}
+
+/* Botón Hero Grande "PROBAR TALONARIO TÁCTIL EN VIVO" */
+.btn-hero-demo-glow {
+    width: 100%;
+    padding: 16px 24px;
+    background: linear-gradient(135deg, #10B981 0%, #059669 50%, #047857 100%);
+    color: #FFFFFF;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 16px;
+    cursor: pointer;
+    box-shadow: 0 12px 32px rgba(16, 185, 129, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-hero-demo-glow:hover {
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: 0 16px 40px rgba(16, 185, 129, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    background: linear-gradient(135deg, #34D399 0%, #10B981 50%, #059669 100%);
+}
+
+.btn-hero-demo-glow:active {
+    transform: scale(0.98);
+}
+
+/* Franja Flotante de Modo Demo en la Vista del Talonario */
+.demo-top-strip {
+    background: linear-gradient(90deg, #064E3B 0%, #065F46 50%, #047857 100%);
+    border-bottom: 1.5px solid #10B981;
+    color: #ECFDF5;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 13px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    position: sticky;
+    top: 0;
+    z-index: 999;
+}
+
+.demo-top-strip-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+}
+
+.demo-top-strip-badge {
+    background: #10B981;
+    color: #FFFFFF;
+    font-size: 11px;
+    font-weight: 900;
+    padding: 3px 9px;
+    border-radius: 999px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.demo-top-strip-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.demo-chip-btn {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #FFFFFF;
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.demo-chip-btn:hover {
+    background: rgba(255, 255, 255, 0.28);
+    transform: translateY(-1px);
+}
+
+.demo-chip-btn-primary {
+    background: #F59E0B;
+    border-color: #D97706;
+    color: #0F172A;
+    font-weight: 900;
+}
+
+.demo-chip-btn-primary:hover {
+    background: #FBBF24;
+    color: #0F172A;
+}
+
+.demo-chip-btn-exit {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #FCA5A5;
+}
+
+.demo-chip-btn-exit:hover {
+    background: #DC2626;
+    color: #FFFFFF;
+}

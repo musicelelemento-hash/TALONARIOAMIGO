@@ -27,6 +27,7 @@ export class AppManager {
             currentRole: 'CLIENT',      // SUPER_ADMIN, RESELLER, CLIENT
             // Inicia sesión sólo si ya existe un token Sanctum guardado en este dispositivo.
             isLoggedIn: !!localStorage.getItem('ta_auth_token'),
+            isDemoGuest: false,         // Invitado en Modo Demostración sin registrarse
             isDemoMode: true,           // Modo Demostración activo por defecto
             isOnboardingModalOpen: false, // Modal rápido de firma y RUC
             isConfigured: true,        // RUC y datos emisor
@@ -102,7 +103,7 @@ export class AppManager {
      * Los paneles (SUPER_ADMIN / RESELLER) cargan datos reales desde el backend.
      */
     async evaluateStateAndRender() {
-        if (!this.state.isLoggedIn) {
+        if (!this.state.isLoggedIn && !this.state.isDemoGuest) {
             this.container.innerHTML = renderLoginScreen();
             return;
         }
@@ -284,6 +285,158 @@ export class AppManager {
                 this.showToast(`✅ ${report.name}: Operativo`);
             }
         }
+    }
+
+    // =========================================================================
+    // MODO DEMOSTRACIÓN INTERACTIVO (PRUEBA EN VIVO SIN REGISTRO)
+    // =========================================================================
+    enterDemoMode() {
+        this.triggerHaptic([30, 20, 50]);
+        soundFx.playPaperSlide();
+        this.state.isDemoGuest = true;
+        this.state.isDemoMode = true;
+        this.state.currentRole = 'CLIENT';
+        this.state.isConfigured = true;
+        this.state.hasSignature = true;
+        this.state.experienceMode = 'comerciante';
+        this.state.isShowingBlueCopy = false;
+        this.state.isListeningVoice = false;
+        this.state.currentDocNumber = 126;
+
+        this.evaluateStateAndRender();
+
+        setTimeout(() => {
+            this.loadDemoSampleData(false);
+            this.showToast('🏪 ¡Bienvenido al Modo Demostración! Toca el papel o dicta productos por voz 🎙️');
+        }, 150);
+    }
+
+    exitDemoMode() {
+        this.triggerHaptic(20);
+        soundFx.playPaperSlide();
+        if (this.blueCopyTimer) clearTimeout(this.blueCopyTimer);
+        this.state.isDemoGuest = false;
+        this.state.isShowingBlueCopy = false;
+        this.evaluateStateAndRender();
+        this.showToast('Has regresado al portal de inicio.');
+    }
+
+    setDemoMode(isDemo) {
+        this.triggerHaptic(15);
+        soundFx.playPaperSlide();
+
+        if (!isDemo && !this.state.isLoggedIn) {
+            this.showToast('🔒 Para emitir en Modo Real ante el SRI, inicia sesión o crea tu cuenta.');
+            this.openRegister();
+            return;
+        }
+
+        this.state.isDemoMode = isDemo;
+        this.evaluateStateAndRender();
+        this.showToast(isDemo ? '🏪 Modo Demostración activado (Simulación legal sin riesgo)' : '🔴 Modo Real SRI activado (Emisión legal)');
+    }
+
+    loadDemoSampleData(showToast = true) {
+        this.triggerHaptic(20);
+        soundFx.playPencil();
+
+        const nomInput = document.getElementById('cliente-nombre-input');
+        const rucInput = document.getElementById('cliente-ruc-input');
+        const dirInput = document.getElementById('cliente-direccion-input');
+        const telInput = document.getElementById('cliente-telefono-input');
+        const emailInput = document.getElementById('cliente-email-input');
+
+        if (nomInput) nomInput.value = 'Juan Alberto Pérez Gómez';
+        if (rucInput) rucInput.value = '0928374615';
+        if (dirInput) dirInput.value = 'Av. 9 de Octubre y Boyacá, Guayaquil';
+        if (telInput) telInput.value = '0993050689';
+        if (emailInput) emailInput.value = 'juan.perez@ejemplo.com';
+
+        const rows = document.querySelectorAll('#realista-items-body tr');
+        const sampleProducts = [
+            { qty: 1, desc: 'Quintal de Arroz Flor Especial', price: 42.00 },
+            { qty: 2, desc: 'Aceite Palma de Oro 1 Litro', price: 3.50 },
+            { qty: 5, desc: 'Azúcar San Carlos 1 Kg', price: 1.10 }
+        ];
+
+        sampleProducts.forEach((prod, idx) => {
+            if (rows[idx]) {
+                const qtyInp = rows[idx].querySelector('td:nth-child(1) input');
+                const descInp = rows[idx].querySelector('td:nth-child(2) input');
+                const priceInp = rows[idx].querySelector('td:nth-child(3) input');
+                if (qtyInp) qtyInp.value = prod.qty;
+                if (descInp) descInp.value = prod.desc;
+                if (priceInp) priceInp.value = prod.price.toFixed(2);
+            }
+        });
+
+        gravityScanner.applyGravityDropAnimation();
+        this.recalculateTotals();
+
+        if (showToast) {
+            this.showToast('✨ Datos de ejemplo cargados: Arroz, Aceite y Azúcar.');
+        }
+    }
+
+    clearReceipt() {
+        this.triggerHaptic(15);
+        soundFx.playPaperSlide();
+
+        const nomInput = document.getElementById('cliente-nombre-input');
+        const rucInput = document.getElementById('cliente-ruc-input');
+        const dirInput = document.getElementById('cliente-direccion-input');
+        const telInput = document.getElementById('cliente-telefono-input');
+        const emailInput = document.getElementById('cliente-email-input');
+
+        if (nomInput) nomInput.value = '';
+        if (rucInput) rucInput.value = '';
+        if (dirInput) dirInput.value = '';
+        if (telInput) telInput.value = '';
+        if (emailInput) emailInput.value = '';
+
+        const rows = document.querySelectorAll('#realista-items-body tr');
+        rows.forEach(r => {
+            const inputs = r.querySelectorAll('input');
+            inputs.forEach(i => i.value = '');
+            const totalCell = r.querySelector('.row-total');
+            if (totalCell) totalCell.innerText = '$0.00';
+        });
+
+        const grandTotal = document.getElementById('grand-total-display');
+        if (grandTotal) grandTotal.innerText = '$0.00';
+
+        this.showToast('🧹 Renglones del talonario limpiados.');
+    }
+
+    finishBlueCopyPreview() {
+        if (this.blueCopyTimer) clearTimeout(this.blueCopyTimer);
+        this.state.isShowingBlueCopy = false;
+        this.state.currentDocNumber = (parseInt(this.state.currentDocNumber, 10) || 126) + 1;
+        this.triggerHaptic(20);
+        soundFx.playPaperSlide();
+        this.evaluateStateAndRender();
+        this.showToast(`📄 Hoja N° 001-001-${String(this.state.currentDocNumber).padStart(9, '0')} lista para emitir.`);
+    }
+
+    shareFacturaWhatsapp() {
+        this.triggerHaptic(15);
+        const receipt = this.state.lastReceipt;
+        const num = receipt?.secuencial || String(this.state.currentDocNumber || 126).padStart(9, '0');
+        const cliente = receipt?.cliente?.nombre || document.getElementById('cliente-nombre-input')?.value || 'Consumidor Final';
+        const total = receipt?.total || document.getElementById('grand-total-display')?.innerText || '$55.55';
+        const clave = receipt?.claveAcceso || '';
+
+        const msg = `*TALONARIO AMIGO — FACTURA ELECTRÓNICA SRI*\n\n`
+            + `📄 *Comprobante:* N° 001-001-${num}\n`
+            + `👤 *Cliente:* ${cliente}\n`
+            + `💰 *Total Cobrado:* ${total}\n`
+            + `✓ *Estado:* AUTORIZADO POR EL SRI\n`
+            + (clave ? `🔑 *Clave Acceso:* ${clave}\n` : '')
+            + `\n_Emitido con la tranquilidad del papel. https://talonarioamigo.com_`;
+
+        const waUrl = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+        window.open(waUrl, '_blank');
+        this.showToast('📲 Abriendo WhatsApp para compartir comprobante...');
     }
 
     // GESTIÓN DE MODOS DE EXPERIENCIA (Tranquilo 👴 / Comerciante 🏪 / Pro ⚡)
@@ -783,9 +936,18 @@ export class AppManager {
             }
 
             let res;
-            const isOffline = !offlineQueue.isOnline();
-
-            if (isOffline) {
+            if (this.state.isDemoGuest || this.state.isDemoMode) {
+                // Modo Demostración Interactivo: Simulación completa legal de emisión al SRI
+                const demoSecuencial = String(this.state.currentDocNumber).padStart(9, '0');
+                res = {
+                    secuencial: demoSecuencial,
+                    claveAcceso: '290920260107020653190011001001' + demoSecuencial + '1234567814',
+                    estado: 'AUTORIZADO',
+                    numeroAutorizacion: '290920260107020653190011001001' + demoSecuencial + '1234567814',
+                    fechaAutorizacion: new Date().toISOString(),
+                    isDemo: true
+                };
+            } else if (!offlineQueue.isOnline()) {
                 // Modo Rural Offline: Guarda en talonario local sin error
                 offlineQueue.enqueue(payload);
                 this.state.offlinePendingCount = offlineQueue.getPendingCount();
@@ -855,7 +1017,9 @@ export class AppManager {
                 numeroAutorizacion: res.numeroAutorizacion || ''
             };
 
-            if (res.estado === 'OFFLINE_LOCAL') {
+            if (res.isDemo) {
+                this.showToast(`🎉 ¡HOJA DESPRENDIDA! Factura N° 001-001-${secuencial} autorizada (Demo). Mostrando Copia Azul.`);
+            } else if (res.estado === 'OFFLINE_LOCAL') {
                 this.showToast(`📡 Sin conexión: Comprobante N° 001-001-${secuencial} guardado en tu talonario local.`);
             } else {
                 this.showToast(`🎉 Comprobante N° 001-001-${secuencial} ${res.estado === 'AUTORIZADO' ? 'AUTORIZADO' : 'ENVIADO'} por el SRI.`);
@@ -866,13 +1030,13 @@ export class AppManager {
                 this.state.isShowingBlueCopy = true;
                 this.evaluateStateAndRender();
 
-                // Regreso automático tras 3.5 segundos
+                // En modo demo damos 8 segundos para apreciar la copia azul, o hasta que toque "Pasar a Nueva Hoja"
                 if (this.blueCopyTimer) clearTimeout(this.blueCopyTimer);
                 this.blueCopyTimer = setTimeout(() => {
                     if (this.state.isShowingBlueCopy) {
                         this.finishBlueCopyPreview();
                     }
-                }, 3500);
+                }, res.isDemo ? 8000 : 3500);
             }, 750);
 
         } catch (e) {

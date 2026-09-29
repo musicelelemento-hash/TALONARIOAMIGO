@@ -94,6 +94,11 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                         <button class="btn-stamp" style="background: #1D4ED8; border-color: #1D4ED8; width: auto; padding: 10px 22px; font-size: 12px;" onclick="window.appState.finishBlueCopyPreview()">
                             ✒️ Pasar a Nueva Hoja
                         </button>
+                        ${emisorData?.isDemoGuest ? `
+                            <button type="button" class="btn-stamp" style="background: #10B981; border-color: #10B981; width: auto; padding: 10px 22px; font-size: 12px; color: white; font-weight: 900;" onclick="window.appState.openRegister()">
+                                🚀 Configurar Mi RUC y Facturar de Verdad
+                            </button>
+                        ` : ''}
                     </div>
                 </div>
             </div>
@@ -102,6 +107,36 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
 
     // MODO NORMAL (HOJA MARFIL) CON SELECTOR DE EXPERIENCIA
     return `
+        <!-- Franja Flotante de Modo Demostración en Vivo -->
+        ${emisorData?.isDemoGuest ? `
+            <div class="demo-top-strip">
+                <div class="demo-top-strip-info">
+                    <span class="demo-top-strip-badge">
+                        <span class="live-dot-pulse"></span>
+                        <span>Modo Demostración en Vivo</span>
+                    </span>
+                    <span>Estás probando el talonario interactivo con datos de muestra. Cero riesgo legal.</span>
+                </div>
+                <div class="demo-top-strip-actions">
+                    <button type="button" class="demo-chip-btn" onclick="window.appState.loadDemoSampleData()" title="Cargar productos típicos de tienda">
+                        ✨ Cargar Ejemplo
+                    </button>
+                    <button type="button" class="demo-chip-btn" onclick="window.appState.toggleVoiceDictation()" title="Probar dictado por voz">
+                        🎙️ Probar Voz
+                    </button>
+                    <button type="button" class="demo-chip-btn" onclick="document.getElementById('gravity-file-input')?.click()" title="Probar escaneo por foto">
+                        📷 Probar Foto
+                    </button>
+                    <button type="button" class="demo-chip-btn demo-chip-btn-primary" onclick="window.appState.openRegister()" title="Crear cuenta para facturar de verdad">
+                        🚀 Crear Cuenta Real
+                    </button>
+                    <button type="button" class="demo-chip-btn demo-chip-btn-exit" onclick="window.appState.exitDemoMode()" title="Volver a la portada">
+                        ✕ Salir
+                    </button>
+                </div>
+            </div>
+        ` : ''}
+
         <!-- Barra Selector de Experiencia y Ambiente (Demo / Real) -->
         <div class="mode-switcher-bar" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
             <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center;">
