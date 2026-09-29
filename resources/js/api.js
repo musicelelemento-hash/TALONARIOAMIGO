@@ -8,9 +8,13 @@
 const LOCAL_API_URL = 'http://localhost:8000/api';
 const PROD_API_URL = 'https://talonario-amigo-api.onrender.com/api';
 
-const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+const urlParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+const forceProd = urlParams && urlParams.get('api') === 'prod';
+const storedApiUrl = typeof window !== 'undefined' ? localStorage.getItem('ta_api_url') : null;
 
-export const API_BASE_URL = isLocal ? LOCAL_API_URL : PROD_API_URL;
+const isLocal = !forceProd && typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+
+export const API_BASE_URL = storedApiUrl || (forceProd ? PROD_API_URL : (isLocal ? LOCAL_API_URL : PROD_API_URL));
 
 class ApiClient {
     constructor() {

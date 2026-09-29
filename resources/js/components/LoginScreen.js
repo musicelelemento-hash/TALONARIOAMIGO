@@ -32,6 +32,11 @@ export function renderLoginScreen(onLoginSubmit) {
                     <button type="submit" style="margin-top: 6px; padding: 14px; background: #0F172A; color: #FFFFFF; border: none; border-radius: 12px; font-weight: 800; font-size: 14px; letter-spacing: 0.3px; cursor: pointer; box-shadow: 0 8px 20px rgba(15,23,42,0.28); transition: all .18s cubic-bezier(.16,1,.3,1);">
                         🔑 INGRESAR AL TALONARIO
                     </button>
+
+                    <button type="button" onclick="window.appState.enterDemoMode()" style="padding: 12px; background: #F0FDF4; border: 1.5px solid #86EFAC; color: #15803D; border-radius: 12px; font-weight: 800; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all .15s ease;">
+                        🏪 Abrir Mostrador Tablet (Demostración Directa)
+                    </button>
+
                     <button type="button" onclick="window.appState.openRegister()" style="padding: 8px; background: transparent; color: #1D4ED8; border: none; font-weight: 800; font-size: 12px; cursor: pointer;">¿Nuevo aquí? Crea tu facturador en 1 minuto</button>
                 </form>
             </div>

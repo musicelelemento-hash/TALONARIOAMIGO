@@ -762,6 +762,24 @@ export class AppManager {
         this.container.innerHTML = renderLoginScreen();
     }
 
+    enterDemoMode() {
+        this.triggerHaptic(20);
+        soundFx.playPaperSlide();
+        this.state.isLoggedIn = true;
+        this.state.currentRole = 'CLIENT';
+        this.state.isConfigured = true;
+        this.state.hasSignature = true;
+        this.state.isActive = true;
+        this.state.user = {
+            id: 999,
+            name: 'Don Carlos (Comerciante)',
+            email: 'carlos.comercio@talonarioamigo.com',
+            role: 'CLIENT'
+        };
+        this.showToast('🏪 Mostrador Tablet de Demostración Activo');
+        this.evaluateStateAndRender();
+    }
+
     openRegister() {
         this.container.innerHTML = renderRegisterScreen();
     }
