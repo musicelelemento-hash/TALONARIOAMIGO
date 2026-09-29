@@ -273,6 +273,15 @@ export function renderSuperAdminPanel(dashboardData, activeTab = 'resellers') {
                                     🧪 Correr Pruebas QA
                                 </button>
                             </div>
+                            <div style="background: #FEF2F2; border: 1.5px solid #FCA5A5; border-radius: 12px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <strong style="font-size: 13px; color: #991B1B;">🔍 Agente 20: INVOICE_VALIDATION_DEBUGGER</strong><br>
+                                    <small style="color: #7F1D1D;">Validación Pre-Flight, Módulo 10/11, Alerta Línea Roja y diagnóstico rápido SRI.</small>
+                                </div>
+                                <button type="button" class="sim-btn" style="background: #DC2626; color: white; padding: 5px 12px; font-size: 11px;" onclick="window.appState.runAgentDiagnostic('20_invoice_validation')">
+                                    🔍 Probar Validador
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

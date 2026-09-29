@@ -7,11 +7,17 @@
  * - Física 3D, Haptic Feedback y Sello SRI Impact
  */
 
+import { renderOnboardingModal } from './OnboardingScreen.js';
+
 function esc(value) {
     return String(value ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
 export function renderFacturadorRealista(emisorData, currentDocNumber, experienceMode = 'comerciante', isShowingBlueCopy = false) {
+    const isDemo = emisorData?.isDemoMode !== false;
+    const hasSignature = !!emisorData?.hasSignature;
+    const isConfigured = !!emisorData?.isConfigured;
+    const showRedWarningLine = !isDemo && (!hasSignature || !isConfigured);
     const docNumStr = String(currentDocNumber || 126).padStart(9, '0');
     const mode = experienceMode || 'comerciante';
 
@@ -96,9 +102,17 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
 
     // MODO NORMAL (HOJA MARFIL) CON SELECTOR DE EXPERIENCIA
     return `
-        <!-- Barra Selector de Experiencia (Tranquilo / Comerciante / Pro) -->
+        <!-- Barra Selector de Experiencia y Ambiente (Demo / Real) -->
         <div class="mode-switcher-bar" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-            <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+            <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center;">
+                <div style="display: inline-flex; background: rgba(0,0,0,0.06); padding: 2px; border-radius: 999px; margin-right: 4px;">
+                    <button type="button" class="mode-chip-btn ${isDemo ? 'active' : ''}" style="${isDemo ? 'background: #10B981; color: #FFFFFF; border: none; font-weight: 800;' : 'background: transparent; color: #64748B; border: none;'}" onclick="window.appState.setDemoMode(true)" title="Modo Demostración sin consecuencias fiscales">
+                        🏪 Modo Demo
+                    </button>
+                    <button type="button" class="mode-chip-btn ${!isDemo ? 'active' : ''}" style="${!isDemo ? 'background: #DC2626; color: #FFFFFF; border: none; font-weight: 800;' : 'background: transparent; color: #64748B; border: none;'}" onclick="window.appState.setDemoMode(false)" title="Modo Real con emisión directa ante el SRI Ecuador">
+                        🔴 Modo Real SRI
+                    </button>
+                </div>
                 <button class="mode-chip-btn ${mode === 'tranquilo' ? 'active' : ''}" onclick="window.appState.setExperienceMode('tranquilo')">
                     👴 Tranquilo
                 </button>
@@ -136,6 +150,21 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                 </div>
             </div>
         </div>
+
+        <!-- LÍNEA ROJA PROMINENTE EN MODO REAL (FALTA FIRMA O CONFIGURACIÓN) -->
+        ${showRedWarningLine ? `
+            <div class="alerta-modo-real-roja" id="alerta-firma-roja">
+                <div class="alerta-roja-content">
+                    <span class="alerta-roja-icon">🚨</span>
+                    <div class="alerta-roja-text">
+                        <strong>ATENCIÓN — MODO REAL SRI:</strong> Falta vincular tu <strong>Firma Electrónica (.p12)</strong> o completar configuración tributaria para emitir comprobantes legales.
+                    </div>
+                </div>
+                <button type="button" class="btn-alerta-roja" onclick="window.appState.openOnboardingModal()">
+                    ⚙️ Vincular Firma y Configurar (30 seg) ➔
+                </button>
+            </div>
+        ` : ''}
 
         <div class="factura-talonario-container stacked-bloc-depth paper-glide-in ${mode === 'tranquilo' ? 'mode-tranquilo-view' : ''}" id="receipt-paper-card">
             <!-- Principio 3: Esquina Doblada 3D Interactiva (Leaf Corner Curl) -->
@@ -421,16 +450,18 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                 </button>
             </div>
 
-            <!-- Acceso Rápido a Gobernanza y 12 Agentes (Modo Dueño/Imprenta) -->
+            <!-- Acceso Rápido a Gobernanza y 20 Agentes de Élite (Modo Dueño/Imprenta) -->
             <div style="margin-top: 16px; padding-top: 12px; border-top: 1px dashed #CBD5E1; text-align: center; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;">
                 <button type="button" class="mode-chip-btn" style="background: rgba(15, 23, 42, 0.05); border: 1px solid #CBD5E1; color: #475569; font-size: 10px; padding: 4px 10px;" onclick="window.appState.setRole('SUPER_ADMIN')">
-                    🏛️ Centro de Mando (12 Agentes)
+                    🏛️ Centro de Mando (20 Agentes de Élite)
                 </button>
                 <button type="button" class="mode-chip-btn" style="background: rgba(15, 23, 42, 0.05); border: 1px solid #CBD5E1; color: #475569; font-size: 10px; padding: 4px 10px;" onclick="window.appState.setRole('RESELLER')">
                     🏭 Panel Imprenta Aliada
                 </button>
             </div>
         </div>
+
+        ${emisorData?.isOnboardingModalOpen ? renderOnboardingModal() : ''}
 
         ${emisorData?.isScanningGravity ? `
             <div class="scanner-sweep-modal">

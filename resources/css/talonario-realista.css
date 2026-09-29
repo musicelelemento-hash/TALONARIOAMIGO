@@ -263,3 +263,129 @@
 .biometric-login-btn:active { transform: scale(0.96); }
 .whatsapp-login-btn { width: 100%; background: #25D366; color: #FFF; border: 2px solid #1EBE5D; border-radius: 14px; padding: 14px; font-size: 14px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; box-shadow: 0 4px 14px rgba(37, 211, 102, 0.3); transition: all 0.2s ease; }
 .whatsapp-login-btn:active { transform: scale(0.96); }
+
+/* LÍNEA ROJA DE ADVERTENCIA EN MODO REAL (FALTA FIRMA O CONFIGURACIÓN) */
+.alerta-modo-real-roja {
+    background: linear-gradient(90deg, #991B1B 0%, #DC2626 50%, #B91C1C 100%);
+    color: #FFFFFF;
+    border: 2px solid #7F1D1D;
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin: 8px 0 14px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    box-shadow: 0 6px 20px rgba(220, 38, 38, 0.35);
+    animation: pulseAlertRed 2s infinite ease-in-out;
+    position: relative;
+    z-index: 30;
+}
+
+@keyframes pulseAlertRed {
+    0%, 100% {
+        box-shadow: 0 4px 14px rgba(220, 38, 38, 0.3);
+        border-color: #B91C1C;
+    }
+    50% {
+        box-shadow: 0 8px 24px rgba(239, 68, 68, 0.65);
+        border-color: #FCA5A5;
+    }
+}
+
+.alerta-roja-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    line-height: 1.4;
+    flex: 1;
+    min-width: 240px;
+}
+
+.alerta-roja-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+    animation: iconBounce 1s infinite alternate;
+}
+
+@keyframes iconBounce {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-3px); }
+}
+
+.alerta-roja-text {
+    font-weight: 600;
+}
+
+.alerta-roja-text strong {
+    color: #FEF08A;
+    font-weight: 800;
+}
+
+.btn-alerta-roja {
+    background: #FFFFFF;
+    color: #991B1B;
+    border: none;
+    padding: 9px 18px;
+    border-radius: 9px;
+    font-size: 12px;
+    font-weight: 900;
+    cursor: pointer;
+    white-space: nowrap;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-alerta-roja:hover {
+    background: #FEF2F2;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.btn-alerta-roja:active {
+    transform: scale(0.96);
+}
+
+/* MODAL OVERLAY PARA CONFIGURAR FIRMA Y ONBOARDING RÁPIDO */
+.modal-onboarding-backdrop {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(6px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    animation: fadeIn 0.2s ease;
+}
+
+.modal-onboarding-card {
+    width: 100%;
+    max-width: 520px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: #FFFFFF;
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+    border: 1px solid #CBD5E1;
+    position: relative;
+    animation: slideUp 0.25s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}

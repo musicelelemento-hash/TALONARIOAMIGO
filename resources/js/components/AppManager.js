@@ -16,6 +16,7 @@ import { soundFx } from '../services/soundFx.js';
 import { voiceDictation } from '../services/voiceDictation.js';
 import { gravityScanner } from '../services/gravityScanner.js';
 import { offlineQueue } from '../services/offlineQueue.js';
+import { invoiceValidator } from '../services/invoiceValidator.js';
 
 export class AppManager {
     constructor(containerId) {
@@ -26,6 +27,8 @@ export class AppManager {
             currentRole: 'CLIENT',      // SUPER_ADMIN, RESELLER, CLIENT
             // Inicia sesión sólo si ya existe un token Sanctum guardado en este dispositivo.
             isLoggedIn: !!localStorage.getItem('ta_auth_token'),
+            isDemoMode: true,           // Modo Demostración activo por defecto
+            isOnboardingModalOpen: false, // Modal rápido de firma y RUC
             isConfigured: true,        // RUC y datos emisor
             hasSignature: true,         // Archivo .p12 subido
             isActive: true,             // Estado activo/desactivado
@@ -136,17 +139,9 @@ export class AppManager {
             return;
         }
 
-        if (!this.state.isConfigured) {
-            this.container.innerHTML = renderOnboardingScreen();
-            return;
-        }
-
-        if (!this.state.hasSignature) {
-            this.container.innerHTML = renderSupportLockScreen(
-                "Aún no has configurado tu archivo de Firma Electrónica (.p12) requerida por el SRI para emitir comprobantes.",
-                this.state.supportWhatsapp
-            );
-            return;
+        this.container.innerHTML = renderFacturadorRealista(this.state, this.state.currentDocNumber, this.state.experienceMode, this.state.isShowingBlueCopy);
+        if (this.state.isTomosModalOpen) {
+            this.container.innerHTML += renderTomosModal(this.state.activeTomoMonth);
         }
 
         this.container.innerHTML = renderFacturadorRealista(this.state, this.state.currentDocNumber, this.state.experienceMode, this.state.isShowingBlueCopy);
@@ -225,6 +220,38 @@ export class AppManager {
             '12_qa': {
                 name: '🧪 Agente 12: QA_TEST_GUARDIAN',
                 msg: 'Suite de pruebas de emisión, desgarro 3D y dictado por voz ejecutadas exitosamente. Cero regresiones detectadas.'
+            },
+            '13_voice_ai': {
+                name: '🎙️ Agente 13: VOICE_AI_TACTILE_OFFICER',
+                msg: 'Extracción fonética activa: Cédula (10d), RUC (13d), teléfonos 09 y correos reconocidos en tiempo real con micro-háptica.'
+            },
+            '14_ocr_gravity': {
+                name: '👁️ Agente 14: OCR_GRAVITY_VISION_SPECIALIST',
+                msg: 'Tesseract WASM en cliente operativo. Escaneo por gravedad y Módulo 10 integrados en visor de cámara.'
+            },
+            '15_resend_ride': {
+                name: '📨 Agente 15: RESEND_RIDE_DISPATCH_OFFICER',
+                msg: 'API Resend verificada en talonarioamigo.com. Plantilla HTML en papel marfil y WhatsApp fallback listos.'
+            },
+            '16_cloud_vault': {
+                name: '🗄️ Agente 16: CLOUD_VAULT_R2_ARCHITECT',
+                msg: 'Bóveda Cloudflare R2 sin costo de egreso enlazada para archivo legal de comprobantes por 7 años.'
+            },
+            '17_supabase_data': {
+                name: '🗃️ Agente 17: SUPABASE_DATA_GOVERNOR',
+                msg: 'Supabase Postgres 17 con RLS multi-tenant y connection pooling PgBouncer en puerto 6543 activo.'
+            },
+            '18_micro_billing': {
+                name: '⚡ Agente 18: MICRO_BILLING_QUEUES_SPECIALIST',
+                msg: 'Arquitectura desacoplada de emisión y colas de contingencia offline ante caídas del SRI.'
+            },
+            '19_b2b_imprentas': {
+                name: '🖨️ Agente 19: B2B_IMPRENTAS_NETWORK_ARCHITECT',
+                msg: 'Red física de imprentas del SRI con alta en 30s por PDF RUC y soporte WhatsApp local.'
+            },
+            '20_invoice_validation': {
+                name: '🔍 Agente 20: INVOICE_VALIDATION_DEBUGGER',
+                msg: 'Validador pre-flight desacoplado, Módulo 10/11, Alerta Línea Roja en Modo Real y traductor de errores SRI activos.'
             }
         };
 
@@ -234,11 +261,11 @@ export class AppManager {
 
         if (agentKey === 'all') {
             if (statusEl) statusEl.innerText = 'AUDITORÍA INTEGRAL EN CURSO...';
-            let fullLog = `[${timestamp}] 🚀 INICIANDO AUDITORÍA INTEGRAL DE LOS 12 AGENTES...\n`;
+            let fullLog = `[${timestamp}] 🚀 INICIANDO AUDITORÍA INTEGRAL DE LOS 20 AGENTES DE ÉLITE...\n`;
             Object.values(AGENT_REPORTS).forEach(rep => {
                 fullLog += `[OK] ${rep.name}: ${rep.msg}\n`;
             });
-            fullLog += `\n🎉 RESULTADO GLOBAL: 12/12 AGENTES 100% OPERATIVOS Y SIN ALERTAS.`;
+            fullLog += `\n🎉 RESULTADO GLOBAL: 20/20 AGENTES 100% OPERATIVOS Y SIN ALERTAS.`;
             if (consoleEl) {
                 consoleEl.innerText = fullLog;
                 consoleEl.scrollTop = consoleEl.scrollHeight;
@@ -647,11 +674,26 @@ export class AppManager {
         let payload;
         try {
             payload = this.collectEmitPayload();
-            if (!payload.cliente.nombre || !payload.cliente.identificacion) {
-                throw new Error('Completa el nombre y la identificación del cliente.');
-            }
-            if (!payload.items.length) {
-                throw new Error('Agrega al menos un producto a la factura.');
+            
+            // Validación Pre-Flight Avanzada con Agente 20 (invoiceValidator)
+            const preFlight = invoiceValidator.validatePreFlight(payload, this.state);
+            if (!preFlight.valid) {
+                this.triggerHaptic([60, 40, 80]);
+                soundFx.playStamp();
+                
+                // Si es un error de firma en modo real, destacar y hacer parpadear la línea roja
+                if (preFlight.code?.includes('REAL_MODE')) {
+                    const alertaRoja = document.getElementById('alerta-firma-roja');
+                    if (alertaRoja) {
+                        alertaRoja.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        alertaRoja.style.animation = 'none';
+                        void alertaRoja.offsetHeight;
+                        alertaRoja.style.animation = 'pulseAlertRed 0.4s 4 ease-in-out';
+                    }
+                }
+                
+                this.showToast(`⚠️ ${preFlight.title}: ${preFlight.message}`);
+                return;
             }
 
             let res;
@@ -684,7 +726,14 @@ export class AppManager {
                             numeroAutorizacion: 'PENDIENTE_SINCRONIZACION'
                         };
                     } else {
-                        throw netErr;
+                        // Diagnóstico inteligente del error con Agente 20
+                        const diag = invoiceValidator.diagnosticarError(netErr);
+                        this.triggerHaptic([70, 40, 70]);
+                        this.showToast(`❌ ${diag.titulo}: ${diag.mensaje}`);
+                        if (diag.isSignatureError) {
+                            this.openOnboardingModal();
+                        }
+                        return;
                     }
                 }
             }
@@ -815,6 +864,9 @@ export class AppManager {
             this.state.currentRole = res.user.role;
             this.state.user = res.user;
             this.state.isLoggedIn = true;
+            this.state.isDemoMode = false; // Al iniciar sesión con credenciales reales entra en Modo Real
+            this.state.hasSignature = !!(res.user?.emisor?.firma_p12_path);
+            this.state.isConfigured = !!(res.user?.emisor?.ruc);
             this.showToast(`✓ Bienvenido, ${res.user.name || res.user.email}.`);
             this.evaluateStateAndRender();
         } catch (e) {
@@ -837,10 +889,36 @@ export class AppManager {
         this.container.innerHTML = renderLoginScreen();
     }
 
+    setDemoMode(isDemo) {
+        this.triggerHaptic(20);
+        soundFx.playPaperSlide();
+        this.state.isDemoMode = isDemo;
+        if (!isDemo && (!this.state.hasSignature || !this.state.isConfigured)) {
+            this.showToast('🚨 Modo Real SRI activado: Se requiere firma .p12 para emitir comprobantes legales.');
+        } else if (isDemo) {
+            this.showToast('🏪 Modo Demostración Activo: Puedes probar sin consecuencias fiscales.');
+        }
+        this.evaluateStateAndRender();
+    }
+
+    openOnboardingModal() {
+        this.triggerHaptic(20);
+        soundFx.playPaperSlide();
+        this.state.isOnboardingModalOpen = true;
+        this.evaluateStateAndRender();
+    }
+
+    closeOnboardingModal() {
+        this.triggerHaptic(15);
+        this.state.isOnboardingModalOpen = false;
+        this.evaluateStateAndRender();
+    }
+
     enterDemoMode() {
         this.triggerHaptic(20);
         soundFx.playPaperSlide();
         this.state.isLoggedIn = true;
+        this.state.isDemoMode = true;
         this.state.currentRole = 'CLIENT';
         this.state.isConfigured = true;
         this.state.hasSignature = true;

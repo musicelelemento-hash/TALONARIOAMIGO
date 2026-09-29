@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PuntoEmision;
 use App\Services\FacturacionElectronicaLibrary;
+use App\Services\InvoiceValidationService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -13,37 +14,37 @@ use Illuminate\Validation\ValidationException;
 class FacturacionElectronicaController extends Controller
 {
     private $facturacion;
+    private $validator;
 
-    public function __construct(FacturacionElectronicaLibrary $facturacion)
+    public function __construct(FacturacionElectronicaLibrary $facturacion, InvoiceValidationService $validator)
     {
         $this->facturacion = $facturacion;
+        $this->validator = $validator;
     }
 
     /**
-     * Orquesta el pipeline real de emisión: arma el XML de factura a partir de los datos
-     * tributarios del emisor logueado, lo firma con su .p12, lo envía al SRI y consulta
-     * la autorización. No fabrica ningún resultado: si un paso falla, se devuelve el error real.
+     * Orquesta el pipeline real de emisión usando el servicio modular de validación y diagnóstico.
      */
     public function emitirFactura(Request $request)
     {
         $user = $request->user();
         $emisor = $user->emisor;
 
-        if (!$emisor || empty($emisor->ruc)) {
+        // 1. Validación Pre-Flight de Emisor y Certificado .p12
+        $emisorVal = $this->validator->validarEmisorYFirma($emisor);
+        if (!$emisorVal['valido']) {
             return response()->json([
                 'success' => false,
-                'code' => 'PENDING_ONBOARDING',
-                'message' => 'Completa tus datos tributarios (RUC, razón social) antes de emitir.',
+                'code' => $emisorVal['codigo'],
+                'titulo' => $emisorVal['titulo'],
+                'message' => $emisorVal['mensaje'],
+                'solucion' => $emisorVal['solucion'] ?? null,
             ], 422);
         }
 
-        if (empty($emisor->firma_p12_path)) {
-            return response()->json([
-                'success' => false,
-                'code' => 'MISSING_SIGNATURE',
-                'message' => 'Debes vincular tu firma electrónica .p12 antes de emitir.',
-            ], 422);
-        }
+        $puntoEmision = $emisorVal['puntoEmision'];
+        $certContent = $emisorVal['certContent'];
+        $clave = $emisorVal['clave'];
 
         $data = $request->validate([
             'cliente.nombre' => 'required|string|max:255',
@@ -58,79 +59,27 @@ class FacturacionElectronicaController extends Controller
             'items.*.exento' => 'nullable|boolean',
         ]);
 
-        $puntoEmision = $emisor->puntosEmision()->where('is_active', true)->first();
-        if (!$puntoEmision) {
+        // 2. Validación Algorítmica de Cliente (Módulo 10/11), Regla $50 y Cuadre de Totales
+        $totalesVal = $this->validator->validarClienteYTotales($data['cliente'], $data['items']);
+        if (!$totalesVal['valido']) {
             return response()->json([
                 'success' => false,
-                'message' => 'No hay un punto de emisión activo configurado para tu RUC.',
+                'code' => $totalesVal['codigo'],
+                'titulo' => $totalesVal['titulo'],
+                'message' => $totalesVal['mensaje'],
+                'solucion' => $totalesVal['solucion'] ?? null,
             ], 422);
         }
 
-        if (!Storage::disk('local')->exists($emisor->firma_p12_path)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'No se encontró el archivo de tu firma electrónica. Vuelve a vincularla en Mi Cuenta.',
-            ], 422);
-        }
-
-        $certContent = Storage::disk('local')->get($emisor->firma_p12_path);
-        $clave = $emisor->firma_password;
-        if (!$clave) {
-            return response()->json([
-                'success' => false,
-                'message' => 'No se pudo leer la contraseña de tu firma. Vuelve a vincularla en Mi Cuenta.',
-            ], 422);
-        }
-
-        // IVA general vigente desde abril/2024 (Ley Orgánica de Eficiencia Económica): 15%, código SRI "4".
-        // Verifica con tu contador si tu régimen/producto aplica una tarifa distinta.
-        $tarifaCodigo = '4';
-        $tarifaPorcentaje = 15;
-
-        $subtotalGravado = 0.0;
-        $subtotalExento = 0.0;
-        $detalle = [];
-        foreach ($data['items'] as $item) {
-            $cantidad = (float) $item['cantidad'];
-            $precio = (float) $item['precioUnitario'];
-            $totalSinImpuesto = round($cantidad * $precio, 2);
-            $exento = !empty($item['exento']);
-
-            if ($exento) {
-                $subtotalExento += $totalSinImpuesto;
-            } else {
-                $subtotalGravado += $totalSinImpuesto;
-            }
-
-            $detalle[] = (object) [
-                'codigoPrincipal' => 'ITEM',
-                'codigoAuxiliar' => '',
-                'descripcion' => $item['descripcion'],
-                'cantidad' => number_format($cantidad, 6, '.', ''),
-                'precioUnitario' => number_format($precio, 6, '.', ''),
-                'descuento' => '0.00',
-                'precioTotalSinImpuesto' => number_format($totalSinImpuesto, 2, '.', ''),
-                'impuesto' => (object) [
-                    'codigo' => '2',
-                    'codigoPorcentaje' => $exento ? '0' : $tarifaCodigo,
-                    'tarifa' => $exento ? 0 : $tarifaPorcentaje,
-                    'baseImponible' => number_format($totalSinImpuesto, 2, '.', ''),
-                    'valor' => number_format($exento ? 0 : $totalSinImpuesto * $tarifaPorcentaje / 100, 2, '.', ''),
-                ],
-            ];
-        }
-
-        $ivaValor = round($subtotalGravado * $tarifaPorcentaje / 100, 2);
-        $totalSinImpuestos = round($subtotalGravado + $subtotalExento, 2);
-        $importeTotal = round($totalSinImpuestos + $ivaValor, 2);
-
-        $identificacion = preg_replace('/[^0-9]/', '', $data['cliente']['identificacion']);
-        $tipoIdentificacion = match (true) {
-            $identificacion === '9999999999999' => '07',
-            strlen($identificacion) === 13 => '04',
-            strlen($identificacion) === 10 => '05',
-            default => '05',
-        };
+        $detalle = $totalesVal['detalle'];
+        $subtotalGravado = $totalesVal['subtotalGravado'];
+        $subtotalExento = $totalesVal['subtotalExento'];
+        $totalSinImpuestos = $totalesVal['totalSinImpuestos'];
+        $ivaValor = $totalesVal['ivaValor'];
+        $importeTotal = $totalesVal['importeTotal'];
+        $tarifaCodigo = $totalesVal['tarifaCodigo'];
+        $tipoIdentificacion = $totalesVal['tipoIdentificacion'];
+        $identificacion = $totalesVal['identificacion'];
 
         $codigoNumerico = str_pad((string) random_int(0, 99999999), 8, '0', STR_PAD_LEFT);
         $fechaEmision = now()->setTimezone('America/Guayaquil');
@@ -219,11 +168,12 @@ class FacturacionElectronicaController extends Controller
             ], 500);
         }
 
-        $estado = $this->extraerEstadoAutorizacion($resultado['autorizacion']);
+        // 3. Diagnóstico Inteligente de la Respuesta SRI
+        $diagnostico = $this->validator->diagnosticarRespuestaSri($resultado['autorizacion']);
 
         // Despacho transaccional automático vía Resend si el cliente o comercio proveyó correo
         $emailEnviado = false;
-        if (!empty($data['cliente']['email'])) {
+        if ($diagnostico['esAutorizado'] && !empty($data['cliente']['email'])) {
             try {
                 $resend = app(\App\Services\ResendService::class);
                 $emailEnviado = $resend->enviarComprobante(
@@ -240,12 +190,14 @@ class FacturacionElectronicaController extends Controller
 
         return response()->json([
             'success' => true,
-            'estado' => $estado['estado'],
+            'estado' => $diagnostico['estado'],
             'claveAcceso' => $resultado['claveAcceso'],
             'secuencial' => $resultado['secuencial'],
-            'numeroAutorizacion' => $estado['numeroAutorizacion'],
-            'fechaAutorizacion' => $estado['fechaAutorizacion'],
-            'mensaje' => $estado['mensaje'],
+            'numeroAutorizacion' => $diagnostico['numeroAutorizacion'],
+            'fechaAutorizacion' => $diagnostico['fechaAutorizacion'],
+            'mensaje' => $diagnostico['mensajeHumano'],
+            'solucion' => $diagnostico['solucion'] ?? null,
+            'diagnostico' => $diagnostico,
             'email_enviado' => $emailEnviado,
             'envio_raw' => $resultado['envio'],
             'autorizacion_raw' => $resultado['autorizacion'],

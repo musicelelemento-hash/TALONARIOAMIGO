@@ -52,15 +52,16 @@ Transformar la transición tributaria de los pequeños comerciantes de Ecuador e
 
 ---
 
-## 🏛️ Sistema Multi-Agente Operativo (19 Agentes de Élite)
+## 🏛️ Sistema Multi-Agente Operativo (20 Agentes de Élite)
 Consulta la arquitectura completa y contratos en [SISTEMA_MULTI_AGENTES.md](file:///c:/Programacion/Aplicaciones/Talonario%20Amigo/SISTEMA_MULTI_AGENTES.md) y las fichas en [.agents/agents/](file:///c:/Programacion/Aplicaciones/Talonario%20Amigo/.agents/agents/):
 
 - **NIVEL 0 (Comando Maestro):**
   - [01_orchestrator_master.md](file:///c:/Programacion/Aplicaciones/Talonario%20Amigo/.agents/agents/01_orchestrator_master.md)
-- **NIVEL 1 (Escuadrón Tributario & SRI):**
+- **NIVEL 1 (Escuadrón Tributario, Validación & SRI):**
   - [02_sri_compliance_officer.md](file:///c:/Programacion/Aplicaciones/Talonario%20Amigo/.agents/agents/02_sri_compliance_officer.md)
   - [03_p12_vault_security.md](file:///c:/Programacion/Aplicaciones/Talonario%20Amigo/.agents/agents/03_p12_vault_security.md)
   - [04_soap_sri_pipeline.md](file:///c:/Programacion/Aplicaciones/Talonario%20Amigo/.agents/agents/04_soap_sri_pipeline.md)
+  - [20_invoice_validation_debugger.md](file:///c:/Programacion/Aplicaciones/Talonario%20Amigo/.agents/agents/20_invoice_validation_debugger.md)
 - **NIVEL 1 (Escuadrón Producto, Táctil, Voz & Móvil):**
   - [05_tactile_design_system.md](file:///c:/Programacion/Aplicaciones/Talonario%20Amigo/.agents/agents/05_tactile_design_system.md)
   - [06_frontend_spa_engineer.md](file:///c:/Programacion/Aplicaciones/Talonario%20Amigo/.agents/agents/06_frontend_spa_engineer.md)

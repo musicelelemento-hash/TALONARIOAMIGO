@@ -1,11 +1,11 @@
 # 🏛️ SISTEMA MAESTRO MULTI-AGENTE — TALONARIO AMIGO
-> **Versión Operativa:** 3.0 (Elite Enterprise Multi-Agent Architecture)  
+> **Versión Operativa:** 3.5 (Elite Enterprise Multi-Agent Architecture — 20 Agentes)  
 > **Lema Estratégico:** *"No vendemos facturación electrónica. Vendemos: La tranquilidad de seguir usando tu talonario de toda la vida."*
 
 ---
 
 ## 🎯 PROPÓSITO DEL SISTEMA
-Para que **Talonario Amigo** domine el mercado ecuatoriano como una solución de nivel ultra-profesional de élite, se establece una **fuerza operativa de 19 Agentes Autónomos Especializados** distribuidos en **4 Niveles Jerárquicos y 6 Escuadrones Estratégicos**.
+Para que **Talonario Amigo** domine el mercado ecuatoriano como una solución de nivel ultra-profesional de élite, se establece una **fuerza operativa de 20 Agentes Autónomos Especializados** distribuidos en **4 Niveles Jerárquicos y 6 Escuadrones Estratégicos**.
 
 Cada agente posee responsabilidades delimitadas, herramientas designadas, contratos de entrada/salida y un protocolo estricto de escalamiento.
 
@@ -14,9 +14,9 @@ Cada agente posee responsabilidades delimitadas, herramientas designadas, contra
 ## 📊 RESUMEN DE CANTIDAD Y JERARQUÍA
 
 ```
-Total de Agentes Activos: 19
+Total de Agentes Activos: 20
 ├── NIVEL 0: Dirección Estratégica & Comando Maestro (1 Agente)
-├── NIVEL 1: Escuadrón Tributario & Cumplimiento SRI Ecuador (3 Agentes)
+├── NIVEL 1: Escuadrón Tributario, Validación & Cumplimiento SRI Ecuador (4 Agentes)
 ├── NIVEL 1: Escuadrón de Producto, Experiencia Táctil, Voz & Móvil (4 Agentes)
 ├── NIVEL 1: Escuadrón de Visión Computacional & Escaneo Háptico (1 Agente)
 ├── NIVEL 1: Escuadrón de Despacho Transaccional & Omnicanalidad (1 Agente)
@@ -37,11 +37,11 @@ Total de Agentes Activos: 19
          ┌──────────────────────────────┬──────────────────────┴───────┬──────────────────────────────┐
          ▼                              ▼                              ▼                              ▼
 ┌──────────────────────────────┐ ┌──────────────────────────────┐ ┌──────────────────────────────┐ ┌──────────────────────────────┐
-│  ESCUADRÓN TRIBUTARIO SRI    │ │  ESCUADRÓN PRODUCTO & VOZ    │ │  VISIÓN & DESPACHO RESEND    │ │  ESCUADRÓN B2B & IMPRENTAS   │
+│  ESCUADRÓN TRIBUTARIO & QA   │ │  ESCUADRÓN PRODUCTO & VOZ    │ │  VISIÓN & DESPACHO RESEND    │ │  ESCUADRÓN B2B & IMPRENTAS   │
 │ ⚖️ 02: SRI_COMPLIANCE_OFFICER │ │ 🎨 05: TACTILE_DESIGN_SYSTEM │ │ 👁️ 14: OCR_GRAVITY_VISION    │ │ 🏭 08: B2B_RESELLER_DIRECTOR │
 │ 🔐 03: P12_VAULT_SECURITY    │ │ ⚡ 06: FRONTEND_SPA_ENGINEER  │ │ 📨 15: RESEND_RIDE_DISPATCH  │ │ 📣 09: VIRAL_GROWTH_MARKETER │
 │ 📡 04: SOAP_SRI_PIPELINE     │ │ 📱 07: MOBILE_CAPACITOR_ENG  │ └──────────────────────────────┘ │ 📊 10: METRICS_RETENTION     │
-│                              │ │ 🎙️ 13: VOICE_AI_TACTILE_ENG  │                                  │ 🖨️ 19: B2B_IMPRENTAS_ARCH     │
+│ 🔍 20: INVOICE_VALIDATION_DBG │ │ 🎙️ 13: VOICE_AI_TACTILE_ENG  │                                  │ 🖨️ 19: B2B_IMPRENTAS_ARCH     │
 └──────────────────────────────┘ └──────────────────────────────┘                                  └──────────────────────────────┘
          │                              │                              │                              │
          └──────────────────────────────┴──────────────┬───────────────┴──────────────────────────────┘
@@ -56,15 +56,16 @@ Total de Agentes Activos: 19
 
 ---
 
-## 🎖️ PERFILES Y FICHAS OPERATIVAS DE LOS 19 AGENTES
+## 🎖️ PERFILES Y FICHAS OPERATIVAS DE LOS 20 AGENTES
 
 ### 👑 NIVEL 0: DIRECCIÓN ESTRATÉGICA & COMANDO MAESTRO
 * [01_orchestrator_master.md](file:///.agents/agents/01_orchestrator_master.md): Máxima autoridad operativa. Descompone objetivos complejos, asigna misiones y vela por el alma de producto (*"La tranquilidad de seguir usando tu talonario de toda la vida"*).
 
-### ⚖️ NIVEL 1: ESCUADRÓN TRIBUTARIO Y CUMPLIMIENTO SRI ECUADOR
+### ⚖️ NIVEL 1: ESCUADRÓN TRIBUTARIO, VALIDACIÓN Y CUMPLIMIENTO SRI ECUADOR
 * [02_sri_compliance_officer.md](file:///.agents/agents/02_sri_compliance_officer.md): Esquemas XML v1.1.0, clave de acceso de 49 dígitos Módulo 11, regímenes RIMPE y validación de RUCs/Cédulas.
 * [03_p12_vault_security.md](file:///.agents/agents/03_p12_vault_security.md): Desempaquetado seguro de certificados `.p12`/`.pfx`, verificación de entidades certificadoras y custodia criptográfica.
 * [04_soap_sri_pipeline.md](file:///.agents/agents/04_soap_sri_pipeline.md): Comunicación SOAP directa con `cel.sri.gob.ec` y `celcer.sri.gob.ec`, manejo de timeouts y contingencia.
+* [20_invoice_validation_debugger.md](file:///.agents/agents/20_invoice_validation_debugger.md): Validación pre-flight en cliente y servidor, Módulo 10/11, control de la Línea Roja de alerta en Modo Real y diagnóstico inteligente de errores devueltos por el SRI.
 
 ### 🎨 NIVEL 1: ESCUADRÓN DE PRODUCTO, EXPERIENCIA TÁCTIL, VOZ Y MÓVIL
 * [05_tactile_design_system.md](file:///.agents/agents/05_tactile_design_system.md): Protector del Design System de Papel Marfil (`#FCFBF6`), animaciones de desprendimiento 3D y copia azul autocopiativa.
