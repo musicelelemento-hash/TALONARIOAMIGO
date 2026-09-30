@@ -2513,7 +2513,7 @@
                 this.state = {
                     showStartMenu: wantsHome,
                     currentRole: (cachedAuthUser && cachedAuthUser.role) || 'CLIENT',
-                    loginRoleTab: (typeof window !== 'undefined' && (window.location.hash === '#reseller' || window.location.search.includes('reseller'))) ? 'RESELLER' : (localStorage.getItem('ta_login_role_tab') || 'CLIENT'),
+                    loginRoleTab: (typeof window !== 'undefined' && (window.location.hash === '#admin' || window.location.hash === '#matriz')) ? 'SUPER_ADMIN' : ((typeof window !== 'undefined' && (window.location.hash === '#reseller' || window.location.search.includes('reseller'))) ? 'RESELLER' : 'CLIENT'),
                     showPasswordInLogin: false,
                     // Datos del Emisor (Configurables y dinámicos)
                     emisorNombre: localStorage.getItem('ta_emisor_nombre') || (cachedAuthUser && cachedAuthUser.name) || 'Carlos Alexander Balladares Gómez',
@@ -2683,6 +2683,32 @@
                 window.appState = this;
                 this.setupNetworkListeners();
                 this.setup3DParallaxTilt();
+
+            // Atajo de teclado secreto para Administrador: Ctrl + Alt + A
+            window.addEventListener('keydown', (e) => {
+                if (e.ctrlKey && e.altKey && (e.key === 'a' || e.key === 'A')) {
+                    if (window.appState) {
+                        window.appState.state.loginRoleTab = 'SUPER_ADMIN';
+                        window.location.hash = '#admin';
+                        window.appState.showToast('🔐 Modo Administrativo Activado');
+                        window.appState.evaluateStateAndRender();
+                    }
+                }
+            });
+
+            // Detección de navegación por hash (#admin / #matriz)
+            window.addEventListener('hashchange', () => {
+                if (window.appState && !window.appState.state.isLoggedIn) {
+                    if (window.location.hash === '#admin' || window.location.hash === '#matriz') {
+                        window.appState.state.loginRoleTab = 'SUPER_ADMIN';
+                        window.appState.evaluateStateAndRender();
+                    } else if (window.location.hash === '#reseller') {
+                        window.appState.state.loginRoleTab = 'RESELLER';
+                        window.appState.evaluateStateAndRender();
+                    }
+                }
+            });
+
                 this.evaluateStateAndRender();
             }
 
@@ -3987,6 +4013,10 @@
 
             toggleRoleSwitcherModal() {
                 this.triggerHaptic(20);
+                if (this.state.currentRole !== 'SUPER_ADMIN') {
+                    this.showToast('ℹ️ Conectado como: ' + (this.state.currentRole === 'RESELLER' ? 'Imprenta Aliada' : 'Comerciante'));
+                    return;
+                }
                 let modal = document.getElementById('role-switcher-modal');
                 if (!modal) {
                     modal = document.createElement('div');
@@ -4278,38 +4308,95 @@
 
             renderLoginScreen() {
                 const roleTab = this.state.loginRoleTab || 'CLIENT';
-                const isReseller = roleTab === 'RESELLER';
                 const isSuperAdmin = roleTab === 'SUPER_ADMIN';
-                const isClient = roleTab === 'CLIENT';
+                const isReseller = roleTab === 'RESELLER';
 
+                // =========================================================================
+                // MODO ADMINISTRATIVO PRIVADO (SOLO VISIBLE CON #admin O TRIPLE TAP SECRETO)
+                // =========================================================================
+                if (isSuperAdmin) {
+                    return `
+                        <div class="factura-paper-container" style="max-width: 440px; margin: 16px auto; padding: 24px 20px; background: #0F172A; border: 2.5px solid #D4AF37; border-radius: var(--radius-container); box-shadow: 0 20px 48px rgba(0,0,0,0.7); color: #F8FAFC;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                                <div style="font-size: 11px; font-weight: 800; color: #D4AF37; letter-spacing: 1px; text-transform: uppercase;">
+                                    🔐 Matriz Central Privada
+                                </div>
+                                <button type="button" onclick="appState.exitSecretAdminMode()" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #94A3B8; border-radius: 8px; padding: 4px 8px; font-size: 10.5px; font-weight: 700; cursor: pointer;">
+                                    ✕ Volver al Portal
+                                </button>
+                            </div>
+
+                            <div style="text-align: center; margin-bottom: 22px;">
+                                <div style="width: 52px; height: 52px; background: rgba(212,175,55,0.15); color: #D4AF37; border-radius: var(--radius-btn); font-weight: 800; font-size: 26px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 10px; border: 1.5px solid #D4AF37; box-shadow: 0 4px 20px rgba(212,175,55,0.3);">
+                                    👑
+                                </div>
+                                <h1 style="font-family: var(--font-serif-header); font-size: 22px; font-weight: 800; color: #FFFFFF;">
+                                    Matriz Central SuperAdmin
+                                </h1>
+                                <p style="font-size: 11.5px; color: #94A3B8; margin-top: 4px;">
+                                    Consola de administración nacional y control de imprentas
+                                </p>
+                            </div>
+
+                            <form id="traditional-login-form" onsubmit="appState.handleTraditionalLogin(event)" style="display: flex; flex-direction: column; gap: 12px;">
+                                <div>
+                                    <label style="font-size: 11px; font-weight: 800; color: #E2E8F0; display: block; margin-bottom: 4px;">
+                                        Correo Administrador Maestro
+                                    </label>
+                                    <input type="email" id="login-email-input" class="cliente-line-input" style="width: 100%; font-size: 13px; padding: 8px 10px; border: 1.5px solid #334155; border-radius: var(--radius-input); background: #1E293B; color: #FFF;" value="admin@talonarioamigo.com" required>
+                                </div>
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                        <label style="font-size: 11px; font-weight: 800; color: #E2E8F0;">Contraseña Maestra</label>
+                                        <button type="button" id="btn-toggle-login-pass" onclick="appState.toggleShowPassword()" style="background: none; border: none; font-size: 11px; color: #94A3B8; cursor: pointer; font-weight: 600;">
+                                            👁️ Mostrar
+                                        </button>
+                                    </div>
+                                    <input type="password" id="login-password-input" class="cliente-line-input" style="width: 100%; font-size: 13px; padding: 8px 10px; border: 1.5px solid #334155; border-radius: var(--radius-input); background: #1E293B; color: #FFF;" required>
+                                </div>
+
+                                <button type="button" onclick="appState.fillSuperAdminDemoCredentials()" style="background: rgba(212,175,55,0.1); border: 1px dashed #D4AF37; color: #FACC15; border-radius: 8px; padding: 6px 10px; font-size: 10.5px; font-weight: 800; cursor: pointer; text-align: center;">
+                                    ⚡ Cargar Credenciales Demo SuperAdmin
+                                </button>
+
+                                <div id="login-error-msg" style="display:none; font-size: 11px; color: #FCA5A5; font-weight: 700; background: rgba(220,38,38,0.2); padding: 6px 10px; border-radius: 8px; border: 1px solid #EF4444;"></div>
+                                <button type="submit" class="btn-stamp-action" style="margin-top: 6px; background: #D4AF37; color: #0F172A; border: none; font-weight: 900; box-shadow: 0 4px 16px rgba(212,175,55,0.4);">
+                                    👑 INGRESAR A LA MATRIZ CENTRAL
+                                </button>
+                            </form>
+                        </div>
+                    `;
+                }
+
+                // =========================================================================
+                // VISTA PÚBLICA NORMAL: ÚNICAMENTE 2 PESTAÑAS (COMERCIANTE / IMPRENTA ALIADA)
+                // CERO MENCIÓN DE SUPERADMIN PARA CLIENTES E IMPRENTAS
+                // =========================================================================
                 return `
                     <div class="factura-paper-container" style="max-width: 440px; margin: 16px auto; padding: 24px 20px; background: #FFFEF9; border: 2.5px solid var(--paper-border); border-radius: var(--radius-container); box-shadow: var(--shadow-paper);">
                         
-                        <!-- Pestañas Selectoras de Portal (Segmented Control Apple/Linear 3 Roles) -->
-                        <div class="login-role-tabs" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; margin-bottom: 16px;">
-                            <button type="button" class="login-role-tab ${isClient ? 'active' : ''}" onclick="appState.setLoginRoleTab('CLIENT')">
-                                <span style="font-size: 13px;">✒️</span>
-                                <span style="font-size: 11px;">Comercio</span>
+                        <!-- Pestañas Selectoras de Portal (Solo 2: Comerciante / Imprenta Aliada) -->
+                        <div class="login-role-tabs">
+                            <button type="button" class="login-role-tab ${!isReseller ? 'active' : ''}" onclick="appState.setLoginRoleTab('CLIENT')">
+                                <span style="font-size: 14px;">✒️</span>
+                                <span>Comerciante</span>
                             </button>
                             <button type="button" class="login-role-tab ${isReseller ? 'active' : ''}" onclick="appState.setLoginRoleTab('RESELLER')">
-                                <span style="font-size: 13px;">🏭</span>
-                                <span style="font-size: 11px;">Imprenta</span>
-                            </button>
-                            <button type="button" class="login-role-tab ${isSuperAdmin ? 'active' : ''}" onclick="appState.setLoginRoleTab('SUPER_ADMIN')">
-                                <span style="font-size: 13px;">👑</span>
-                                <span style="font-size: 11px;">SuperAdmin</span>
+                                <span style="font-size: 14px;">🏭</span>
+                                <span>Imprenta Aliada</span>
                             </button>
                         </div>
 
                         <div style="text-align: center; margin-bottom: 20px;">
-                            <div style="width: 48px; height: 48px; background: ${isSuperAdmin ? '#0F172A' : (isReseller ? '#0F172A' : '#D90429')}; color: ${isSuperAdmin ? '#D4AF37' : '#FFFFFF'}; border-radius: var(--radius-btn); font-weight: 800; font-size: 22px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 10px; box-shadow: 0 4px 12px rgba(15,23,42,0.3); border: ${isSuperAdmin ? '2px solid #D4AF37' : 'none'}; transition: all 0.3s ease;">
-                                ${isSuperAdmin ? '👑' : (isReseller ? '🏭' : 'TA')}
+                            <!-- Logo con Gesto Secreto: 3 toques consecutivos abren el modo admin para el dueño -->
+                            <div onclick="appState.handleSecretAdminTap()" title="Talonario Amigo" style="width: 48px; height: 48px; background: ${isReseller ? '#0F172A' : '#D90429'}; color: white; border-radius: var(--radius-btn); font-weight: 800; font-size: 22px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 10px; box-shadow: 0 4px 12px rgba(15,23,42,0.3); cursor: pointer; transition: all 0.3s ease; user-select: none;">
+                                ${isReseller ? '🏭' : 'TA'}
                             </div>
                             <h1 style="font-family: var(--font-serif-header); font-size: 22px; font-weight: 800; color: #0F172A;">
-                                ${isSuperAdmin ? 'Matriz Central SuperAdmin' : (isReseller ? 'Portal de Imprentas Aliadas' : 'Talonario Amigo')}
+                                ${isReseller ? 'Portal de Imprentas Aliadas' : 'Talonario Amigo'}
                             </h1>
                             <p style="font-size: 11px; color: #57534E; font-weight: 700; margin-top: 4px;">
-                                ${isSuperAdmin ? 'Gobernanza nacional de imprentas, cupos y emisores' : (isReseller ? 'Gestión de cupos, mostrador y activación de comerciantes' : 'El talonario de siempre, con facturación electrónica SRI')}
+                                ${isReseller ? 'Gestión de cupos, mostrador y activación de comerciantes' : 'El talonario de siempre, con facturación electrónica SRI'}
                             </p>
                         </div>
 
@@ -4338,9 +4425,9 @@
                         <form id="traditional-login-form" onsubmit="appState.handleTraditionalLogin(event)" style="display: flex; flex-direction: column; gap: 12px;">
                             <div>
                                 <label style="font-size: 11px; font-weight: 800; color: #0F172A; display: block; margin-bottom: 4px;">
-                                    ${isSuperAdmin ? 'Correo de Administrador Maestro' : (isReseller ? 'Usuario o Correo de Imprenta' : 'Correo Registrado')}
+                                    ${isReseller ? 'Usuario o Correo de Imprenta' : 'Correo Registrado'}
                                 </label>
-                                <input type="${isReseller ? 'text' : 'email'}" id="login-email-input" class="cliente-line-input" style="width: 100%; font-size: 13px; padding: 8px 10px; border: 1.5px solid #CBD5E1; border-radius: var(--radius-input);" placeholder="${isSuperAdmin ? 'admin@talonarioamigo.com' : (isReseller ? 'ej: imprenta.elsol o correo' : 'usuario@talonarioamigo.com')}" value="${isSuperAdmin ? 'admin@talonarioamigo.com' : ''}" required>
+                                <input type="${isReseller ? 'text' : 'email'}" id="login-email-input" class="cliente-line-input" style="width: 100%; font-size: 13px; padding: 8px 10px; border: 1.5px solid #CBD5E1; border-radius: var(--radius-input);" placeholder="${isReseller ? 'ej: imprenta.elsol o correo' : 'usuario@talonarioamigo.com'}" required>
                             </div>
                             <div>
                                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
@@ -4351,20 +4438,13 @@
                                 </div>
                                 <input type="password" id="login-password-input" class="cliente-line-input" style="width: 100%; font-size: 13px; padding: 8px 10px; border: 1.5px solid #CBD5E1; border-radius: var(--radius-input);" required>
                             </div>
-                            
-                            ${isSuperAdmin ? `
-                                <button type="button" onclick="appState.fillSuperAdminDemoCredentials()" style="background: #FEF9C3; border: 1px dashed #CA8A04; color: #854D0E; border-radius: 8px; padding: 6px 10px; font-size: 10.5px; font-weight: 800; cursor: pointer; text-align: center;">
-                                    ⚡ Cargar Credenciales Demo SuperAdmin
-                                </button>
-                            ` : ''}
-
                             <div id="login-error-msg" style="display:none; font-size: 11px; color: #D62828; font-weight: 700; background: #FEF2F2; padding: 6px 10px; border-radius: 8px;"></div>
-                            <button type="submit" class="btn-stamp-action" style="margin-top: 6px; background: ${isSuperAdmin ? '#0F172A' : (isReseller ? '#0F172A' : '#1E293B')}; ${isSuperAdmin ? 'border: 1.5px solid #D4AF37; color: #D4AF37;' : ''}">
-                                ${isSuperAdmin ? '👑 INGRESAR A LA MATRIZ CENTRAL' : (isReseller ? '🔑 INGRESAR AL PANEL DE IMPRENTA' : '🔑 INGRESAR AL FACTURADOR')}
+                            <button type="submit" class="btn-stamp-action" style="margin-top: 6px; background: ${isReseller ? '#0F172A' : '#1E293B'};">
+                                ${isReseller ? '🔑 INGRESAR AL PANEL DE IMPRENTA' : '🔑 INGRESAR AL FACTURADOR'}
                             </button>
                         </form>
 
-                        ${isClient ? `
+                        ${!isReseller ? `
                             <!-- TARJETA REGISTRO DE COMERCIANTE INDEPENDIENTE -->
                             <div style="margin-top: 14px; padding: 14px; background: #F0FDF4; border: 1.5px dashed #16A34A; border-radius: var(--radius-card); text-align: center;">
                                 <div style="font-size: 12.5px; font-weight: 800; color: #15803D; display: flex; align-items: center; justify-content: center; gap: 6px;">
@@ -4516,7 +4596,12 @@
             handleLogout() {
                 localStorage.removeItem('ta_auth_token');
                 localStorage.removeItem('ta_auth_user');
+                localStorage.removeItem('ta_current_role');
                 this.state.isLoggedIn = false;
+                this.state.loginRoleTab = 'CLIENT';
+                if (typeof window !== 'undefined' && (window.location.hash === '#admin' || window.location.hash === '#matriz')) {
+                    history.replaceState(null, null, window.location.pathname + window.location.search);
+                }
                 this.evaluateStateAndRender();
             }
 
@@ -7809,34 +7894,30 @@
                                 </div>
                             </details>
 
-                            <!-- 6. PORTALES DE ADMINISTRACIÓN Y SUPERADMIN -->
+                            ${this.state.currentRole === 'SUPER_ADMIN' ? `
+                            <!-- 6. CONSOLA EXCLUSIVA SUPERADMIN (SOLO VISIBLE CUANDO EL SUPERADMIN ESTÁ LOGUEADO) -->
                             <details>
                                 <summary style="padding: 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; list-style: none; user-select: none;">
                                     <div style="display: flex; align-items: center; gap: 12px;">
                                         <div style="font-size: 20px;">👑</div>
-                                        <div style="font-size: 14px; font-weight: 800; color: #0F172A;">Portales & Administración</div>
+                                        <div style="font-size: 14px; font-weight: 800; color: #0F172A;">Consola SuperAdmin</div>
                                     </div>
                                     <div style="display: flex; align-items: center; gap: 8px;">
-                                        <span style="font-size: 11px; font-weight: 700; color: #854D0E; background: #FEF9C3; padding: 2px 8px; border-radius: 12px;">SuperAdmin / Imprenta</span>
+                                        <span style="font-size: 11px; font-weight: 700; color: #854D0E; background: #FEF9C3; padding: 2px 8px; border-radius: 12px;">Matriz</span>
                                         <span style="font-size: 14px; color: #94A3B8;">▼</span>
                                     </div>
                                 </summary>
                                 <div style="padding: 16px; background: #F8FAFC; border-top: 1px solid #E2E8F0; display: flex; flex-direction: column; gap: 10px;">
-                                    <p style="font-size: 11.5px; color: #475569; margin-bottom: 4px;">Accede directamente a las consolas de gestión de imprentas y control maestro:</p>
-                                    
-                                    <button type="button" onclick="appState.switchRole('SUPER_ADMIN')" style="width: 100%; background: #0F172A; color: #D4AF37; border: 1.5px solid #D4AF37; border-radius: var(--radius-btn); padding: 12px; font-size: 13px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(15,23,42,0.25);">
+                                    <p style="font-size: 11.5px; color: #475569; margin-bottom: 4px;">Consola de auditoría de portales:</p>
+                                    <button type="button" onclick="appState.switchRole('SUPER_ADMIN')" style="width: 100%; background: #0F172A; color: #D4AF37; border: 1.5px solid #D4AF37; border-radius: var(--radius-btn); padding: 12px; font-size: 13px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
                                         <span>👑 Abrir Panel SuperAdmin</span>
                                     </button>
-
                                     <button type="button" onclick="appState.switchRole('RESELLER')" style="width: 100%; background: #1E293B; color: #60A5FA; border: 1.5px solid #3B82F6; border-radius: var(--radius-btn); padding: 12px; font-size: 13px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                        <span>🏭 Abrir Panel de Imprenta (Reseller)</span>
-                                    </button>
-
-                                    <button type="button" onclick="appState.toggleRoleSwitcherModal()" style="width: 100%; background: #FFFFFF; color: #0F172A; border: 1.5px solid #CBD5E1; border-radius: var(--radius-btn); padding: 10px; font-size: 12px; font-weight: 700; cursor: pointer;">
-                                        🔄 Abrir Selector de Portales
+                                        <span>🏭 Ver Como Imprenta (Auditoría)</span>
                                     </button>
                                 </div>
                             </details>
+                            ` : ''}
 
                         </div>
                     </div>
