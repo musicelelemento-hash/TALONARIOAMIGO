@@ -66,25 +66,96 @@
             touch-action: manipulation;
         }
 
-        /* SHELL MOVIL PROFESIONAL */
+        /* ESTACIÓN DE TRABAJO WORKSTATION RESPONSIVE DE CLASE MUNDIAL */
         .app-shell-viewport {
             width: 100%;
-            max-width: 480px;
+            max-width: 100%;
             height: 100vh;
             background: var(--paper-bg);
             display: flex;
             flex-direction: column;
             position: relative;
-            box-shadow: 0 0 50px rgba(0,0,0,0.6);
+            box-shadow: none;
             overflow: hidden;
         }
 
+        /* HEADER RESPONSIVE EN DESKTOP */
+        .app-header-inner {
+            width: 100%;
+            max-width: 1140px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* ADAPTABILIDAD PROFESIONAL PARA COMPUTADORAS DE ESCRITORIO, TABLETS Y MOSTRADORES */
         @media (min-width: 768px) {
             .app-shell-viewport {
-                height: 92vh;
-                max-height: 920px;
-                border-radius: 28px;
-                border: 8px solid #1E293B;
+                height: 100vh;
+                max-height: none;
+                border-radius: 0;
+                border: none;
+            }
+
+            .app-header {
+                padding: 14px 28px;
+                background: rgba(15, 23, 42, 0.96);
+                backdrop-filter: blur(14px);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .app-main-content {
+                padding: 16px 24px 88px 24px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            /* El talonario en escritorio se presenta centrado con proporciones físicas reales de oficina */
+            .facturador-workstation {
+                padding: 12px 0 88px 0;
+                display: flex;
+                justify-content: center;
+                width: 100%;
+                background: transparent;
+            }
+
+            .factura-talonario-container,
+            .factura-paper-container {
+                max-width: 640px !important;
+                margin: 0 auto !important;
+                box-shadow: 
+                    -2px 2px 0 #EBE7DC,
+                    -4px 4px 0 #D6D1C4,
+                    -6px 6px 0 #4A2E1B,
+                    0 25px 60px -15px rgba(0, 0, 0, 0.65),
+                    0 10px 25px -5px rgba(0, 0, 0, 0.4) !important;
+            }
+
+            /* Los paneles de gestión (Imprentas, SuperAdmin, Historial, Clientes) se abren con holgura */
+            .admin-portal-wrapper,
+            .reseller-portal-wrapper,
+            .responsive-panel-container {
+                width: 100%;
+                max-width: 1080px !important;
+                margin: 0 auto !important;
+            }
+
+            /* Dock Flotante Elegante estilo macOS / iPadOS Pro centrado en la parte inferior */
+            .app-bottom-nav {
+                max-width: 540px;
+                margin: 0 auto 16px auto;
+                border-radius: 22px;
+                border: 1px solid rgba(255, 255, 255, 0.16);
+                box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.08);
+                backdrop-filter: blur(20px);
+                background: rgba(15, 23, 42, 0.92);
+                position: fixed;
+                bottom: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                padding: 6px 16px;
             }
         }
 
@@ -2396,15 +2467,17 @@
 <body>
 
     <div class="app-shell-viewport">
-        <!-- HEADER PRINCIPAL -->
+        <!-- HEADER PRINCIPAL RESPONSIVE -->
         <header class="app-header">
-            <div class="app-brand">
-                <div class="app-logo-badge">TA</div>
-                <div class="app-title">Talonario Amigo</div>
-            </div>
-            <div class="user-status-pill" onclick="appState.toggleRoleSwitcherModal()">
-                <span class="status-dot"></span>
-                <span id="current-user-role-label">Emisor Activo</span>
+            <div class="app-header-inner">
+                <div class="app-brand">
+                    <div class="app-logo-badge">TA</div>
+                    <div class="app-title">Talonario Amigo</div>
+                </div>
+                <div class="user-status-pill" onclick="appState.toggleRoleSwitcherModal()">
+                    <span class="status-dot"></span>
+                    <span id="current-user-role-label">Emisor Activo</span>
+                </div>
             </div>
         </header>
 
@@ -4177,7 +4250,7 @@
 
             renderHomeScreen() {
                 return `
-                    <div style="display: flex; flex-direction: column; gap: 18px; padding: 6px 4px;">
+                    <div class="responsive-panel-container" style="display: flex; flex-direction: column; gap: 18px; padding: 6px 4px; max-width: 640px; margin: 0 auto; width: 100%;">
                         
                         <!-- CABECERA DE MODO COMERCIANTE ("Buenos días, Carlos. Tu talonario está listo.") -->
                         <div style="background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%); color: #FFF; border-radius: var(--radius-container); padding: 22px 20px; border: 1px solid #334155; box-shadow: 0 10px 25px rgba(15, 23, 42, 0.25);">
@@ -4369,65 +4442,52 @@
                 }
 
                 // =========================================================================
-                // VISTA PÚBLICA NORMAL: ÚNICAMENTE 2 PESTAÑAS (COMERCIANTE / IMPRENTA ALIADA)
-                // CERO MENCIÓN DE SUPERADMIN PARA CLIENTES E IMPRENTAS
+                // MÉTODO 1: PUERTA DE ACCESO UNIVERSAL LIMPIA (CERO PESTAÑAS PÚBLICAS)
+                // El interior de la app se transforma automáticamente según las credenciales.
                 // =========================================================================
                 return `
-                    <div class="factura-paper-container" style="max-width: 440px; margin: 16px auto; padding: 24px 20px; background: #FFFEF9; border: 2.5px solid var(--paper-border); border-radius: var(--radius-container); box-shadow: var(--shadow-paper);">
+                    <div class="factura-paper-container" style="max-width: 440px; margin: 16px auto; padding: 26px 22px; background: #FFFEF9; border: 2.5px solid var(--paper-border); border-radius: var(--radius-container); box-shadow: var(--shadow-paper);">
                         
-                        <!-- Pestañas Selectoras de Portal (Solo 2: Comerciante / Imprenta Aliada) -->
-                        <div class="login-role-tabs">
-                            <button type="button" class="login-role-tab ${!isReseller ? 'active' : ''}" onclick="appState.setLoginRoleTab('CLIENT')">
-                                <span style="font-size: 14px;">✒️</span>
-                                <span>Comerciante</span>
-                            </button>
-                            <button type="button" class="login-role-tab ${isReseller ? 'active' : ''}" onclick="appState.setLoginRoleTab('RESELLER')">
-                                <span style="font-size: 14px;">🏭</span>
-                                <span>Imprenta Aliada</span>
-                            </button>
-                        </div>
-
                         <div style="text-align: center; margin-bottom: 20px;">
                             <!-- Logo con Gesto Secreto: 3 toques consecutivos abren el modo admin para el dueño -->
-                            <div onclick="appState.handleSecretAdminTap()" title="Talonario Amigo" style="width: 48px; height: 48px; background: ${isReseller ? '#0F172A' : '#D90429'}; color: white; border-radius: var(--radius-btn); font-weight: 800; font-size: 22px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 10px; box-shadow: 0 4px 12px rgba(15,23,42,0.3); cursor: pointer; transition: all 0.3s ease; user-select: none;">
-                                ${isReseller ? '🏭' : 'TA'}
+                            <div onclick="appState.handleSecretAdminTap()" title="Talonario Amigo" style="width: 52px; height: 52px; background: #0F172A; color: white; border-radius: var(--radius-btn); font-weight: 800; font-size: 22px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 10px; box-shadow: 0 4px 14px rgba(15,23,42,0.35); cursor: pointer; transition: all 0.3s ease; user-select: none;">
+                                ✒️
                             </div>
-                            <h1 style="font-family: var(--font-serif-header); font-size: 22px; font-weight: 800; color: #0F172A;">
-                                ${isReseller ? 'Portal de Imprentas Aliadas' : 'Talonario Amigo'}
+                            <h1 style="font-family: var(--font-serif-header); font-size: 23px; font-weight: 800; color: #0F172A;">
+                                Talonario Amigo
                             </h1>
-                            <p style="font-size: 11px; color: #57534E; font-weight: 700; margin-top: 4px;">
-                                ${isReseller ? 'Gestión de cupos, mostrador y activación de comerciantes' : 'El talonario de siempre, con facturación electrónica SRI'}
+                            <p style="font-size: 11.5px; color: #57534E; font-weight: 700; margin-top: 4px;">
+                                El talonario de siempre, con facturación electrónica SRI
                             </p>
                         </div>
 
-                        ${!isReseller ? `
-                            <!-- Opción 1: Acceso Biométrico Instantáneo 0.5s -->
-                            <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px;">
-                                <button type="button" class="biometric-login-btn" onclick="appState.handleBiometricLogin()">
-                                    <span style="font-size: 20px;">👆</span>
-                                    <span>ACCESO CON HUELLA / FACE ID (0.5s)</span>
-                                </button>
+                        <!-- Opción 1: Acceso Biométrico Instantáneo 0.5s -->
+                        <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px;">
+                            <button type="button" class="biometric-login-btn" onclick="appState.handleBiometricLogin()">
+                                <span style="font-size: 20px;">👆</span>
+                                <span>ACCESO CON HUELLA / FACE ID (0.5s)</span>
+                            </button>
 
-                                <!-- Opción 2: Código Directo por WhatsApp -->
-                                <button type="button" class="whatsapp-login-btn" onclick="appState.handleWhatsAppOtp()">
-                                    <span style="font-size: 18px;">💬</span>
-                                    <span>INGRESAR CON CÓDIGO WHATSAPP</span>
-                                </button>
-                            </div>
+                            <!-- Opción 2: Código Directo por WhatsApp -->
+                            <button type="button" class="whatsapp-login-btn" onclick="appState.handleWhatsAppOtp()">
+                                <span style="font-size: 18px;">💬</span>
+                                <span>INGRESAR CON CÓDIGO WHATSAPP</span>
+                            </button>
+                        </div>
 
-                            <div style="display: flex; align-items: center; gap: 10px; margin: 14px 0;">
-                                <div style="flex: 1; height: 1px; background: #CBD5E1;"></div>
-                                <span style="font-size: 10px; font-weight: 800; color: #64748B;">O INGRESO TRADICIONAL</span>
-                                <div style="flex: 1; height: 1px; background: #CBD5E1;"></div>
-                            </div>
-                        ` : ''}
+                        <div style="display: flex; align-items: center; gap: 10px; margin: 14px 0;">
+                            <div style="flex: 1; height: 1px; background: #CBD5E1;"></div>
+                            <span style="font-size: 10px; font-weight: 800; color: #64748B;">O INGRESO CON CREDENCIALES</span>
+                            <div style="flex: 1; height: 1px; background: #CBD5E1;"></div>
+                        </div>
 
+                        <!-- FORMULARIO UNIVERSAL (CLIENTES, IMPRENTAS Y MATRIZ) -->
                         <form id="traditional-login-form" onsubmit="appState.handleTraditionalLogin(event)" style="display: flex; flex-direction: column; gap: 12px;">
                             <div>
                                 <label style="font-size: 11px; font-weight: 800; color: #0F172A; display: block; margin-bottom: 4px;">
-                                    ${isReseller ? 'Usuario o Correo de Imprenta' : 'Correo Registrado'}
+                                    Usuario, RUC o Correo Registrado
                                 </label>
-                                <input type="${isReseller ? 'text' : 'email'}" id="login-email-input" class="cliente-line-input" style="width: 100%; font-size: 13px; padding: 8px 10px; border: 1.5px solid #CBD5E1; border-radius: var(--radius-input);" placeholder="${isReseller ? 'ej: imprenta.elsol o correo' : 'usuario@talonarioamigo.com'}" required>
+                                <input type="text" id="login-email-input" class="cliente-line-input" style="width: 100%; font-size: 13px; padding: 10px 12px; border: 1.5px solid #CBD5E1; border-radius: var(--radius-input);" placeholder="ej: nombre@correo.com o RUC o usuario" autocomplete="username" required>
                             </div>
                             <div>
                                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
@@ -4436,40 +4496,45 @@
                                         👁️ Mostrar
                                     </button>
                                 </div>
-                                <input type="password" id="login-password-input" class="cliente-line-input" style="width: 100%; font-size: 13px; padding: 8px 10px; border: 1.5px solid #CBD5E1; border-radius: var(--radius-input);" required>
+                                <input type="password" id="login-password-input" class="cliente-line-input" style="width: 100%; font-size: 13px; padding: 10px 12px; border: 1.5px solid #CBD5E1; border-radius: var(--radius-input);" autocomplete="current-password" required>
                             </div>
-                            <div id="login-error-msg" style="display:none; font-size: 11px; color: #D62828; font-weight: 700; background: #FEF2F2; padding: 6px 10px; border-radius: 8px;"></div>
-                            <button type="submit" class="btn-stamp-action" style="margin-top: 6px; background: ${isReseller ? '#0F172A' : '#1E293B'};">
-                                ${isReseller ? '🔑 INGRESAR AL PANEL DE IMPRENTA' : '🔑 INGRESAR AL FACTURADOR'}
+                            <div id="login-error-msg" style="display:none; font-size: 11px; color: #D62828; font-weight: 700; background: #FEF2F2; padding: 8px 12px; border-radius: 8px;"></div>
+                            <button type="submit" class="btn-stamp-action" style="margin-top: 6px; background: #0F172A; padding: 14px; font-size: 13px; font-weight: 800;">
+                                🔑 INGRESAR AL SISTEMA
                             </button>
                         </form>
 
-                        ${!isReseller ? `
-                            <!-- TARJETA REGISTRO DE COMERCIANTE INDEPENDIENTE -->
-                            <div style="margin-top: 14px; padding: 14px; background: #F0FDF4; border: 1.5px dashed #16A34A; border-radius: var(--radius-card); text-align: center;">
-                                <div style="font-size: 12.5px; font-weight: 800; color: #15803D; display: flex; align-items: center; justify-content: center; gap: 6px;">
-                                    <span>✨</span> <span>¿Facturas por tu propia cuenta?</span>
-                                </div>
-                                <p style="font-size: 11px; color: #475569; margin: 4px 0 10px 0;">
-                                    Crea tu cuenta gratis en 30 segundos con tu propio RUC y firma .p12 para emitir de inmediato sin intermediarios.
-                                </p>
-                                <button type="button" onclick="appState.openIndependentRegisterModal()" class="btn-stamp-action" style="background: #16A34A; border-color: #15803D; font-size: 12px; padding: 10px 14px; width: 100%;">
-                                    🚀 CREAR MI CUENTA INDEPENDIENTE
-                                </button>
+                        <!-- TARJETA REGISTRO DE COMERCIANTE INDEPENDIENTE -->
+                        <div style="margin-top: 16px; padding: 14px; background: #F0FDF4; border: 1.5px dashed #16A34A; border-radius: var(--radius-card); text-align: center;">
+                            <div style="font-size: 12.5px; font-weight: 800; color: #15803D; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                                <span>✨</span> <span>¿Facturas por tu propia cuenta?</span>
                             </div>
-                        ` : ''}
+                            <p style="font-size: 11px; color: #475569; margin: 4px 0 10px 0;">
+                                Crea tu cuenta gratis en 30 segundos con tu propio RUC y firma .p12 para emitir de inmediato sin intermediarios.
+                            </p>
+                            <button type="button" onclick="appState.openIndependentRegisterModal()" class="btn-stamp-action" style="background: #16A34A; border-color: #15803D; font-size: 12px; padding: 10px 14px; width: 100%;">
+                                🚀 CREAR MI CUENTA INDEPENDIENTE
+                            </button>
+                        </div>
+
+                        <!-- BANNER DESCARGA DE APP ANDROID OFICIAL (APK DIRECTO) -->
+                        <div style="margin-top: 14px; padding: 12px 14px; background: #0F172A; border-radius: var(--radius-card); display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span style="font-size: 22px;">📱</span>
+                                <div>
+                                    <div style="font-size: 11.5px; font-weight: 800; color: #FFFFFF;">App Móvil Oficial Android</div>
+                                    <div style="font-size: 10px; color: #94A3B8;">Instala el archivo APK directo en tu celular</div>
+                                </div>
+                            </div>
+                            <a href="/TalonarioAmigo_v1.0.apk" download="TalonarioAmigo_v1.0.apk" style="background: #16A34A; color: #FFF; text-decoration: none; padding: 7px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 2px 6px rgba(22,163,74,0.3);">
+                                ⬇️ Descargar
+                            </a>
+                        </div>
 
                         <div style="margin-top: 18px; text-align: center; border-top: 1px dashed #CBD5E1; padding-top: 14px;">
-                            ${isReseller ? `
-                                <p style="font-size: 11px; color: #64748B;">¿Deseas afiliar tu imprenta para vender Talonario Amigo?</p>
-                                <a href="https://wa.me/593993050689?text=Hola%2C%20tengo%20una%20imprenta%20y%20deseo%20afiliarme%20a%20Talonario%20Amigo" target="_blank" style="display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 800; color: #16A34A; text-decoration: none; margin-top: 6px;">
-                                    💬 Solicitar Registro de Imprenta por WhatsApp
-                                </a>
-                            ` : `
-                                <a href="https://wa.me/593993050689?text=Hola%2C%20necesito%20ayuda%20para%20ingresar%20a%20mi%20cuenta%20de%20Talonario%20Amigo" target="_blank" style="font-size: 11px; color: #64748B; text-decoration: none;">
-                                    ¿Olvidaste tu contraseña o necesitas ayuda? <strong>Soporte por WhatsApp</strong>
-                                </a>
-                            `}
+                            <a href="https://wa.me/593993050689?text=Hola%2C%20necesito%20ayuda%20para%20ingresar%20a%20mi%20cuenta%20de%20Talonario%20Amigo" target="_blank" style="font-size: 11px; color: #64748B; text-decoration: none;">
+                                ¿Olvidaste tu contraseña o necesitas ayuda? <strong>Soporte por WhatsApp</strong>
+                            </a>
                         </div>
                     </div>
                 `;
@@ -4549,9 +4614,27 @@
                     });
                     localStorage.setItem('ta_auth_token', data.token);
                     localStorage.setItem('ta_auth_user', JSON.stringify(data.user));
-                    this.state.currentRole = data.user.role || (this.state.loginRoleTab === 'RESELLER' ? 'RESELLER' : (this.state.loginRoleTab === 'SUPER_ADMIN' ? 'SUPER_ADMIN' : 'CLIENT'));
+                    const userEmail = (data.user && data.user.email ? data.user.email : email).toLowerCase();
+                    const isResellerMatch = (data.user && data.user.role === 'RESELLER') || 
+                        (this.state.resellers || []).some(r => 
+                            (r.usuario && r.usuario.toLowerCase() === userEmail) || 
+                            (r.email && r.email.toLowerCase() === userEmail) ||
+                            (r.ruc && r.ruc === email)
+                        ) || userEmail.includes('imprenta') || userEmail.includes('reseller');
+
+                    if ((data.user && data.user.role === 'SUPER_ADMIN') || userEmail === 'admin@talonarioamigo.com') {
+                        this.state.currentRole = 'SUPER_ADMIN';
+                        this.showToast('👑 Bienvenido a la Matriz Central SuperAdmin');
+                    } else if (isResellerMatch) {
+                        this.state.currentRole = 'RESELLER';
+                        this.showToast('✓ Bienvenido al Panel de Imprentas Aliadas');
+                    } else {
+                        this.state.currentRole = 'CLIENT';
+                        this.showToast('✓ Bienvenido a Talonario Amigo');
+                    }
                     this.state.isLoggedIn = true;
-                    if (data.user.reseller_id) {
+                    localStorage.setItem('ta_current_role', this.state.currentRole);
+                    if (data.user && data.user.reseller_id) {
                         this.state.currentResellerId = data.user.reseller_id;
                         localStorage.setItem('ta_current_reseller_id', data.user.reseller_id);
                     }
@@ -4561,10 +4644,11 @@
                     // Fallback inteligente para demostración y modo local/offline:
                     const foundReseller = (this.state.resellers || []).find(r => 
                         (r.usuario && r.usuario.toLowerCase() === email.toLowerCase()) || 
-                        (r.email && r.email.toLowerCase() === email.toLowerCase())
+                        (r.email && r.email.toLowerCase() === email.toLowerCase()) ||
+                        (r.ruc && r.ruc === email)
                     );
 
-                    if (this.state.loginRoleTab === 'RESELLER' || foundReseller || email.toLowerCase().includes('imprenta') || email.toLowerCase().includes('reseller')) {
+                    if (foundReseller || email.toLowerCase().includes('imprenta') || email.toLowerCase().includes('reseller')) {
                         if (foundReseller) {
                             this.state.currentResellerId = foundReseller.id;
                             localStorage.setItem('ta_current_reseller_id', foundReseller.id);
@@ -4744,7 +4828,7 @@
                 const resellerById = (id) => resellers.find(r => r.id === id);
 
                 return `
-                    <div style="max-width: 640px; margin: 0 auto; padding: 16px;">
+                    <div class="responsive-panel-container" style="max-width: 1080px; margin: 0 auto; padding: 16px;">
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 14px;">
                             <h3 style="font-family: var(--font-serif-header); font-size: 18px; font-weight: 800; color: #0F172A;">👑 Panel de Control SuperAdmin</h3>
                             <button type="button" onclick="appState.handleLogout()" style="background: rgba(217,4,41,0.08); color: #D62828; border: 1px solid rgba(217,4,41,0.3); border-radius: var(--radius-btn); padding: 6px 12px; font-size: 11px; font-weight: 800; cursor: pointer;">Salir</button>
@@ -5205,7 +5289,7 @@
                 const statusColor = { PENDING: '#B45309', APPROVED: '#16A34A', REJECTED: '#D62828' };
 
                 return `
-                    <div style="max-width: 640px; margin: 0 auto; padding: 16px;">
+                    <div class="responsive-panel-container" style="max-width: 1080px; margin: 0 auto; padding: 16px;">
                         
                         <!-- Header de la Imprenta Aliada -->
                         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 14px; background: #0F172A; color: #FFFFFF; padding: 16px; border-radius: var(--radius-container); box-shadow: 0 4px 14px rgba(0,0,0,0.15);">
@@ -7395,7 +7479,8 @@
                 const currentFolio = filtered[currentIndex] || filtered[0];
 
                 return `
-                    <div class="page-flip-turn" style="background: #FCFBF6; border: 2.5px solid var(--paper-border); border-radius: 16px; padding: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+                    <div class="responsive-panel-container" style="max-width: 1080px; margin: 0 auto; width: 100%; padding: 4px;">
+                        <div class="page-flip-turn" style="background: #FCFBF6; border: 2.5px solid var(--paper-border); border-radius: 16px; padding: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
                         <div style="margin-bottom: 12px;">
                             <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
                                 <div>
@@ -7559,8 +7644,9 @@
                             </div>
                         `}
                     </div>
-                `;
-            }
+                </div>
+            `;
+        }
 
             renderAccountScreen() {
                 const docTypes = [
@@ -7572,8 +7658,24 @@
                 ];
 
                 return `
-                    <div style="display: flex; flex-direction: column; gap: 12px; padding: 4px;">
+                    <div class="responsive-panel-container" style="display: flex; flex-direction: column; gap: 14px; padding: 4px; max-width: 1080px; margin: 0 auto; width: 100%;">
                         
+                        <!-- BANNER OFICIAL DESCARGA APP ANDROID (APK DIRECTO) -->
+                        <div style="background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); border-radius: var(--radius-container); padding: 18px 22px; border: 1.5px solid #334155; box-shadow: 0 10px 25px rgba(15, 23, 42, 0.25); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 14px;">
+                            <div style="display: flex; align-items: center; gap: 14px;">
+                                <div style="width: 44px; height: 44px; background: rgba(34, 197, 94, 0.15); border: 1.5px solid #22C55E; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px;">
+                                    🤖
+                                </div>
+                                <div>
+                                    <div style="font-size: 13.5px; font-weight: 800; color: #FFFFFF;">Aplicación Oficial Android (.APK v1.0)</div>
+                                    <div style="font-size: 11px; color: #94A3B8; margin-top: 2px;">Instala Talonario Amigo en tu teléfono Android para facturar con un toque</div>
+                                </div>
+                            </div>
+                            <a href="/TalonarioAmigo_v1.0.apk" download="TalonarioAmigo_v1.0.apk" style="background: #16A34A; color: white; text-decoration: none; padding: 10px 18px; border-radius: var(--radius-btn); font-weight: 800; font-size: 12px; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(22, 163, 74, 0.35);">
+                                <span>⬇️</span> <span>Descargar APK (5 MB)</span>
+                            </a>
+                        </div>
+
                         <!-- CONTENEDOR AGRUPADO ESTILO APPLE SETTINGS -->
                         <div id="account-settings-container" style="background: #FCFBF6; border: 2.5px solid var(--paper-border); border-radius: var(--radius-container); overflow: hidden; box-shadow: var(--shadow-paper);">
                             
@@ -8989,14 +9091,6 @@
                 setTimeout(() => {
                     this.closeOfflineSyncModal();
                 }, 1500);
-            }
-
-            toggleRoleSwitcherModal() {
-                const nextRole = prompt("Cambiar Rol de Acceso (Escribe: SUPER_ADMIN, RESELLER o CLIENT):", this.state.currentRole);
-                if (nextRole) {
-                    this.state.currentRole = nextRole.toUpperCase();
-                    this.evaluateStateAndRender();
-                }
             }
         }
 
