@@ -54,7 +54,12 @@
         ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.35); }
 
         body {
-            background: linear-gradient(180deg, #0F172A 0%, #16213E 100%); /* Degradado Sutil Navy (Punto 19) */
+            background-color: #0B1120;
+            background-image: 
+                radial-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1px),
+                linear-gradient(180deg, #0B1120 0%, #0F172A 45%, #131F37 100%);
+            background-size: 24px 24px, 100% 100%;
+            background-attachment: fixed;
             font-family: var(--font-sans);
             color: var(--ink-black);
             min-height: 100vh;
@@ -64,6 +69,8 @@
             padding: 0;
             overflow-x: hidden;
             touch-action: manipulation;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         /* ESTACIÓN DE TRABAJO WORKSTATION RESPONSIVE DE CLASE MUNDIAL */
@@ -71,7 +78,7 @@
             width: 100%;
             max-width: 100%;
             height: 100vh;
-            background: var(--paper-bg);
+            background: transparent;
             display: flex;
             flex-direction: column;
             position: relative;
@@ -99,14 +106,15 @@
             }
 
             .app-header {
-                padding: 14px 28px;
-                background: rgba(15, 23, 42, 0.96);
-                backdrop-filter: blur(14px);
-                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                padding: 16px 32px;
+                background: rgba(15, 23, 42, 0.88);
+                backdrop-filter: blur(20px);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+                box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
             }
 
             .app-main-content {
-                padding: 16px 24px 88px 24px;
+                padding: 20px 24px 96px 24px;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
@@ -114,7 +122,7 @@
 
             /* El talonario en escritorio se presenta centrado con proporciones físicas reales de oficina */
             .facturador-workstation {
-                padding: 12px 0 88px 0;
+                padding: 14px 0 96px 0;
                 display: flex;
                 justify-content: center;
                 width: 100%;
@@ -123,14 +131,14 @@
 
             .factura-talonario-container,
             .factura-paper-container {
-                max-width: 640px !important;
+                max-width: 650px !important;
                 margin: 0 auto !important;
                 box-shadow: 
                     -2px 2px 0 #EBE7DC,
                     -4px 4px 0 #D6D1C4,
-                    -6px 6px 0 #4A2E1B,
-                    0 25px 60px -15px rgba(0, 0, 0, 0.65),
-                    0 10px 25px -5px rgba(0, 0, 0, 0.4) !important;
+                    -6px 6px 0 #3A2312,
+                    0 25px 60px -15px rgba(0, 0, 0, 0.7),
+                    0 10px 25px -5px rgba(0, 0, 0, 0.45) !important;
             }
 
             /* Los paneles de gestión (Imprentas, SuperAdmin, Historial, Clientes) se abren con holgura */
@@ -138,24 +146,28 @@
             .reseller-portal-wrapper,
             .responsive-panel-container {
                 width: 100%;
-                max-width: 1080px !important;
+                max-width: 1100px !important;
                 margin: 0 auto !important;
             }
 
             /* Dock Flotante Elegante estilo macOS / iPadOS Pro centrado en la parte inferior */
             .app-bottom-nav {
-                max-width: 540px;
-                margin: 0 auto 16px auto;
-                border-radius: 22px;
-                border: 1px solid rgba(255, 255, 255, 0.16);
-                box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.08);
-                backdrop-filter: blur(20px);
-                background: rgba(15, 23, 42, 0.92);
+                max-width: 560px;
+                margin: 0 auto 20px auto;
+                border-radius: 24px;
+                border: 1px solid rgba(255, 255, 255, 0.14);
+                box-shadow: 
+                    0 20px 50px -10px rgba(0, 0, 0, 0.75), 
+                    0 0 0 1px rgba(255, 255, 255, 0.06),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+                backdrop-filter: blur(24px);
+                background: rgba(15, 23, 42, 0.88);
                 position: fixed;
                 bottom: 0;
                 left: 50%;
                 transform: translateX(-50%);
-                padding: 6px 16px;
+                padding: 8px 18px;
+                z-index: 90;
             }
         }
 
@@ -199,24 +211,66 @@
         }
 
         .user-status-pill {
-            background: rgba(255, 255, 255, 0.12);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.16);
             border-radius: 20px;
-            padding: 4px 10px;
+            padding: 5px 12px;
             font-size: 11px;
             font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 7px;
             cursor: pointer;
+            backdrop-filter: blur(8px);
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            user-select: none;
+        }
+
+        .user-status-pill:hover {
+            background: rgba(255, 255, 255, 0.14);
+            border-color: rgba(255, 255, 255, 0.28);
+            transform: translateY(-1px);
         }
 
         .status-dot {
-            width: 7px;
-            height: 7px;
+            width: 8px;
+            height: 8px;
             background: #22C55E;
             border-radius: 50%;
-            box-shadow: 0 0 8px #22C55E;
+            box-shadow: 0 0 10px #22C55E;
+            position: relative;
+        }
+
+        .status-dot::after {
+            content: '';
+            position: absolute;
+            top: -2.5px;
+            left: -2.5px;
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            border: 1px solid rgba(34, 197, 94, 0.5);
+            animation: statusPulse 2.2s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+        }
+
+        @keyframes statusPulse {
+            0% { transform: scale(0.8); opacity: 1; }
+            70% { transform: scale(1.9); opacity: 0; }
+            100% { transform: scale(1.9); opacity: 0; }
+        }
+
+        /* ESTADOS DE FOCO Y ACCESIBILIDAD UNIVERSAL (WCAG AA) */
+        input:focus-visible,
+        button:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 2px solid #2563EB !important;
+            outline-offset: 2px !important;
+        }
+
+        .cliente-line-input:focus {
+            border-color: #2563EB !important;
+            box-shadow: 0 0 0 3.5px rgba(37, 99, 235, 0.2) !important;
         }
 
         /* MAIN CONTENT SCROLLABLE AREA */
@@ -243,35 +297,56 @@
             background: transparent;
             border: none;
             color: #94A3B8;
-            padding: 8px 4px;
-            border-radius: var(--radius-input);
+            padding: 8px 6px;
+            border-radius: var(--radius-btn);
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 3px;
+            gap: 4px;
             font-family: var(--font-sans);
-            font-size: 10.5px;
+            font-size: 11px;
             font-weight: 700;
+            letter-spacing: 0.2px;
             cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+            user-select: none;
         }
 
-        .nav-tab-btn .nav-icon { font-size: 20px; }
+        .nav-tab-btn .nav-icon { 
+            font-size: 20px; 
+            transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .nav-tab-btn:hover {
+            color: #F8FAFC;
+            background: rgba(255, 255, 255, 0.09);
+            transform: translateY(-1.5px);
+        }
+
+        .nav-tab-btn:hover .nav-icon {
+            transform: scale(1.12);
+        }
+
+        .nav-tab-btn:active {
+            transform: scale(0.95);
+        }
 
         .nav-tab-btn.active {
             color: #FFFFFF;
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.16);
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.25), 0 2px 8px rgba(0, 0, 0, 0.2);
         }
 
         /* FACTURADOR WORKSTATION & TROQUELADO */
         .facturador-workstation {
             width: 100%;
             min-height: 100%;
-            background-color: #121824; /* Fondo oscuro elegante */
+            background-color: transparent;
             display: flex;
             justify-content: center;
             align-items: flex-start;
-            padding: 0 4px 65px 4px; /* Hoja descansando justo en el borde superior sin espacio negro vacio */
+            padding: 0 4px 65px 4px;
             box-sizing: border-box;
             position: relative;
         }
@@ -1757,20 +1832,34 @@
         .cta-emitir-giant { width: 100%; background: #D90429; color: #FFFFFF; border: 2px solid #99021C; border-radius: var(--radius-card); padding: 18px; font-size: 16px; font-weight: 800; letter-spacing: 0.5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; box-shadow: 0 8px 20px rgba(217, 4, 41, 0.35); transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); margin-bottom: 20px; }
         .cta-emitir-giant:active { transform: scale(0.97); }
         .metrics-grid-2x2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-        .metric-tile { background: #FFFFFF; border: 2px solid var(--paper-border); border-radius: var(--radius-btn); padding: 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .metric-tile { 
+            background: #FFFFFF; 
+            border: 1.5px solid #E2E8F0; 
+            border-radius: var(--radius-btn); 
+            padding: 16px; 
+            box-shadow: 0 4px 14px rgba(0,0,0,0.04); 
+            transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1); 
+        }
+        .metric-tile:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(0,0,0,0.08);
+            border-color: #CBD5E1;
+        }
 
         /* CHIPS RÁPIDOS DE MONTO SIN TECLADO */
         .quick-price-row { display: flex; gap: 4px; padding: 3px 0; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        .quick-chip { background: #F1F5F9; border: 1px solid #CBD5E1; border-radius: var(--radius-input); padding: 2px 7px; font-size: 9.5px; font-weight: 800; font-family: var(--font-mono-num); color: #0F172A; cursor: pointer; white-space: nowrap; transition: all 0.15s ease; }
+        .quick-chip { background: #F1F5F9; border: 1px solid #CBD5E1; border-radius: var(--radius-input); padding: 3px 8px; font-size: 10px; font-weight: 800; font-family: var(--font-mono-num); color: #0F172A; cursor: pointer; white-space: nowrap; transition: all 0.15s ease; }
+        .quick-chip:hover { background: #E2E8F0; transform: translateY(-1px); }
         .quick-chip:active { background: #D90429; color: #FFFFFF; transform: scale(0.92); }
 
         /* BOTÓN DICTADO POR VOZ (SPEECH-TO-TEXT) */
-        .voice-dictate-btn { background: #EFF6FF; border: 1px solid #93C5FD; color: #1D4ED8; border-radius: 6px; padding: 2px 6px; font-size: 11px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s ease; flex-shrink: 0; }
+        .voice-dictate-btn { background: #EFF6FF; border: 1.5px solid #93C5FD; color: #1D4ED8; border-radius: 8px; padding: 3px 8px; font-size: 11px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); flex-shrink: 0; }
+        .voice-dictate-btn:hover { background: #DBEAFE; transform: translateY(-1px); }
         .voice-dictate-btn.listening { background: #DC2626; color: white; border-color: #99021C; animation: dictatePulse 0.9s infinite alternate; }
-        @keyframes dictatePulse { 0% { transform: scale(1); } 100% { transform: scale(1.08); box-shadow: 0 0 10px rgba(220, 38, 38, 0.6); } }
+        @keyframes dictatePulse { 0% { transform: scale(1); } 100% { transform: scale(1.08); box-shadow: 0 0 12px rgba(220, 38, 38, 0.6); } }
 
         /* SMART AUTOCOMPLETE SRI BADGE */
-        .sri-autofill-pill { font-size: 9px; font-weight: 800; color: #15803D; background: #DCFCE7; border: 1px solid #86EFAC; padding: 2px 6px; border-radius: var(--radius-input); display: inline-flex; align-items: center; gap: 4px; margin-left: 6px; }
+        .sri-autofill-pill { font-size: 9px; font-weight: 800; color: #15803D; background: #DCFCE7; border: 1px solid #86EFAC; padding: 2px 7px; border-radius: var(--radius-input); display: inline-flex; align-items: center; gap: 4px; margin-left: 6px; }
 
         /* OFFLINE STATUS BANNER & NOTIFICATION */
         .network-mode-badge { padding: 4px 10px; border-radius: 20px; font-size: 10.5px; font-weight: 800; display: inline-flex; align-items: center; gap: 5px; }
@@ -1778,10 +1867,12 @@
         .network-mode-badge.offline { background: rgba(239, 68, 68, 0.15); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); }
 
         /* BOTONES LOGIN BIOMÉTRICO Y WHATSAPP */
-        .biometric-login-btn { width: 100%; background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); color: #FFF; border: 2px solid #334155; border-radius: var(--radius-card); padding: 14px; font-size: 14px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; box-shadow: 0 4px 14px rgba(15, 23, 42, 0.25); transition: all 0.2s ease; }
-        .biometric-login-btn:active { transform: scale(0.96); }
-        .whatsapp-login-btn { width: 100%; background: #25D366; color: #FFF; border: 2px solid #1EBE5D; border-radius: var(--radius-card); padding: 14px; font-size: 14px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; box-shadow: 0 4px 14px rgba(37, 211, 102, 0.3); transition: all 0.2s ease; }
-        .whatsapp-login-btn:active { transform: scale(0.96); }
+        .biometric-login-btn { width: 100%; background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); color: #FFF; border: 1.5px solid #334155; border-radius: var(--radius-card); padding: 14px 16px; font-size: 13.5px; font-weight: 800; letter-spacing: 0.3px; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; box-shadow: 0 4px 14px rgba(15, 23, 42, 0.25); transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1); user-select: none; }
+        .biometric-login-btn:hover { background: linear-gradient(135deg, #1E293B 0%, #334155 100%); transform: translateY(-1.5px); box-shadow: 0 8px 22px rgba(15, 23, 42, 0.35); }
+        .biometric-login-btn:active { transform: scale(0.97); }
+        .whatsapp-login-btn { width: 100%; background: #25D366; color: #FFF; border: 1.5px solid #1EBE5D; border-radius: var(--radius-card); padding: 14px 16px; font-size: 13.5px; font-weight: 800; letter-spacing: 0.3px; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; box-shadow: 0 4px 14px rgba(37, 211, 102, 0.25); transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1); user-select: none; }
+        .whatsapp-login-btn:hover { background: #22C55E; transform: translateY(-1.5px); box-shadow: 0 8px 22px rgba(34, 197, 94, 0.35); }
+        .whatsapp-login-btn:active { transform: scale(0.97); }
 
         /* SELECTOR DE COMPROBANTES SRI EN WORKSTATION */
         .doctype-selector-bar { display: flex; gap: 6px; overflow-x: auto; padding: 6px 2px; margin-bottom: 12px; -webkit-overflow-scrolling: touch; }
