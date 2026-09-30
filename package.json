@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node -e \"const fs = require('fs'); fs.copyFileSync('public/index.html', 'public/dist/index.html'); fs.copyFileSync('public/landing.html', 'public/dist/landing.html'); console.log('✓ Public files synced to public/dist for Vercel');\"",
     "preview": "vite preview"
   },
   "devDependencies": {
