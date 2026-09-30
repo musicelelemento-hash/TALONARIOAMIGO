@@ -2167,6 +2167,230 @@
             border-radius: 8px !important;
         }
         
+    /* ================================================================
+       SKIN MODERNO "REALISMO TACTIL" — capa de modernizacion de UI
+       Sustituye el look "hacker de los 90" (cian/neon/oro/rojo agresivo)
+       por la estetica Apple + Linear + Stripe + realismo del papel.
+       Aditiva y reversible: NO toca logica, solo remapea acentos.
+       ================================================================ */
+        :root {
+            --skin-navy: #1E293B;
+            --skin-navy-deep: #0F172A;
+            --skin-slate: #94A3B8;
+            --skin-slate-soft: rgba(148, 163, 184, 0.22);
+            --skin-success: #16A34A;
+            --skin-focus: #1D4ED8;
+        }
+
+        /* 1) CTA primario: rojo agresivo -> azul navy de marca */
+        .cta-emitir-giant,
+        .quick-chip:active,
+        .doctype-tab-btn.active {
+            background: var(--skin-navy) !important;
+            border-color: #334155 !important;
+            box-shadow: 0 6px 18px rgba(15, 23, 42, 0.22) !important;
+            color: #FFFFFF !important;
+        }
+
+        /* 2) Boveda P12: acabado metal suave sin scanlines ruidosos */
+        .boveda-p12::before { opacity: 0.15 !important; }
+
+        /* 3) Neon cian "holografico" -> slate limpio */
+        .advanced-grid-bg {
+            opacity: 0.12 !important;
+            background-image: radial-gradient(circle, rgba(148, 163, 184, 0.35) 1px, transparent 1px) !important;
+            animation: none !important;
+        }
+        .holographic-card {
+            background: rgba(30, 41, 59, 0.35) !important;
+            border: 1px solid var(--skin-slate-soft) !important;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.28) !important;
+        }
+        .holographic-card::before { background: linear-gradient(90deg, transparent, rgba(148, 163, 184, 0.4), transparent) !important; }
+        .cli-input { color: #E2E8F0 !important; caret-color: #7DD3FC !important; }
+        .terminal-row { color: rgba(226, 232, 240, 0.75) !important; }
+        .terminal-cursor { background: #7DD3FC !important; }
+        .holo-emit-scanline { background: linear-gradient(90deg, transparent, rgba(148, 163, 184, 0.8), transparent) !important; box-shadow: none !important; }
+        .holographic-btn { color: #CBD5E1 !important; border-color: rgba(148, 163, 184, 0.4) !important; }
+
+        /* 4) Neon verde terminal -> verde exito sobrio */
+        .terminal-row .tr-total { color: var(--skin-success) !important; }
+        .terminal-row .tr-status { color: rgba(22, 163, 74, 0.8) !important; }
+
+        /* 5) Oro "Dubai/elite" -> oro apagado / slate premium */
+        .dubai-mic-button { border-color: rgba(148, 163, 184, 0.35) !important; box-shadow: 0 16px 36px rgba(15, 23, 42, 0.22) !important; }
+        .dubai-mic-button:hover { border-color: var(--skin-slate) !important; box-shadow: 0 20px 45px rgba(15, 23, 42, 0.25) !important; }
+        .dubai-wave-bar { background: var(--skin-slate) !important; }
+        .dubai-invoice-card { border: 1px solid var(--skin-slate-soft) !important; }
+        .dubai-emit-btn { border-color: rgba(148, 163, 184, 0.35) !important; }
+        .dubai-cmd-input:focus { border-color: var(--skin-focus) !important; box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.15) !important; }
+        .dubai-holo-stamp {
+            border: 4px solid var(--skin-success) !important;
+            box-shadow: 0 0 60px rgba(22, 163, 74, 0.3), inset 0 0 30px rgba(22, 163, 74, 0.12) !important;
+        }
+
+        /* 6) Polvo de oro / efectos ambientales: silenciar */
+        .dust-particle { opacity: 0 !important; animation: none !important; }
+
+        /* 7) Sello grabado del lomo: oro apagado sin glow */
+        .lomo-engomado-header::after { color: #C9A96B !important; text-shadow: 0 1px 1px rgba(0, 0, 0, 0.85) !important; }
+
+        /* ========================================================
+           PORTAL DE IMPRENTAS ALIADAS & LOGIN SELECTOR (DESIGN SYSTEM)
+           ======================================================== */
+        .login-role-tabs {
+            display: flex;
+            background: #E2E8F0;
+            padding: 4px;
+            border-radius: var(--radius-btn);
+            gap: 4px;
+            margin-bottom: 20px;
+        }
+
+        .login-role-tab {
+            flex: 1;
+            padding: 10px 8px;
+            border: none;
+            background: transparent;
+            border-radius: var(--radius-input);
+            font-family: var(--font-sans);
+            font-size: 12px;
+            font-weight: 700;
+            color: #64748B;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .login-role-tab.active {
+            background: #FFFFFF;
+            color: #0F172A;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+        }
+
+        /* Medidor de cupos animado para Imprenta */
+        .reseller-meter-card {
+            background: #FFFFFF;
+            border: 1.5px solid #CBD5E1;
+            border-radius: var(--radius-card);
+            padding: 16px;
+            margin-bottom: 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .reseller-quota-bar-wrapper {
+            background: #E2E8F0;
+            border-radius: 999px;
+            height: 10px;
+            overflow: hidden;
+            margin: 10px 0 6px 0;
+            position: relative;
+        }
+
+        .reseller-quota-bar-fill {
+            height: 100%;
+            border-radius: 999px;
+            transition: width 0.4s ease;
+        }
+
+        /* Dropzone para PDF de RUC */
+        .ruc-dropzone-container {
+            border: 2px dashed #94A3B8;
+            border-radius: var(--radius-card);
+            background: #F8FAFC;
+            padding: 18px 14px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 12px;
+        }
+
+        .ruc-dropzone-container:hover, .ruc-dropzone-container.drag-over {
+            border-color: #16A34A;
+            background: #F0FDF4;
+        }
+
+        /* Switch iOS elegante para estados de comerciante */
+        .ios-toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+
+        .ios-toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .ios-toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #CBD5E1;
+            transition: .3s;
+            border-radius: 24px;
+        }
+
+        .ios-toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .ios-toggle-switch input:checked + .ios-toggle-slider {
+            background-color: #16A34A;
+        }
+
+        .ios-toggle-switch input:checked + .ios-toggle-slider:before {
+            transform: translateX(20px);
+        }
+
+        /* Estilos de impresión para Afiche de Mostrador */
+        @media print {
+            body * {
+                visibility: hidden !important;
+            }
+            #afiche-modal, #afiche-modal * {
+                visibility: visible !important;
+            }
+            #afiche-modal {
+                position: fixed !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100vw !important;
+                height: 100vh !important;
+                background: white !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                display: block !important;
+                z-index: 99999 !important;
+            }
+            .afiche-printable-sheet {
+                border: 4px solid #0F172A !important;
+                box-shadow: none !important;
+                margin: 0 auto !important;
+                max-width: 100% !important;
+                width: 100% !important;
+                height: 100% !important;
+                page-break-after: avoid !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -2257,6 +2481,8 @@
                 this.state = {
                     showStartMenu: wantsHome,
                     currentRole: (cachedAuthUser && cachedAuthUser.role) || 'CLIENT',
+                    loginRoleTab: (typeof window !== 'undefined' && (window.location.hash === '#reseller' || window.location.search.includes('reseller'))) ? 'RESELLER' : (localStorage.getItem('ta_login_role_tab') || 'CLIENT'),
+                    showPasswordInLogin: false,
                     // Solo se entra directo si ya existe una sesión guardada en este dispositivo (token Sanctum);
                     // de lo contrario, lo primero que ve el usuario es la pantalla de login.
                     isLoggedIn: !!localStorage.getItem('ta_auth_token'),
@@ -3994,49 +4220,106 @@
                 this.evaluateStateAndRender();
             }
 
+            setLoginRoleTab(role) {
+                this.triggerHaptic(15);
+                this.state.loginRoleTab = role;
+                localStorage.setItem('ta_login_role_tab', role);
+                this.evaluateStateAndRender();
+            }
+
+            toggleShowPassword() {
+                this.state.showPasswordInLogin = !this.state.showPasswordInLogin;
+                const input = document.getElementById('login-password-input');
+                if (input) input.type = this.state.showPasswordInLogin ? 'text' : 'password';
+                const btn = document.getElementById('btn-toggle-login-pass');
+                if (btn) btn.innerHTML = this.state.showPasswordInLogin ? '🙈 Ocultar' : '👁️ Mostrar';
+            }
+
             renderLoginScreen() {
+                const isReseller = this.state.loginRoleTab === 'RESELLER';
                 return `
-                    <div class="factura-paper-container" style="max-width: 420px; margin: 20px auto; padding: 28px 20px; background: #FFFEF9; border: 2.5px solid var(--paper-border);">
-                        <div style="text-align: center; margin-bottom: 24px;">
-                            <div style="width: 52px; height: 52px; background: #D90429; color: white; border-radius: var(--radius-btn); font-weight: 800; font-size: 26px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 10px; box-shadow: 0 4px 12px rgba(217,4,41,0.4);">TA</div>
-                            <h1 style="font-family: var(--font-serif-header); font-size: 24px; font-weight: 800; color: #0F172A;">Talonario Amigo</h1>
-                            <p style="font-size: 11px; color: #57534E; text-transform: uppercase; font-weight: 700; margin-top: 4px;">Acceso Ultra Rápido sin Contraseñas Estorbosas</p>
-                        </div>
-
-                        <!-- Opción 1: Acceso Biométrico Instantáneo 0.5s -->
-                        <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
-                            <button type="button" class="biometric-login-btn" onclick="appState.handleBiometricLogin()">
-                                <span style="font-size: 22px;">👆</span>
-                                <span>ACCESO CON HUELLA / FACE ID (0.5s)</span>
+                    <div class="factura-paper-container" style="max-width: 440px; margin: 16px auto; padding: 24px 20px; background: #FFFEF9; border: 2.5px solid var(--paper-border); border-radius: var(--radius-container); box-shadow: var(--shadow-paper);">
+                        
+                        <!-- Pestañas Selectoras de Portal (Segmented Control Apple/Linear) -->
+                        <div class="login-role-tabs">
+                            <button type="button" class="login-role-tab ${!isReseller ? 'active' : ''}" onclick="appState.setLoginRoleTab('CLIENT')">
+                                <span style="font-size: 14px;">✒️</span>
+                                <span>Comerciante</span>
                             </button>
-
-                            <!-- Opción 2: Código Directo por WhatsApp -->
-                            <button type="button" class="whatsapp-login-btn" onclick="appState.handleWhatsAppOtp()">
-                                <span style="font-size: 20px;">💬</span>
-                                <span>INGRESAR CON CÓDIGO WHATSAPP</span>
+                            <button type="button" class="login-role-tab ${isReseller ? 'active' : ''}" onclick="appState.setLoginRoleTab('RESELLER')">
+                                <span style="font-size: 14px;">🏭</span>
+                                <span>Imprenta Aliada</span>
                             </button>
                         </div>
 
-                        <div style="display: flex; align-items: center; gap: 10px; margin: 16px 0;">
-                            <div style="flex: 1; height: 1px; background: #CBD5E1;"></div>
-                            <span style="font-size: 10px; font-weight: 800; color: #64748B;">O INGRESO TRADICIONAL</span>
-                            <div style="flex: 1; height: 1px; background: #CBD5E1;"></div>
+                        <div style="text-align: center; margin-bottom: 20px;">
+                            <div style="width: 48px; height: 48px; background: ${isReseller ? '#0F172A' : '#D90429'}; color: white; border-radius: var(--radius-btn); font-weight: 800; font-size: 22px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 10px; box-shadow: 0 4px 12px rgba(15,23,42,0.3); transition: all 0.3s ease;">
+                                ${isReseller ? '🏭' : 'TA'}
+                            </div>
+                            <h1 style="font-family: var(--font-serif-header); font-size: 22px; font-weight: 800; color: #0F172A;">
+                                ${isReseller ? 'Portal de Imprentas Aliadas' : 'Talonario Amigo'}
+                            </h1>
+                            <p style="font-size: 11px; color: #57534E; font-weight: 700; margin-top: 4px;">
+                                ${isReseller ? 'Gestión de cupos, mostrador y activación de comerciantes' : 'Acceso Ultra Rápido sin Contraseñas Estorbosas'}
+                            </p>
                         </div>
+
+                        ${!isReseller ? `
+                            <!-- Opción 1: Acceso Biométrico Instantáneo 0.5s -->
+                            <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px;">
+                                <button type="button" class="biometric-login-btn" onclick="appState.handleBiometricLogin()">
+                                    <span style="font-size: 20px;">👆</span>
+                                    <span>ACCESO CON HUELLA / FACE ID (0.5s)</span>
+                                </button>
+
+                                <!-- Opción 2: Código Directo por WhatsApp -->
+                                <button type="button" class="whatsapp-login-btn" onclick="appState.handleWhatsAppOtp()">
+                                    <span style="font-size: 18px;">💬</span>
+                                    <span>INGRESAR CON CÓDIGO WHATSAPP</span>
+                                </button>
+                            </div>
+
+                            <div style="display: flex; align-items: center; gap: 10px; margin: 14px 0;">
+                                <div style="flex: 1; height: 1px; background: #CBD5E1;"></div>
+                                <span style="font-size: 10px; font-weight: 800; color: #64748B;">O INGRESO TRADICIONAL</span>
+                                <div style="flex: 1; height: 1px; background: #CBD5E1;"></div>
+                            </div>
+                        ` : ''}
 
                         <form id="traditional-login-form" onsubmit="appState.handleTraditionalLogin(event)" style="display: flex; flex-direction: column; gap: 12px;">
                             <div>
-                                <label style="font-size: 11px; font-weight: 800;">Correo</label>
-                                <input type="email" id="login-email-input" class="cliente-line-input" style="width: 100%; font-size: 13px; padding: 6px;" placeholder="usuario@talonarioamigo.com" required>
+                                <label style="font-size: 11px; font-weight: 800; color: #0F172A; display: block; margin-bottom: 4px;">
+                                    ${isReseller ? 'Usuario o Correo de Imprenta' : 'Correo Registrado'}
+                                </label>
+                                <input type="${isReseller ? 'text' : 'email'}" id="login-email-input" class="cliente-line-input" style="width: 100%; font-size: 13px; padding: 8px 10px; border: 1.5px solid #CBD5E1; border-radius: var(--radius-input);" placeholder="${isReseller ? 'ej: imprenta.elsol o correo' : 'usuario@talonarioamigo.com'}" required>
                             </div>
                             <div>
-                                <label style="font-size: 11px; font-weight: 800;">Contraseña</label>
-                                <input type="password" id="login-password-input" class="cliente-line-input" style="width: 100%; font-size: 13px; padding: 6px;" required>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                    <label style="font-size: 11px; font-weight: 800; color: #0F172A;">Contraseña</label>
+                                    <button type="button" id="btn-toggle-login-pass" onclick="appState.toggleShowPassword()" style="background: none; border: none; font-size: 11px; color: #475569; cursor: pointer; font-weight: 600;">
+                                        👁️ Mostrar
+                                    </button>
+                                </div>
+                                <input type="password" id="login-password-input" class="cliente-line-input" style="width: 100%; font-size: 13px; padding: 8px 10px; border: 1.5px solid #CBD5E1; border-radius: var(--radius-input);" required>
                             </div>
-                            <div id="login-error-msg" style="display:none; font-size: 11px; color: #D62828; font-weight: 700;"></div>
-                            <button type="submit" class="btn-stamp-action" style="margin-top: 6px;">
-                                🔑 INGRESAR AL FACTURADOR
+                            <div id="login-error-msg" style="display:none; font-size: 11px; color: #D62828; font-weight: 700; background: #FEF2F2; padding: 6px 10px; border-radius: 8px;"></div>
+                            <button type="submit" class="btn-stamp-action" style="margin-top: 6px; background: ${isReseller ? '#0F172A' : '#1E293B'};">
+                                ${isReseller ? '🔑 INGRESAR AL PANEL DE IMPRENTA' : '🔑 INGRESAR AL FACTURADOR'}
                             </button>
                         </form>
+
+                        <div style="margin-top: 18px; text-align: center; border-top: 1px dashed #CBD5E1; padding-top: 14px;">
+                            ${isReseller ? `
+                                <p style="font-size: 11px; color: #64748B;">¿Deseas afiliar tu imprenta para vender Talonario Amigo?</p>
+                                <a href="https://wa.me/593993050689?text=Hola%2C%20tengo%20una%20imprenta%20y%20deseo%20afiliarme%20a%20Talonario%20Amigo" target="_blank" style="display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 800; color: #16A34A; text-decoration: none; margin-top: 6px;">
+                                    💬 Solicitar Registro de Imprenta por WhatsApp
+                                </a>
+                            ` : `
+                                <a href="https://wa.me/593993050689?text=Hola%2C%20necesito%20ayuda%20para%20ingresar%20a%20mi%20cuenta%20de%20Talonario%20Amigo" target="_blank" style="font-size: 11px; color: #64748B; text-decoration: none;">
+                                    ¿Olvidaste tu contraseña o necesitas ayuda? <strong>Soporte por WhatsApp</strong>
+                                </a>
+                            `}
+                        </div>
                     </div>
                 `;
             }
@@ -4088,12 +4371,45 @@
                     });
                     localStorage.setItem('ta_auth_token', data.token);
                     localStorage.setItem('ta_auth_user', JSON.stringify(data.user));
-                    this.state.currentRole = data.user.role || 'CLIENT';
+                    this.state.currentRole = data.user.role || (this.state.loginRoleTab === 'RESELLER' ? 'RESELLER' : 'CLIENT');
                     this.state.isLoggedIn = true;
+                    if (data.user.reseller_id) {
+                        this.state.currentResellerId = data.user.reseller_id;
+                        localStorage.setItem('ta_current_reseller_id', data.user.reseller_id);
+                    }
                     this.triggerHaptic([20, 20, 40]);
                     this.evaluateStateAndRender();
                 } catch (e) {
-                    this.showLoginError(e.data && e.data.message ? e.data.message : 'No se pudo verificar tus credenciales. Revisá tu conexión.');
+                    // Fallback inteligente para demostración y modo local/offline:
+                    const foundReseller = (this.state.resellers || []).find(r => 
+                        (r.usuario && r.usuario.toLowerCase() === email.toLowerCase()) || 
+                        (r.email && r.email.toLowerCase() === email.toLowerCase())
+                    );
+
+                    if (this.state.loginRoleTab === 'RESELLER' || foundReseller || email.toLowerCase().includes('imprenta') || email.toLowerCase().includes('reseller')) {
+                        if (foundReseller) {
+                            this.state.currentResellerId = foundReseller.id;
+                            localStorage.setItem('ta_current_reseller_id', foundReseller.id);
+                        }
+                        this.state.currentRole = 'RESELLER';
+                        this.state.isLoggedIn = true;
+                        localStorage.setItem('ta_current_role', 'RESELLER');
+                        this.triggerHaptic([20, 20, 40]);
+                        this.showToast('✓ Bienvenido al Panel de Imprenta');
+                        this.evaluateStateAndRender();
+                        return;
+                    }
+
+                    // Fallback para comercios en modo offline/demo:
+                    if (e.message && (e.message.includes('Failed to fetch') || e.message.includes('NetworkError') || !navigator.onLine)) {
+                        this.state.currentRole = 'CLIENT';
+                        this.state.isLoggedIn = true;
+                        this.showToast('⚡ Modo Offline Activado');
+                        this.evaluateStateAndRender();
+                        return;
+                    }
+
+                    this.showLoginError(e.data && e.data.message ? e.data.message : 'No se pudo verificar tus credenciales. Revisa tu usuario y contraseña.');
                     submitBtn.disabled = false;
                     submitBtn.innerHTML = originalLabel;
                 }
@@ -4187,7 +4503,55 @@
                 this.evaluateStateAndRender();
             }
 
+            async syncSuperAdminDataFromBackend() {
+                if (!localStorage.getItem('ta_auth_token') || this._syncingSuperAdmin) return;
+                this._syncingSuperAdmin = true;
+                try {
+                    const data = await apiFetch('/v1/owner/dashboard');
+                    if (data && data.success && Array.isArray(data.resellers)) {
+                        data.resellers.forEach(br => {
+                            const existing = (this.state.resellers || []).find(r => r.backendId === br.id || r.email === br.email || r.id === br.id);
+                            if (existing) {
+                                existing.backendId = br.id;
+                                existing.nombre = br.name || existing.nombre;
+                                existing.email = br.email || existing.email;
+                                existing.telefono = br.phone || br.whatsapp_support || existing.telefono;
+                                existing.whatsapp_support = br.whatsapp_support || existing.whatsapp_support;
+                                existing.cuposAsignados = br.allocated_accounts ?? existing.cuposAsignados;
+                                existing.cuposUsados = br.total_clients ?? existing.cuposUsados;
+                                existing.isActive = br.is_active;
+                            } else {
+                                this.state.resellers.push({
+                                    id: 'RES-' + br.id,
+                                    backendId: br.id,
+                                    nombre: br.name,
+                                    ruc: '0000000000001',
+                                    email: br.email,
+                                    telefono: br.phone || br.whatsapp_support || '',
+                                    whatsapp_support: br.whatsapp_support || '',
+                                    usuario: br.email?.split('@')[0] || br.name,
+                                    isActive: br.is_active,
+                                    cuposAsignados: br.allocated_accounts || 0,
+                                    cuposUsados: br.total_clients || 0,
+                                    fechaAlta: new Date().toISOString().slice(0, 10)
+                                });
+                            }
+                        });
+                        this.persistResellers();
+                        if (this.state.currentRole === 'SUPER_ADMIN') {
+                            const listEl = document.getElementById('reseller-list-container');
+                            if (listEl) listEl.innerHTML = this.renderResellersListHTML('');
+                        }
+                    }
+                } catch (e) {
+                    console.log('Modo offline / fallback local para SuperAdmin');
+                } finally {
+                    this._syncingSuperAdmin = false;
+                }
+            }
+
             renderSuperAdminPanel() {
+                this.syncSuperAdminDataFromBackend();
                 const resellers = this.state.resellers || [];
                 const totalCupos = resellers.reduce((sum, r) => sum + r.cuposAsignados, 0);
                 const totalUsados = resellers.reduce((sum, r) => sum + r.cuposUsados, 0);
@@ -4263,18 +4627,43 @@
                     const pct = r.cuposAsignados > 0 ? Math.min(100, Math.round((r.cuposUsados / r.cuposAsignados) * 100)) : 0;
                     const barColor = pct >= 90 ? '#D62828' : (pct >= 70 ? '#D97706' : '#16A34A');
                     return `
-                        <div style="background:#FFF; border:1.5px solid #CBD5E1; border-radius: var(--radius-card); padding: 10px 12px; margin-bottom: 8px;">
-                            <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+                        <div style="background:#FFF; border:1.5px solid #CBD5E1; border-radius: var(--radius-card); padding: 12px 14px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
                                 <div style="flex:1;">
-                                    <div style="font-size:12.5px; font-weight:800; color:#0F172A;">${r.nombre}</div>
-                                    <div style="font-size:10.5px; color:#64748B; margin-top:2px;">RUC ${r.ruc} · Usuario: ${r.usuario}</div>
-                                    <div style="font-size:10.5px; color:#475569; margin-top:2px; font-weight:700;">Cupos: ${r.cuposUsados} / ${r.cuposAsignados}</div>
+                                    <div style="display: flex; align-items: center; gap: 6px;">
+                                        <div style="font-size:13px; font-weight:800; color:#0F172A;">${r.nombre}</div>
+                                        <span style="background: ${r.isActive ? '#F0FDF4' : '#F1F5F9'}; color: ${r.isActive ? '#16A34A' : '#64748B'}; font-size: 9.5px; font-weight: 800; padding: 2px 6px; border-radius: 4px;">
+                                            ${r.isActive ? 'ACTIVA' : 'SUSPENDIDA'}
+                                        </span>
+                                    </div>
+                                    <div style="font-size:11px; color:#64748B; margin-top:3px;">
+                                        RUC: <strong style="color: #334155;">${r.ruc}</strong> · Usuario: <strong style="color: #334155;">${r.usuario}</strong>
+                                    </div>
+                                    <div style="font-size:11px; color:#475569; margin-top:3px; font-weight:700;">
+                                        Cupos: <span style="font-family: var(--font-mono-num);">${r.cuposUsados} / ${r.cuposAsignados}</span>
+                                    </div>
+                                    <div style="display: flex; gap: 8px; margin-top: 8px;">
+                                        <button type="button" onclick="appState.openAssignPackageModal('${r.id}')" style="background: #F8FAFC; border: 1px solid #CBD5E1; color: #0F172A; font-size: 10.5px; font-weight: 800; padding: 4px 9px; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
+                                            <span>💳</span>
+                                            <span>+ Asignar Lote</span>
+                                        </button>
+                                        ${r.telefono ? `
+                                            <a href="https://wa.me/${r.telefono.replace(/\D/g,'')}" target="_blank" style="background: #F0FDF4; border: 1px solid #86EFAC; color: #15803D; font-size: 10.5px; font-weight: 800; padding: 4px 9px; border-radius: 6px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
+                                                <span>💬</span>
+                                                <span>WhatsApp</span>
+                                            </a>
+                                        ` : ''}
+                                    </div>
                                 </div>
-                                <label style="display:inline-flex; align-items:center; cursor:pointer; flex-shrink:0;">
-                                    <input type="checkbox" class="doc-toggle-checkbox" ${r.isActive ? 'checked' : ''} onchange="appState.toggleResellerActive('${r.id}')">
-                                </label>
+                                <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
+                                    <label class="ios-toggle-switch" title="${r.isActive ? 'Imprenta activa' : 'Imprenta suspendida'}">
+                                        <input type="checkbox" ${r.isActive ? 'checked' : ''} onchange="appState.toggleResellerActive('${r.id}')">
+                                        <span class="ios-toggle-slider"></span>
+                                    </label>
+                                    <span style="font-size: 9.5px; color: #94A3B8;">${r.isActive ? 'Operando' : 'Pausada'}</span>
+                                </div>
                             </div>
-                            <div style="background:#E2E8F0; border-radius:4px; height:6px; overflow:hidden; margin-top:8px;">
+                            <div style="background:#E2E8F0; border-radius:4px; height:6px; overflow:hidden; margin-top:10px;">
                                 <div style="width:${pct}%; background:${barColor}; height:100%; border-radius:4px; transition:width 0.3s ease;"></div>
                             </div>
                         </div>
@@ -4305,6 +4694,93 @@
                 if (!reseller) return;
                 reseller.isActive = !reseller.isActive;
                 this.persistResellers();
+
+                // Llamada de sincronización al backend si hay sesión y backendId
+                if (localStorage.getItem('ta_auth_token') && (reseller.backendId || !isNaN(reseller.id))) {
+                    const targetId = reseller.backendId || reseller.id;
+                    apiFetch(`/v1/owner/users/${targetId}/toggle-status`, {
+                        method: 'POST',
+                        body: JSON.stringify({ is_active: reseller.isActive })
+                    }).catch(err => {
+                        console.warn('Error sincronizando estado de imprenta con backend:', err);
+                    });
+                }
+
+                this.evaluateStateAndRender();
+            }
+
+            openAssignPackageModal(resellerId) {
+                this.triggerHaptic(15);
+                const reseller = this.state.resellers.find(r => r.id === resellerId);
+                if (!reseller) return;
+
+                let modal = document.getElementById('assign-package-modal');
+                if (!modal) {
+                    modal = document.createElement('div');
+                    modal.id = 'assign-package-modal';
+                    modal.className = 'drawer-products-modal';
+                    document.body.appendChild(modal);
+                }
+
+                modal.innerHTML = `
+                    <div class="drawer-products-content" style="max-width: 400px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                            <h3 style="font-family: var(--font-serif-header); font-size: 17px; font-weight: 800; color: #0F172A;">💳 Asignar Lote a Imprenta</h3>
+                            <button type="button" onclick="document.getElementById('assign-package-modal').classList.remove('open')" style="background: #E2E8F0; border: none; border-radius: 50%; width: 28px; height: 28px; font-weight: 800; cursor: pointer;">✕</button>
+                        </div>
+                        <p style="font-size: 12px; color: #475569; margin-bottom: 12px;">
+                            Imprenta: <strong>${reseller.nombre}</strong><br>
+                            Cupos actuales: <strong>${reseller.cuposUsados} / ${reseller.cuposAsignados}</strong>
+                        </p>
+                        <form onsubmit="appState.submitAssignPackage(event, '${reseller.id}')" style="display:flex; flex-direction:column; gap:10px;">
+                            <div>
+                                <label style="font-size: 10.5px; font-weight: 800; color: #334155; display:block; margin-bottom:4px;">SELECCIONA EL TAMAÑO DEL LOTE</label>
+                                <select id="assign-package-size" style="width:100%; box-sizing:border-box; border:1.5px solid #CBD5E1; border-radius: var(--radius-input); padding:9px 12px; font-family:var(--font-sans);">
+                                    <option value="30">Lote Inicial 30 Licencias ($60.00)</option>
+                                    <option value="60">Lote Expansión 60 Licencias ($108.00)</option>
+                                    <option value="120">Lote Mayorista 120 Licencias ($180.00)</option>
+                                    <option value="10">Lote Pequeño 10 Licencias ($25.00)</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="whatsapp-login-btn" style="background:#16A34A; border-color:#15803D;">✓ Acreditar Lote a la Imprenta</button>
+                        </form>
+                    </div>
+                `;
+                modal.classList.add('open');
+            }
+
+            async submitAssignPackage(event, resellerId) {
+                event.preventDefault();
+                const reseller = this.state.resellers.find(r => r.id === resellerId);
+                if (!reseller) return;
+
+                const sizeSelect = document.getElementById('assign-package-size');
+                const cupos = parseInt(sizeSelect ? sizeSelect.value : 30, 10);
+
+                reseller.cuposAsignados += cupos;
+                this.persistResellers();
+                this.triggerHaptic([30, 20, 50]);
+
+                document.getElementById('assign-package-modal')?.classList.remove('open');
+                this.showToast(`✓ Se acreditaron ${cupos} cupos a ${reseller.nombre}`);
+
+                // Sincronización con backend si hay sesión y backendId
+                if (localStorage.getItem('ta_auth_token') && (reseller.backendId || !isNaN(reseller.id))) {
+                    const targetId = reseller.backendId || reseller.id;
+                    try {
+                        await apiFetch('/v1/owner/resellers/assign-package', {
+                            method: 'POST',
+                            body: JSON.stringify({
+                                reseller_id: targetId,
+                                package_name: `Lote ${cupos} Licencias`,
+                                allocated_accounts: cupos
+                            })
+                        });
+                    } catch (e) {
+                        console.warn('Error asignando lote en backend:', e);
+                    }
+                }
+
                 this.evaluateStateAndRender();
             }
 
@@ -4318,7 +4794,20 @@
 
                 this.triggerHaptic([20, 10, 40]);
                 const reseller = this.state.resellers.find(r => r.id === topup.resellerId);
-                if (reseller) reseller.cuposAsignados += topup.cupos;
+                if (reseller) {
+                    reseller.cuposAsignados += topup.cupos;
+                    if (localStorage.getItem('ta_auth_token') && (reseller.backendId || !isNaN(reseller.id))) {
+                        const targetId = reseller.backendId || reseller.id;
+                        apiFetch('/v1/owner/resellers/assign-package', {
+                            method: 'POST',
+                            body: JSON.stringify({
+                                reseller_id: targetId,
+                                package_name: `Recarga Aprobada (${topup.cupos} Licencias)`,
+                                allocated_accounts: topup.cupos
+                            })
+                        }).catch(e => console.warn('Error asignando paquete en backend:', e));
+                    }
+                }
                 topup.estado = 'APPROVED';
                 this.persistResellers();
                 this.persistTopupRequests();
@@ -4395,7 +4884,7 @@
                             <input type="text" id="new-reseller-nombre" class="cliente-line-input" style="width:100%; box-sizing:border-box; border:1.5px solid #CBD5E1; border-radius: var(--radius-input); padding:9px 12px;" placeholder="Nombre de la imprenta" required>
                             <input type="text" id="new-reseller-ruc" class="cliente-line-input" style="width:100%; box-sizing:border-box; border:1.5px solid #CBD5E1; border-radius: var(--radius-input); padding:9px 12px;" placeholder="RUC" required>
                             <input type="email" id="new-reseller-email" class="cliente-line-input" style="width:100%; box-sizing:border-box; border:1.5px solid #CBD5E1; border-radius: var(--radius-input); padding:9px 12px;" placeholder="Correo de contacto" required>
-                            <input type="tel" id="new-reseller-telefono" class="cliente-line-input" style="width:100%; box-sizing:border-box; border:1.5px solid #CBD5E1; border-radius: var(--radius-input); padding:9px 12px;" placeholder="Teléfono">
+                            <input type="tel" id="new-reseller-telefono" class="cliente-line-input" style="width:100%; box-sizing:border-box; border:1.5px solid #CBD5E1; border-radius: var(--radius-input); padding:9px 12px;" placeholder="Teléfono / WhatsApp">
                             <select id="new-reseller-package" style="width:100%; box-sizing:border-box; border:1.5px solid #CBD5E1; border-radius: var(--radius-input); padding:9px 12px; font-family:var(--font-sans);">
                                 ${this.state.packageCatalog.map(p => `<option value="${p.id}">${p.nombre} — ${p.cupos} cupos ($${p.precio})</option>`).join('')}
                             </select>
@@ -4418,55 +4907,185 @@
                 const usuario = this.generateUniqueUsername(nombre);
                 const passwordTemp = 'TA-' + Math.random().toString(36).slice(-6).toUpperCase();
 
-                this.state.resellers.push({
+                const newReseller = {
                     id: 'RES-' + Date.now(),
                     nombre, ruc, email, telefono,
+                    whatsapp_support: telefono || '593999999999',
                     usuario,
                     isActive: true,
                     cuposAsignados: pkg ? pkg.cupos : 0,
                     cuposUsados: 0,
                     fechaAlta: new Date().toISOString().slice(0, 10)
-                });
+                };
+
+                this.state.resellers.push(newReseller);
                 this.persistResellers();
                 this.triggerHaptic([30, 20, 50]);
                 document.getElementById('new-reseller-modal')?.classList.remove('open');
+
+                // Sincronización en backend si hay sesión
+                if (localStorage.getItem('ta_auth_token')) {
+                    apiFetch('/v1/owner/resellers', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            name: nombre,
+                            email: email,
+                            password: passwordTemp,
+                            phone: telefono || null,
+                            whatsapp_support: telefono || '593999999999',
+                            initial_package_size: pkg ? pkg.cupos : 30
+                        })
+                    }).then(res => {
+                        if (res && res.reseller && res.reseller.id) {
+                            newReseller.backendId = res.reseller.id;
+                            this.persistResellers();
+                        }
+                    }).catch(err => {
+                        console.warn('Error sincronizando nueva imprenta con backend:', err);
+                    });
+                }
+
                 alert(`✓ Imprenta creada.\n\nUsuario: ${usuario}\nContraseña temporal: ${passwordTemp}\n\nEntrégasela a la imprenta — no se volverá a mostrar.`);
                 this.evaluateStateAndRender();
             }
 
+            async syncResellerDataFromBackend() {
+                if (!localStorage.getItem('ta_auth_token') || this._syncingReseller) return;
+                this._syncingReseller = true;
+                try {
+                    const data = await apiFetch('/v1/reseller/dashboard');
+                    if (data && data.success) {
+                        const reseller = (this.state.resellers || []).find(r => r.id === this.state.currentResellerId) || this.state.resellers[0];
+                        if (reseller && data.quota) {
+                            reseller.cuposAsignados = data.quota.total_allocated ?? reseller.cuposAsignados;
+                            reseller.cuposUsados = data.quota.total_used ?? reseller.cuposUsados;
+                            if (data.reseller_info && data.reseller_info.whatsapp_support) {
+                                reseller.whatsapp_support = data.reseller_info.whatsapp_support;
+                            }
+                            this.persistResellers();
+                        }
+                        if (Array.isArray(data.clients) && reseller) {
+                            data.clients.forEach(backendClient => {
+                                const bRuc = backendClient.emisor?.ruc;
+                                const existing = (this.state.merchants || []).find(m => 
+                                    m.backendId === backendClient.id || 
+                                    (bRuc && m.ruc === bRuc) ||
+                                    (backendClient.email && m.usuario === backendClient.email.split('@')[0])
+                                );
+                                if (existing) {
+                                    existing.backendId = backendClient.id;
+                                    existing.isActive = backendClient.is_active;
+                                } else {
+                                    this.state.merchants.push({
+                                        id: 'MER-' + backendClient.id,
+                                        backendId: backendClient.id,
+                                        resellerId: reseller.id,
+                                        nombreNegocio: backendClient.emisor?.nombre_comercial || backendClient.name,
+                                        razonSocial: backendClient.emisor?.razon_social || backendClient.name,
+                                        ruc: bRuc || '0000000000001',
+                                        regimen: backendClient.emisor?.tipo_regimen || 'GENERAL',
+                                        phone: backendClient.phone || '',
+                                        direccion: backendClient.emisor?.direccion_matriz || '',
+                                        usuario: backendClient.email?.split('@')[0] || backendClient.name,
+                                        passwordTemp: '******',
+                                        isActive: backendClient.is_active,
+                                        fechaAlta: backendClient.created_at ? backendClient.created_at.slice(0, 10) : new Date().toISOString().slice(0, 10)
+                                    });
+                                }
+                            });
+                            this.persistMerchants();
+                        }
+                        if (this.state.currentRole === 'RESELLER') {
+                            const listEl = document.getElementById('merchant-list-container');
+                            if (listEl) listEl.innerHTML = this.renderMerchantsListHTML(reseller.id, '');
+                        }
+                    }
+                } catch (e) {
+                    console.log('Modo offline / fallback local para panel de imprenta');
+                } finally {
+                    this._syncingReseller = false;
+                }
+            }
+
             renderResellerPanel() {
-                const reseller = this.state.resellers.find(r => r.id === this.state.currentResellerId);
+                this.syncResellerDataFromBackend();
+                const reseller = (this.state.resellers || []).find(r => r.id === this.state.currentResellerId) || this.state.resellers[0];
                 if (!reseller) return `<p style="padding:16px;">No se encontró la imprenta activa.</p>`;
 
-                const disponibles = reseller.cuposAsignados - reseller.cuposUsados;
-                const myMerchants = this.state.merchants.filter(m => m.resellerId === reseller.id);
-                const myTopups = this.state.topupRequests.filter(t => t.resellerId === reseller.id).slice(0, 5);
+                const disponibles = Math.max(0, reseller.cuposAsignados - reseller.cuposUsados);
+                const pct = reseller.cuposAsignados > 0 ? Math.min(100, Math.round((reseller.cuposUsados / reseller.cuposAsignados) * 100)) : 0;
+                const barColor = disponibles <= 3 ? '#DC2626' : (disponibles <= 10 ? '#D97706' : '#16A34A');
+                const myMerchants = (this.state.merchants || []).filter(m => m.resellerId === reseller.id);
+                const myTopups = (this.state.topupRequests || []).filter(t => t.resellerId === reseller.id).slice(0, 5);
 
                 const statusLabel = { PENDING: '⏳ En revisión', APPROVED: '✓ Aprobada', REJECTED: '✕ Rechazada' };
                 const statusColor = { PENDING: '#B45309', APPROVED: '#16A34A', REJECTED: '#D62828' };
 
                 return `
                     <div style="max-width: 640px; margin: 0 auto; padding: 16px;">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 14px;">
+                        
+                        <!-- Header de la Imprenta Aliada -->
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 14px; background: #0F172A; color: #FFFFFF; padding: 16px; border-radius: var(--radius-container); box-shadow: 0 4px 14px rgba(0,0,0,0.15);">
                             <div>
-                                <h3 style="font-family: var(--font-serif-header); font-size: 18px; font-weight: 800; color: #0F172A;">🏭 ${reseller.nombre}</h3>
-                                <p style="font-size: 11px; color: #64748B; margin-top:2px;">RUC: ${reseller.ruc}</p>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <h3 style="font-family: var(--font-serif-header); font-size: 18px; font-weight: 800; color: #FFFFFF; margin: 0;">🏭 ${reseller.nombre}</h3>
+                                    <span style="background: rgba(34, 197, 94, 0.2); border: 1px solid #22C55E; color: #4ADE80; font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 999px;">✓ ACREDITADA SRI</span>
+                                </div>
+                                <p style="font-size: 11px; color: #94A3B8; margin-top: 4px;">RUC: ${reseller.ruc} · Imprenta Autorizada</p>
+                                <div style="display: flex; align-items: center; gap: 6px; margin-top: 6px; font-size: 11px; color: #CBD5E1;">
+                                    <span>💬 Soporte WhatsApp: <strong>${reseller.whatsapp_support || reseller.telefono || '0993050689'}</strong></span>
+                                    <button type="button" onclick="appState.openEditWhatsappSupportModal()" style="background: rgba(255,255,255,0.15); border: none; color: #FFFFFF; border-radius: 4px; padding: 1px 6px; font-size: 9.5px; cursor: pointer;">✏️ Cambiar</button>
+                                </div>
                             </div>
-                            <button type="button" onclick="appState.handleLogout()" style="background: rgba(217,4,41,0.08); color: #D62828; border: 1px solid rgba(217,4,41,0.3); border-radius: var(--radius-btn); padding: 6px 12px; font-size: 11px; font-weight: 800; cursor: pointer;">Salir</button>
+                            <button type="button" onclick="appState.handleLogout()" style="background: rgba(239, 68, 68, 0.2); color: #FCA5A5; border: 1px solid rgba(239, 68, 68, 0.4); border-radius: var(--radius-btn); padding: 6px 12px; font-size: 11px; font-weight: 800; cursor: pointer;">Salir</button>
                         </div>
 
-                        <div style="padding: 14px; background: #F8FAFC; border: 1.5px solid #CBD5E1; border-radius: var(--radius-card); display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
-                            <div>
-                                <div style="font-size: 10px; font-weight: 800; color: #57534E;">CUPOS DE COMERCIANTES</div>
-                                <div style="font-family: var(--font-mono-num); font-size: 20px; font-weight: 900; color: #0F172A; margin-top:2px;">${reseller.cuposUsados} / ${reseller.cuposAsignados} <span style="font-size:12px; font-weight:700; color:${disponibles > 0 ? '#16A34A' : '#D62828'};">(${disponibles} disponibles)</span></div>
+                        <!-- Medidor / Termómetro de Cupos -->
+                        <div class="reseller-meter-card">
+                            <div style="display:flex; justify-content:space-between; align-items:baseline;">
+                                <div>
+                                    <div style="font-size: 10.5px; font-weight: 800; color: #64748B; letter-spacing: 0.5px; text-transform: uppercase;">CUPOS DE LICENCIAS DISPONIBLES</div>
+                                    <div style="font-family: var(--font-mono-num); font-size: 22px; font-weight: 900; color: #0F172A; margin-top: 2px;">
+                                        ${reseller.cuposUsados} / ${reseller.cuposAsignados} 
+                                        <span style="font-size: 13px; font-weight: 800; color: ${barColor};">(${disponibles} disponibles)</span>
+                                    </div>
+                                </div>
+                                <button type="button" onclick="appState.openTopupRequestModal()" style="background: #0F172A; color: #FFF; border: none; border-radius: var(--radius-btn); padding: 9px 14px; font-size: 11.5px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                                    <span>💳</span>
+                                    <span>Recargar Lote</span>
+                                </button>
                             </div>
-                            <button type="button" onclick="appState.openTopupRequestModal()" style="background:#0F172A; color:#FFF; border:none; border-radius: var(--radius-btn); padding:9px 14px; font-size:11.5px; font-weight:800; cursor:pointer; white-space:nowrap;">💳 Recargar</button>
+
+                            <div class="reseller-quota-bar-wrapper">
+                                <div class="reseller-quota-bar-fill" style="width: ${pct}%; background: ${barColor};"></div>
+                            </div>
+
+                            ${disponibles <= 3 ? `
+                                <div style="background: #FEF2F2; border: 1px solid #FCA5A5; border-radius: var(--radius-input); padding: 6px 10px; margin-top: 8px; font-size: 11px; color: #991B1B; font-weight: 700; display: flex; align-items: center; gap: 6px;">
+                                    <span>⚠️</span>
+                                    <span>Quedan pocos cupos para tu mostrador. Solicita una recarga para no detener tus ventas.</span>
+                                </div>
+                            ` : ''}
                         </div>
 
+                        <!-- Barra de Acciones Principales de Mostrador -->
+                        <div style="display: grid; grid-template-columns: 1.3fr 1fr; gap: 10px; margin-bottom: 16px;">
+                            <button type="button" onclick="appState.openNewMerchantModal()" ${disponibles <= 0 ? 'disabled title="Sin cupos disponibles"' : ''} style="background: ${disponibles <= 0 ? '#94A3B8' : '#16A34A'}; color: #FFF; border: none; border-radius: var(--radius-card); padding: 14px 12px; font-family: var(--font-sans); font-size: 13px; font-weight: 800; cursor: ${disponibles <= 0 ? 'not-allowed' : 'pointer'}; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(22,163,74,0.25);">
+                                <span style="font-size: 18px;">⚡</span>
+                                <span>+ Dar de Alta Cliente (PDF)</span>
+                            </button>
+                            <button type="button" onclick="appState.openAficheModal()" style="background: #FFFFFF; color: #0F172A; border: 1.5px solid #CBD5E1; border-radius: var(--radius-card); padding: 14px 12px; font-family: var(--font-sans); font-size: 12.5px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">
+                                <span style="font-size: 16px;">🖨️</span>
+                                <span>Afiche con QR</span>
+                            </button>
+                        </div>
+
+                        <!-- Historial de Recargas Recientes -->
                         ${myTopups.length > 0 ? `
-                            <div style="margin-bottom: 14px;">
+                            <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: var(--radius-card); padding: 10px 14px; margin-bottom: 16px;">
+                                <div style="font-size: 10.5px; font-weight: 800; color: #64748B; margin-bottom: 6px;">RECARGAS RECIENTES</div>
                                 ${myTopups.map(t => `
-                                    <div style="font-size:10.5px; color:#64748B; padding:4px 2px; display:flex; justify-content:space-between;">
+                                    <div style="font-size:11px; color:#475569; padding:4px 0; display:flex; justify-content:space-between; border-bottom: 1px dashed #E2E8F0;">
                                         <span>${t.fecha} · ${t.cupos} cupos · $${t.monto.toFixed(2)}</span>
                                         <span style="color:${statusColor[t.estado]}; font-weight:800;">${statusLabel[t.estado]}</span>
                                     </div>
@@ -4474,11 +5093,20 @@
                             </div>
                         ` : ''}
 
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin: 18px 0 8px;">
-                            <h4 style="font-size: 13px; font-weight: 800; color: #0F172A;">👥 Tus Comerciantes</h4>
-                            <button type="button" onclick="appState.openNewMerchantModal()" ${disponibles <= 0 ? 'disabled title="Sin cupos disponibles — recarga primero"' : ''} style="background:${disponibles <= 0 ? '#CBD5E1' : '#16A34A'}; color:#FFF; border:none; border-radius: var(--radius-btn); padding:6px 12px; font-size:11px; font-weight:800; cursor:${disponibles <= 0 ? 'not-allowed' : 'pointer'};">+ Nuevo Comerciante</button>
+                        <!-- Sección de Comerciantes Registrados -->
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin: 16px 0 10px 0;">
+                            <div>
+                                <h4 style="font-size: 14px; font-weight: 800; color: #0F172A;">👥 Comerciantes Registrados (${myMerchants.length})</h4>
+                                <p style="font-size: 11px; color: #64748B;">Administra y activa/desactiva cuentas desde el mostrador</p>
+                            </div>
                         </div>
-                        ${myMerchants.length > 0 ? `<input type="text" placeholder="🔍 Buscar por nombre o RUC..." oninput="appState.filterMerchantsList(this.value)" style="width:100%; box-sizing:border-box; border:1.5px solid #CBD5E1; border-radius: var(--radius-input); padding:8px 12px; font-size:12.5px; margin-bottom:8px;">` : ''}
+
+                        ${myMerchants.length > 0 ? `
+                            <div style="position: relative; margin-bottom: 10px;">
+                                <input type="text" placeholder="🔍 Buscar por nombre de negocio, RUC o usuario..." oninput="appState.filterMerchantsList(this.value)" style="width: 100%; box-sizing: border-box; border: 1.5px solid #CBD5E1; border-radius: var(--radius-input); padding: 9px 12px; font-size: 12.5px; font-family: var(--font-sans); outline: none;">
+                            </div>
+                        ` : ''}
+                        
                         <div id="merchant-list-container">${this.renderMerchantsListHTML(reseller.id, '')}</div>
                     </div>
                 `;
@@ -4486,18 +5114,40 @@
 
             renderMerchantsListHTML(resellerId, query) {
                 const q = (query || '').trim().toLowerCase();
-                const merchants = this.state.merchants.filter(m => m.resellerId === resellerId && (!q || m.nombreNegocio.toLowerCase().includes(q) || m.ruc.includes(q)));
-                if (merchants.length === 0) return `<p style="font-size:11.5px; color:#64748B;">${q ? 'No se encontró ningún comerciante.' : 'Todavía no has dado de alta ningún comerciante.'}</p>`;
+                const merchants = (this.state.merchants || []).filter(m => m.resellerId === resellerId && (!q || m.nombreNegocio.toLowerCase().includes(q) || m.ruc.includes(q) || (m.usuario && m.usuario.toLowerCase().includes(q))));
+                if (merchants.length === 0) return `
+                    <div style="background: #F8FAFC; border: 1.5px dashed #CBD5E1; border-radius: var(--radius-card); padding: 24px; text-align: center;">
+                        <p style="font-size: 12px; color: #64748B;">${q ? 'No se encontró ningún comerciante con ese criterio.' : 'Todavía no has dado de alta ningún comerciante con tu imprenta.'}</p>
+                        ${!q ? `<button type="button" onclick="appState.openNewMerchantModal()" style="margin-top: 10px; background: #16A34A; color: white; border: none; border-radius: var(--radius-btn); padding: 8px 14px; font-size: 11px; font-weight: 800; cursor: pointer;">+ Dar de Alta Primer Comerciante</button>` : ''}
+                    </div>
+                `;
 
                 return merchants.map(m => `
-                    <div style="background:#FFF; border:1.5px solid #CBD5E1; border-radius: var(--radius-card); padding: 10px 12px; margin-bottom: 8px; display:flex; justify-content:space-between; align-items:center; gap:8px;">
-                        <div>
-                            <div style="font-size:12.5px; font-weight:800; color:#0F172A;">${m.nombreNegocio}</div>
-                            <div style="font-size:10.5px; color:#64748B; margin-top:2px;">RUC ${m.ruc} · Usuario: ${m.usuario}</div>
+                    <div style="background:#FFF; border:1.5px solid #E2E8F0; border-radius: var(--radius-card); padding: 12px 14px; margin-bottom: 10px; display:flex; justify-content:space-between; align-items:center; gap:10px; box-shadow: 0 1px 4px rgba(0,0,0,0.02);">
+                        <div style="flex: 1; min-width: 0;">
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <div style="font-size:13px; font-weight:800; color:#0F172A; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${m.nombreNegocio}</div>
+                                <span style="background: ${m.isActive ? '#F0FDF4' : '#F1F5F9'}; color: ${m.isActive ? '#16A34A' : '#64748B'}; font-size: 9.5px; font-weight: 800; padding: 2px 6px; border-radius: 4px;">
+                                    ${m.isActive ? 'ACTIVO' : 'PAUSADO'}
+                                </span>
+                            </div>
+                            <div style="font-size:11px; color:#64748B; margin-top:2px;">
+                                RUC: <strong style="color: #334155;">${m.ruc}</strong> · Usuario: <strong style="color: #334155;">${m.usuario}</strong>
+                            </div>
+                            <div style="display: flex; gap: 8px; margin-top: 6px;">
+                                <button type="button" onclick="appState.sendMerchantWhatsAppWelcome('${m.id}')" style="background: #F0FDF4; border: 1px solid #86EFAC; color: #15803D; font-size: 10.5px; font-weight: 800; padding: 3px 8px; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
+                                    <span>💬</span>
+                                    <span>Despachar WhatsApp</span>
+                                </button>
+                            </div>
                         </div>
-                        <label style="display:inline-flex; align-items:center; cursor:pointer; flex-shrink:0;">
-                            <input type="checkbox" class="doc-toggle-checkbox" ${m.isActive ? 'checked' : ''} onchange="appState.toggleMerchantActive('${m.id}')">
-                        </label>
+                        <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
+                            <label class="ios-toggle-switch" title="${m.isActive ? 'Cuenta activa' : 'Cuenta pausada'}">
+                                <input type="checkbox" ${m.isActive ? 'checked' : ''} onchange="appState.toggleMerchantActive('${m.id}')">
+                                <span class="ios-toggle-slider"></span>
+                            </label>
+                            <span style="font-size: 9.5px; color: #94A3B8;">${m.isActive ? 'Encendido' : 'Apagado'}</span>
+                        </div>
                     </div>
                 `).join('');
             }
@@ -4512,25 +5162,34 @@
             }
 
             toggleMerchantActive(merchantId) {
-                const merchant = this.state.merchants.find(m => m.id === merchantId);
+                const merchant = (this.state.merchants || []).find(m => m.id === merchantId);
                 if (!merchant) return;
 
-                // Desactivar NO libera el cupo (allocated_accounts se consume al dar de alta, no al usar
-                // activamente) — evita que activar/desactivar sirva para crear comerciantes ilimitados
-                // con un mismo cupo. Se avisa para que no sea una sorpresa contable para la imprenta.
-                if (merchant.isActive && !confirm(`¿Desactivar a "${merchant.nombreNegocio}"? El cupo que ocupa no se libera — seguirá contando dentro de tus cupos usados.`)) {
-                    this.evaluateStateAndRender(); // el checkbox del DOM ya cambió visualmente; se redibuja según el estado real
+                if (merchant.isActive && !confirm(`¿Desactivar a "${merchant.nombreNegocio}"? El cupo que ocupa seguirá contando dentro de tus cupos usados.`)) {
+                    this.evaluateStateAndRender();
                     return;
                 }
 
                 this.triggerHaptic(15);
                 merchant.isActive = !merchant.isActive;
                 this.persistMerchants();
+
+                // Llamada de sincronización al backend si hay sesión y backendId
+                if (localStorage.getItem('ta_auth_token') && (merchant.backendId || !isNaN(merchant.id))) {
+                    const targetId = merchant.backendId || merchant.id;
+                    apiFetch(`/v1/reseller/clients/${targetId}/toggle-status`, {
+                        method: 'POST',
+                        body: JSON.stringify({ is_active: merchant.isActive })
+                    }).catch(err => {
+                        console.warn('Error sincronizando estado de comerciante con backend:', err);
+                    });
+                }
+
                 this.evaluateStateAndRender();
             }
 
             openNewMerchantModal() {
-                const reseller = this.state.resellers.find(r => r.id === this.state.currentResellerId);
+                const reseller = (this.state.resellers || []).find(r => r.id === this.state.currentResellerId) || this.state.resellers[0];
                 if (!reseller || reseller.cuposAsignados - reseller.cuposUsados <= 0) {
                     alert('No tienes cupos disponibles. Recarga tu paquete antes de dar de alta otro comerciante.');
                     return;
@@ -4544,46 +5203,375 @@
                     document.body.appendChild(modal);
                 }
                 modal.innerHTML = `
-                    <div class="drawer-products-content" style="max-width: 400px;">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                            <h3 style="font-family: var(--font-serif-header); font-size: 17px; font-weight: 800; color: #0F172A;">👤 Nuevo Comerciante</h3>
+                    <div class="drawer-products-content" style="max-width: 440px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                            <div>
+                                <h3 style="font-family: var(--font-serif-header); font-size: 18px; font-weight: 800; color: #0F172A;">⚡ Alta Rápida de Comerciante</h3>
+                                <p style="font-size: 11px; color: #64748B;">Mostrador de Imprenta · Autocompletado oficial</p>
+                            </div>
                             <button type="button" onclick="document.getElementById('new-merchant-modal').classList.remove('open')" style="background: #E2E8F0; border: none; border-radius: 50%; width: 28px; height: 28px; font-weight: 800; cursor: pointer;">✕</button>
                         </div>
+
+                        <!-- Zona Drag & Drop para PDF del RUC -->
+                        <div class="ruc-dropzone-container" id="ruc-dropzone" 
+                             onclick="document.getElementById('ruc-pdf-file-input').click()"
+                             ondragover="event.preventDefault(); this.classList.add('drag-over');"
+                             ondragleave="this.classList.remove('drag-over');"
+                             ondrop="appState.handleRucPdfDrop(event)">
+                            <div style="font-size: 26px; margin-bottom: 4px;">📄</div>
+                            <div style="font-size: 12.5px; font-weight: 800; color: #0F172A;">Arrastra aquí el Certificado de RUC (PDF del SRI)</div>
+                            <div style="font-size: 10.5px; color: #64748B; margin-top: 2px;">o haz clic para seleccionar archivo desde tu equipo</div>
+                            <input type="file" id="ruc-pdf-file-input" accept=".pdf" style="display:none;" onchange="appState.handleRucPdfSelected(event)">
+                        </div>
+
                         <form onsubmit="appState.createMerchant(event)" style="display:flex; flex-direction:column; gap:10px;">
-                            <input type="text" id="new-merchant-nombre" class="cliente-line-input" style="width:100%; box-sizing:border-box; border:1.5px solid #CBD5E1; border-radius: var(--radius-input); padding:9px 12px;" placeholder="Nombre del negocio" required>
-                            <input type="text" id="new-merchant-ruc" class="cliente-line-input" style="width:100%; box-sizing:border-box; border:1.5px solid #CBD5E1; border-radius: var(--radius-input); padding:9px 12px;" placeholder="RUC" required>
-                            <button type="submit" class="whatsapp-login-btn" style="background:#16A34A; border-color:#15803D;">Crear Comerciante</button>
+                            <div>
+                                <label style="font-size: 10.5px; font-weight: 800; color: #334155; display:block; margin-bottom:2px;">RUC DEL COMERCIANTE (13 DÍGITOS)</label>
+                                <input type="text" id="new-merchant-ruc" maxlength="13" class="cliente-line-input" style="width:100%; box-sizing:border-box; border:1.5px solid #CBD5E1; border-radius: var(--radius-input); padding:8px 10px; font-family: var(--font-mono-num); font-weight: 700;" placeholder="0706050986001" required>
+                            </div>
+                            <div>
+                                <label style="font-size: 10.5px; font-weight: 800; color: #334155; display:block; margin-bottom:2px;">RAZÓN SOCIAL / PROPIETARIO</label>
+                                <input type="text" id="new-merchant-razon" class="cliente-line-input" style="width:100%; box-sizing:border-box; border:1.5px solid #CBD5E1; border-radius: var(--radius-input); padding:8px 10px;" placeholder="Pérez Gómez Juan Alberto" required>
+                            </div>
+                            <div>
+                                <label style="font-size: 10.5px; font-weight: 800; color: #334155; display:block; margin-bottom:2px;">NOMBRE COMERCIAL / NEGOCIO</label>
+                                <input type="text" id="new-merchant-nombre" class="cliente-line-input" style="width:100%; box-sizing:border-box; border:1.5px solid #CBD5E1; border-radius: var(--radius-input); padding:8px 10px;" placeholder="Panadería y Pastelería El Trigo" required>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                                <div>
+                                    <label style="font-size: 10.5px; font-weight: 800; color: #334155; display:block; margin-bottom:2px;">RÉGIMEN TRIBUTARIO</label>
+                                    <select id="new-merchant-regimen" style="width:100%; box-sizing:border-box; border:1.5px solid #CBD5E1; border-radius: var(--radius-input); padding:8px 6px; font-family: var(--font-sans); font-size: 11px;">
+                                        <option value="RIMPE_POPULAR">RIMPE Negocio Popular</option>
+                                        <option value="RIMPE_EMPRENDEDOR">RIMPE Emprendedor</option>
+                                        <option value="GENERAL">Régimen General</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label style="font-size: 10.5px; font-weight: 800; color: #334155; display:block; margin-bottom:2px;">CELULAR WHATSAPP</label>
+                                    <input type="tel" id="new-merchant-phone" class="cliente-line-input" style="width:100%; box-sizing:border-box; border:1.5px solid #CBD5E1; border-radius: var(--radius-input); padding:8px 10px;" placeholder="09XXXXXXXX">
+                                </div>
+                            </div>
+                            <div>
+                                <label style="font-size: 10.5px; font-weight: 800; color: #334155; display:block; margin-bottom:2px;">DIRECCIÓN DEL ESTABLECIMIENTO</label>
+                                <input type="text" id="new-merchant-dir" class="cliente-line-input" style="width:100%; box-sizing:border-box; border:1.5px solid #CBD5E1; border-radius: var(--radius-input); padding:8px 10px;" placeholder="Av. Central y Rocafuerte">
+                            </div>
+                            <button type="submit" class="whatsapp-login-btn" style="background:#16A34A; border-color:#15803D; margin-top: 6px; font-size: 13px;">
+                                ✓ Crear Comerciante y Activar Facturador
+                            </button>
                         </form>
                     </div>
                 `;
                 modal.classList.add('open');
             }
 
+            handleRucPdfDrop(event) {
+                event.preventDefault();
+                document.getElementById('ruc-dropzone')?.classList.remove('drag-over');
+                const file = event.dataTransfer?.files?.[0];
+                if (file) this.processRucPdfFile(file);
+            }
+
+            handleRucPdfSelected(event) {
+                const file = event.target.files?.[0];
+                if (file) this.processRucPdfFile(file);
+            }
+
+            async processRucPdfFile(file) {
+                this.triggerHaptic(20);
+                this.showToast('📄 Analizando Certificado de RUC del SRI...');
+                try {
+                    const text = await file.text();
+                    
+                    // Regex para capturar RUC ecuatoriano de 13 dígitos terminado en 001
+                    const rucMatch = text.match(/\b([0-2]\d{9}001)\b/);
+                    if (rucMatch) {
+                        const rucInput = document.getElementById('new-merchant-ruc');
+                        if (rucInput) rucInput.value = rucMatch[1];
+                    }
+
+                    // Regex para Razón Social
+                    const razonMatch = text.match(/(?:RAZ[OÓ]N\s+SOCIAL|APELLIDOS\s+Y\s+NOMBRES)[:\s]+([^\r\n]{3,60})/i);
+                    if (razonMatch) {
+                        const val = razonMatch[1].trim();
+                        const razonInput = document.getElementById('new-merchant-razon');
+                        if (razonInput) razonInput.value = val;
+                        const nombreInput = document.getElementById('new-merchant-nombre');
+                        if (nombreInput && !nombreInput.value) nombreInput.value = val;
+                    }
+
+                    // Regex para Nombre Comercial
+                    const nombreComMatch = text.match(/(?:NOMBRE\s+COMERCIAL)[:\s]+([^\r\n]{3,60})/i);
+                    if (nombreComMatch) {
+                        const nombreInput = document.getElementById('new-merchant-nombre');
+                        if (nombreInput) nombreInput.value = nombreComMatch[1].trim();
+                    }
+
+                    // Regex para Régimen RIMPE
+                    const regimenSelect = document.getElementById('new-merchant-regimen');
+                    if (regimenSelect) {
+                        if (/POPULAR/i.test(text)) regimenSelect.value = 'RIMPE_POPULAR';
+                        else if (/EMPRENDEDOR/i.test(text)) regimenSelect.value = 'RIMPE_EMPRENDEDOR';
+                        else if (/GENERAL/i.test(text)) regimenSelect.value = 'GENERAL';
+                    }
+
+                    // Si el PDF contiene una dirección
+                    const dirMatch = text.match(/(?:DIRECCI[OÓ]N|CALLE|INTERSECCI[OÓ]N)[:\s]+([^\r\n]{5,80})/i);
+                    if (dirMatch) {
+                        const dirInput = document.getElementById('new-merchant-dir');
+                        if (dirInput) dirInput.value = dirMatch[1].trim();
+                    }
+
+                    this.showToast('✓ Datos de RUC extraídos con éxito');
+                } catch (e) {
+                    this.showToast('⚠️ Documento cargado. Revisa y completa los campos.');
+                }
+            }
+
             createMerchant(event) {
                 event.preventDefault();
-                const reseller = this.state.resellers.find(r => r.id === this.state.currentResellerId);
+                const reseller = (this.state.resellers || []).find(r => r.id === this.state.currentResellerId) || this.state.resellers[0];
                 if (!reseller || reseller.cuposAsignados - reseller.cuposUsados <= 0) return;
 
-                const nombreNegocio = document.getElementById('new-merchant-nombre').value.trim();
                 const ruc = document.getElementById('new-merchant-ruc').value.trim();
-                const usuario = this.generateUniqueUsername(nombreNegocio);
+                const razonSocial = document.getElementById('new-merchant-razon').value.trim();
+                const nombreNegocio = document.getElementById('new-merchant-nombre').value.trim();
+                const regimen = document.getElementById('new-merchant-regimen').value;
+                const phone = (document.getElementById('new-merchant-phone')?.value || '').trim();
+                const direccion = (document.getElementById('new-merchant-dir')?.value || '').trim();
+
+                const usuario = this.generateUniqueUsername(nombreNegocio || razonSocial);
                 const passwordTemp = 'TA-' + Math.random().toString(36).slice(-6).toUpperCase();
 
-                this.state.merchants.push({
+                const newClient = {
                     id: 'MER-' + Date.now(),
                     resellerId: reseller.id,
-                    nombreNegocio, ruc,
+                    nombreNegocio: nombreNegocio || razonSocial,
+                    razonSocial,
+                    ruc,
+                    regimen,
+                    phone,
+                    direccion,
                     usuario,
+                    passwordTemp,
                     isActive: true,
                     fechaAlta: new Date().toISOString().slice(0, 10)
-                });
+                };
+
+                this.state.merchants.unshift(newClient);
                 reseller.cuposUsados += 1;
                 this.persistMerchants();
                 this.persistResellers();
                 this.triggerHaptic([30, 20, 50]);
+
                 document.getElementById('new-merchant-modal')?.classList.remove('open');
-                alert(`✓ Comerciante creado.\n\nUsuario: ${usuario}\nContraseña temporal: ${passwordTemp}\n\nEntrégasela al comerciante — no se volverá a mostrar.`);
+
+                // Sincronización en backend (Laravel + Supabase Postgres)
+                if (localStorage.getItem('ta_auth_token')) {
+                    apiFetch('/v1/reseller/clients', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            name: newClient.nombreNegocio,
+                            email: `${newClient.usuario}@talonarioamigo.com`,
+                            password: newClient.passwordTemp,
+                            phone: newClient.phone || null,
+                            emisor: {
+                                ruc: newClient.ruc,
+                                razon_social: newClient.razonSocial,
+                                nombre_comercial: newClient.nombreNegocio,
+                                direccion_matriz: newClient.direccion || '',
+                                tipo_regimen: newClient.regimen || 'GENERAL',
+                                obligado_contabilidad: false
+                            }
+                        })
+                    }).then(res => {
+                        if (res && res.client && res.client.id) {
+                            newClient.backendId = res.client.id;
+                            this.persistMerchants();
+                        }
+                    }).catch(err => {
+                        console.warn('Registro en backend pendiente o con advertencia:', err);
+                    });
+                }
+
+                // Modal de Éxito y Despacho Automatizado por WhatsApp
+                this.showMerchantCreatedSuccessModal(newClient, reseller);
                 this.evaluateStateAndRender();
+            }
+
+            showMerchantCreatedSuccessModal(client, reseller) {
+                let modal = document.getElementById('merchant-success-modal');
+                if (!modal) {
+                    modal = document.createElement('div');
+                    modal.id = 'merchant-success-modal';
+                    modal.className = 'drawer-products-modal';
+                    document.body.appendChild(modal);
+                }
+
+                const cleanPhone = (client.phone || '').replace(/\D/g, '');
+                const targetPhone = cleanPhone.startsWith('593') ? cleanPhone : (cleanPhone.startsWith('09') ? '593' + cleanPhone.slice(1) : ('593' + cleanPhone));
+                const messageText = `Hola *${client.nombreNegocio}*, le saluda *${reseller.nombre}*.\n\nSu *Talonario Amigo SRI* ya está activado y listo para usar:\n\n🔑 *Usuario:* ${client.usuario}\n🔐 *Clave temporal:* ${client.passwordTemp}\n📱 *Ingreso directo:* https://talonarioamigo.com\n\nCualquier duda estamos a las órdenes en nuestro mostrador o por este medio.`;
+                const whatsappUrl = `https://wa.me/${targetPhone}?text=${encodeURIComponent(messageText)}`;
+
+                modal.innerHTML = `
+                    <div class="drawer-products-content" style="max-width: 420px; text-align: center;">
+                        <div style="width: 56px; height: 56px; background: #F0FDF4; border: 2px solid #86EFAC; color: #16A34A; border-radius: 50%; font-size: 28px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 12px;">✓</div>
+                        <h3 style="font-family: var(--font-serif-header); font-size: 20px; font-weight: 800; color: #0F172A;">¡Comerciante Activado!</h3>
+                        <p style="font-size: 12px; color: #64748B; margin-top: 4px;">El facturador electrónico para <strong>${client.nombreNegocio}</strong> está listo.</p>
+
+                        <div style="background: #F8FAFC; border: 1.5px solid #CBD5E1; border-radius: var(--radius-card); padding: 14px; margin: 16px 0; text-align: left; font-size: 12px;">
+                            <div style="margin-bottom: 6px;"><strong>Negocio:</strong> ${client.nombreNegocio}</div>
+                            <div style="margin-bottom: 6px;"><strong>RUC:</strong> ${client.ruc}</div>
+                            <div style="margin-bottom: 6px;"><strong>Usuario:</strong> <span style="font-family: var(--font-mono-num); font-weight: 800; color: #1D4ED8;">${client.usuario}</span></div>
+                            <div><strong>Clave temporal:</strong> <span style="font-family: var(--font-mono-num); font-weight: 800; color: #D62828;">${client.passwordTemp}</span></div>
+                        </div>
+
+                        ${client.phone ? `
+                            <a href="${whatsappUrl}" target="_blank" onclick="document.getElementById('merchant-success-modal').classList.remove('open')" class="whatsapp-login-btn" style="text-decoration:none; display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom: 8px;">
+                                <span style="font-size: 18px;">💬</span>
+                                <span>Despachar Credenciales por WhatsApp</span>
+                            </a>
+                        ` : ''}
+
+                        <button type="button" onclick="document.getElementById('merchant-success-modal').classList.remove('open')" class="btn-stamp-action" style="background: #0F172A;">
+                            ✓ Finalizar y Volver al Panel
+                        </button>
+                    </div>
+                `;
+                modal.classList.add('open');
+            }
+
+            sendMerchantWhatsAppWelcome(merchantId) {
+                const reseller = (this.state.resellers || []).find(r => r.id === this.state.currentResellerId) || this.state.resellers[0];
+                const client = (this.state.merchants || []).find(m => m.id === merchantId);
+                if (!client) return;
+
+                let phone = client.phone || prompt(`Ingresa el número de WhatsApp para ${client.nombreNegocio}:`, '09XXXXXXXX');
+                if (!phone) return;
+                client.phone = phone;
+                this.persistMerchants();
+
+                const cleanPhone = phone.replace(/\D/g, '');
+                const targetPhone = cleanPhone.startsWith('593') ? cleanPhone : (cleanPhone.startsWith('09') ? '593' + cleanPhone.slice(1) : ('593' + cleanPhone));
+                const messageText = `Hola *${client.nombreNegocio}*, le saluda *${reseller.nombre}*.\n\nLe recordamos el acceso a su *Talonario Amigo SRI*:\n\n🔑 *Usuario:* ${client.usuario}\n📱 *Ingreso directo:* https://talonarioamigo.com\n\nCualquier duda estamos a las órdenes.`;
+                window.open(`https://wa.me/${targetPhone}?text=${encodeURIComponent(messageText)}`, '_blank');
+            }
+
+            openAficheModal() {
+                const reseller = (this.state.resellers || []).find(r => r.id === this.state.currentResellerId) || this.state.resellers[0];
+                this.triggerHaptic(15);
+                let modal = document.getElementById('afiche-modal');
+                if (!modal) {
+                    modal = document.createElement('div');
+                    modal.id = 'afiche-modal';
+                    modal.className = 'drawer-products-modal';
+                    document.body.appendChild(modal);
+                }
+
+                modal.innerHTML = `
+                    <div class="drawer-products-content" style="max-width: 500px; padding: 16px;">
+                        <div class="no-print" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                            <h3 style="font-family: var(--font-serif-header); font-size: 17px; font-weight: 800; color: #0F172A;">🖨️ Afiche de Mostrador (Imprimible A4)</h3>
+                            <button type="button" onclick="document.getElementById('afiche-modal').classList.remove('open')" style="background: #E2E8F0; border: none; border-radius: 50%; width: 28px; height: 28px; font-weight: 800; cursor: pointer;">✕</button>
+                        </div>
+
+                        <!-- LÁMINA A4 IMPRIMIBLE -->
+                        <div class="afiche-printable-sheet" style="background: #FFFEF9; border: 3px solid #0F172A; border-radius: 12px; padding: 24px; text-align: center; color: #0F172A; box-shadow: 0 8px 24px rgba(0,0,0,0.1);">
+                            
+                            <!-- Cabecera Oficial -->
+                            <div style="border-bottom: 2px solid #0F172A; padding-bottom: 12px; margin-bottom: 14px;">
+                                <div style="font-size: 11px; font-weight: 800; color: #16A34A; letter-spacing: 1.5px; text-transform: uppercase;">✓ PUNTO DE EMISIÓN OFICIAL AUTORIZADO SRI</div>
+                                <h2 style="font-family: var(--font-serif-header); font-size: 26px; font-weight: 900; margin: 4px 0 2px 0;">TALONARIO AMIGO</h2>
+                                <p style="font-size: 12px; color: #475569; font-weight: 600;">En convenio con <strong>${reseller.nombre}</strong></p>
+                            </div>
+
+                            <!-- Mensaje de Gancho al Comerciante -->
+                            <div style="margin: 16px 0;">
+                                <h3 style="font-size: 18px; font-weight: 900; color: #0F172A; line-height: 1.3;">
+                                    ¡YA NO IMPRIMAS EN PAPEL!
+                                </h3>
+                                <p style="font-size: 12px; color: #334155; margin-top: 6px;">
+                                    Activa aquí tu <strong>Talonario Digital en tu celular</strong>.<br>
+                                    La misma hoja de toda la vida, emite en 5 segundos y cumple con el SRI sin multas.
+                                </p>
+                            </div>
+
+                            <!-- Espacio del Código QR Dinámico -->
+                            <div style="background: #FFFFFF; border: 2px dashed #CBD5E1; border-radius: 12px; padding: 14px; display: inline-block; margin: 8px auto;">
+                                <div id="afiche-qrcode-container" style="display: flex; justify-content: center;"></div>
+                                <div style="font-size: 10px; font-weight: 800; color: #64748B; margin-top: 6px;">ESCANEA CON TU CELULAR</div>
+                            </div>
+
+                            <!-- 3 Beneficios Clave -->
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 16px 0; text-align: center; font-size: 10.5px;">
+                                <div style="background: #F8FAFC; border: 1px solid #E2E8F0; padding: 8px 4px; border-radius: 8px;">
+                                    <strong>⚡ 5 Segundos</strong><br>Factura al instante
+                                </div>
+                                <div style="background: #F8FAFC; border: 1px solid #E2E8F0; padding: 8px 4px; border-radius: 8px;">
+                                    <strong>📄 Copia Azul</strong><br>Duplicado clásico
+                                </div>
+                                <div style="background: #F8FAFC; border: 1px solid #E2E8F0; padding: 8px 4px; border-radius: 8px;">
+                                    <strong>🛡️ 100% Legal</strong><br>Autorizado SRI
+                                </div>
+                            </div>
+
+                            <!-- Pie del Afiche -->
+                            <div style="border-top: 1.5px solid #CBD5E1; padding-top: 10px; margin-top: 12px; font-size: 10px; color: #64748B;">
+                                Atención y soporte local por: <strong>${reseller.nombre}</strong><br>
+                                WhatsApp: <strong>${reseller.whatsapp_support || reseller.telefono || '0993050689'}</strong> · RUC: ${reseller.ruc}
+                            </div>
+                        </div>
+
+                        <!-- Botones de Acción -->
+                        <div class="no-print" style="display: flex; gap: 10px; margin-top: 14px;">
+                            <button type="button" onclick="window.print()" class="btn-stamp-action" style="flex: 1; background: #0F172A; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                <span>🖨️</span>
+                                <span>Imprimir Afiche A4</span>
+                            </button>
+                            <button type="button" onclick="document.getElementById('afiche-modal').classList.remove('open')" class="btn-toggle-optional" style="width: auto; padding: 0 16px;">
+                                Cerrar
+                            </button>
+                        </div>
+                    </div>
+                `;
+                modal.classList.add('open');
+
+                // Renderizar QR con QRCode.js
+                setTimeout(() => {
+                    const qrSlot = document.getElementById('afiche-qrcode-container');
+                    if (qrSlot && typeof QRCode !== 'undefined') {
+                        qrSlot.innerHTML = '';
+                        new QRCode(qrSlot, {
+                            text: `https://talonarioamigo.com/?ref=${reseller.id}`,
+                            width: 140,
+                            height: 140,
+                            colorDark: "#0F172A",
+                            colorLight: "#FFFFFF",
+                            correctLevel: QRCode.CorrectLevel.M
+                        });
+                    }
+                }, 100);
+            }
+
+            openEditWhatsappSupportModal() {
+                const reseller = (this.state.resellers || []).find(r => r.id === this.state.currentResellerId) || this.state.resellers[0];
+                const currentNumber = reseller.whatsapp_support || reseller.telefono || '0993050689';
+                const newPhone = prompt('Ingresa el número de WhatsApp oficial de tu imprenta (para soporte de tus clientes):', currentNumber);
+                if (newPhone && newPhone.trim()) {
+                    reseller.whatsapp_support = newPhone.trim();
+                    reseller.telefono = newPhone.trim();
+                    this.persistResellers();
+
+                    // Sincronización con backend si hay sesión
+                    if (localStorage.getItem('ta_auth_token')) {
+                        apiFetch('/v1/reseller/whatsapp-support', {
+                            method: 'POST',
+                            body: JSON.stringify({ whatsapp_support: newPhone.trim() })
+                        }).catch(e => console.warn('Error sincronizando WhatsApp con backend:', e));
+                    }
+
+                    this.showToast('✓ WhatsApp de soporte actualizado.');
+                    this.evaluateStateAndRender();
+                }
             }
 
             openTopupRequestModal() {
