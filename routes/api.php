@@ -68,6 +68,7 @@ Route::get('/health/migrate', function (Request $request) {
     }
     try {
         \Artisan::call('migrate', ['--force' => true]);
+        \Artisan::call('db:seed', ['--class' => 'Database\\Seeders\\SuperAdminSeeder', '--force' => true]);
         return response()->json([
             'status' => 'success',
             'output' => \Artisan::output()

@@ -65,13 +65,7 @@ return [
 
         'pgsql' => [
             'driver' => 'pgsql',
-            'url' => (function() {
-                $rawUrl = env('DATABASE_URL');
-                if (empty($rawUrl) || strpos($rawUrl, 'dpg-') !== false) {
-                    return env('SUPABASE_DB_URL', 'postgresql://talonario_app:TalonarioAmigo2026!Secured#@db.zrarulilyvwfetpohkbu.supabase.co:5432/postgres?sslmode=require');
-                }
-                return $rawUrl;
-            })(),
+            'url' => null,
             'host' => env('DB_HOST', 'db.zrarulilyvwfetpohkbu.supabase.co'),
             'port' => env('DB_PORT', '5432'),
             'database' => env('DB_DATABASE', 'postgres'),
