@@ -19,24 +19,33 @@
         details > summary::-webkit-details-marker { display: none; }
 
         :root {
-            --paper-bg: #0F172A; /* Fondo Escritorio Sobrio */
-            --paper-card: #FCFBF6; /* Papel Marfil Crema Elegante (#FCFBF6) */
-            --paper-border: #1B2D4F; /* Tinta Azul Offset Real */
-            --paper-line: #1B2D4F;
+            /* PALETA OFICIAL ECUADOR & PUEBLO TRABAJADOR (AZUL SERIEDAD + AMARILLO SOL ANDINO) */
+            --paper-bg: #0A192F; /* Azul Seriedad Fiscal Ecuatoriano */
+            --navy-deep: #0A192F; /* Azul Medianoche Institucional */
+            --navy-primary: #1E3A8A; /* Azul Formal SRI / Bancario */
+            --navy-surface: #1E293B; /* Azul Pizarra de Contraste */
             
-            --ink-black: #1B2D4F;
-            --ink-dark-navy: #0F172A; /* Azul Profundo Navy Minimalista */
-            --stamp-red: #D62828; /* Numeración Roja Prensa Offset */
-            --stamp-green: #16A34A; /* Verde Esmeralda Unificado Apple/Linear (#16A34A) */
+            --sun-gold: #F59E0B; /* Amarillo Sol Andino del Pueblo */
+            --sun-amber: #D97706; /* Ámbar Esfuerzo & Calidez */
+            --sun-subtle: #FEF3C7; /* Fondo Marfil Solar */
+
+            --paper-card: #FCFBF7; /* Papel Comprobante Marfil Fino de Seguridad */
+            --paper-border: #1E3A8A; /* Tinta Azul Oficial Offset */
+            --paper-line: #93C5FD;
+            
+            --ink-black: #0A192F;
+            --ink-dark-navy: #0F172A;
+            --stamp-red: #DC2626; /* Numeración Roja Prensa Offset */
+            --stamp-green: #16A34A; /* Verde Esmeralda Unificado Aprobado SRI */
             --stamp-blue: #1D4ED8;
             
             --font-sans: 'Outfit', -apple-system, sans-serif;
-            --font-hand: 'Caveat', cursive, var(--font-sans); /* Tinta de bolígrafo a mano */
+            --font-hand: var(--font-sans); /* Documento fiscal formal con tipografía nítida */
             --font-serif-header: 'Playfair Display', Georgia, serif;
             --font-mono-num: 'JetBrains Mono', monospace;
             --font-stamp: 'Special Elite', cursive, monospace;
             
-            --shadow-paper: 0 20px 48px -12px rgba(0, 0, 0, 0.45), 0 8px 20px -4px rgba(0, 0, 0, 0.2);
+            --shadow-paper: 0 12px 32px -6px rgba(10, 25, 47, 0.35), 0 24px 60px -12px rgba(10, 25, 47, 0.45);
 
             /* Jerarquía de Bordes (Border-Radius Hierarchy Apple) */
             --radius-container: 18px;
@@ -54,10 +63,10 @@
         ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.35); }
 
         body {
-            background-color: #0B1120;
+            background-color: #070F1E;
             background-image: 
-                radial-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1px),
-                linear-gradient(180deg, #0B1120 0%, #0F172A 45%, #131F37 100%);
+                radial-gradient(rgba(245, 158, 11, 0.05) 1px, transparent 1px),
+                linear-gradient(180deg, #070F1E 0%, #0A192F 50%, #0E223D 100%);
             background-size: 24px 24px, 100% 100%;
             background-attachment: fixed;
             font-family: var(--font-sans);
@@ -131,14 +140,13 @@
 
             .factura-talonario-container,
             .factura-paper-container {
-                max-width: 650px !important;
+                max-width: 640px !important;
                 margin: 0 auto !important;
+                border: 1.5px solid rgba(30, 58, 138, 0.25) !important;
                 box-shadow: 
-                    -2px 2px 0 #EBE7DC,
-                    -4px 4px 0 #D6D1C4,
-                    -6px 6px 0 #3A2312,
-                    0 25px 60px -15px rgba(0, 0, 0, 0.7),
-                    0 10px 25px -5px rgba(0, 0, 0, 0.45) !important;
+                    0 2px 6px rgba(10, 25, 47, 0.08),
+                    0 14px 36px -6px rgba(10, 25, 47, 0.35),
+                    0 28px 65px -12px rgba(10, 25, 47, 0.45) !important;
             }
 
             /* Los paneles de gestión (Imprentas, SuperAdmin, Historial, Clientes) se abren con holgura */
@@ -563,16 +571,18 @@
         /* CONTENEDOR BLOQUE DE HOJAS PROTAGONISTA (FÍSICA 3D & PARALLAX) */
         .factura-paper-container {
             width: 100%;
-            background-color: #FCFBF6; /* Papel Marfil Crema Elegante (#FCFBF6) */
+            background-color: #FCFBF7; /* Papel Marfil Comprobante Fino de Imprenta */
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(245, 158, 11, 0.02) 0%, transparent 70%),
+                repeating-linear-gradient(45deg, rgba(30, 58, 138, 0.012) 0px, rgba(30, 58, 138, 0.012) 1px, transparent 1px, transparent 6px);
             color: #0F172A;
-            border: 2px solid var(--paper-border);
-            border-radius: 14px 14px 10px 10px;
+            border: 1.5px solid rgba(30, 58, 138, 0.28);
+            border-radius: 12px;
             padding: 14px 12px;
             box-shadow: 
-                -2px 2px 0 #EBE7DC,
-                -4px 4px 0 #D6D1C4,
-                -6px 6px 0 #4A2E1B,
-                0 25px 50px -12px rgba(0, 0, 0, 0.5);
+                0 2px 4px rgba(10, 25, 47, 0.06),
+                0 12px 28px -6px rgba(10, 25, 47, 0.25),
+                0 20px 48px -10px rgba(10, 25, 47, 0.35);
             position: relative;
             overflow: visible;
             transform-style: preserve-3d;
@@ -1403,65 +1413,64 @@
             100% { transform: rotate(-12deg) scale(1); opacity: 0.85; }
         }
 
-        /* LOMO ENGOMADO ULTRA-REALISTA (TELA PERCALINA CAFÉ KRAFT 3D) */
+        /* LOMO INSTITUCIONAL ECUADOR: AZUL SERIEDAD FISCAL & AMARILLO SOL ANDINO */
         .lomo-engomado-header {
-            background: 
-                radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.08) 0%, transparent 60%),
-                repeating-linear-gradient(45deg, rgba(0,0,0,0.06) 0px, rgba(0,0,0,0.06) 2px, transparent 2px, transparent 4px),
-                linear-gradient(180deg, #4A2E1B 0%, #321D0E 40%, #241409 85%, #180D05 100%);
-            height: 24px;
+            background: linear-gradient(90deg, #0A192F 0%, #1E3A8A 50%, #0A192F 100%);
+            height: 28px;
             border-radius: 10px 10px 0 0;
-            border-bottom: 2px solid #120904;
+            border-bottom: 2px solid #F59E0B; /* Filete Dorado Sol */
             box-shadow: 
-                inset 0 1px 2px rgba(255, 255, 255, 0.35),
-                inset 0 -2px 4px rgba(0, 0, 0, 0.6),
-                0 4px 8px rgba(0, 0, 0, 0.35);
+                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                inset 0 -2px 6px rgba(0, 0, 0, 0.6),
+                0 4px 12px rgba(10, 25, 47, 0.4);
             position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 0 12px;
         }
 
-        /* GRABADO PAN-DE-ORO / FOIL EN RELIEVE SOBRE EL LOMO CAFÉ */
+        /* TEXTO GRABADO EN ORO SOL ANDINO SOBRE EL LOMO AZUL */
         .lomo-engomado-header::after {
-            content: 'TA • TALONARIO AMIGO ECUADOR • REGISTRO OFICIAL';
-            font-size: 8.5px;
+            content: '☀️ REPÚBLICA DEL ECUADOR • FACTURACIÓN ELECTRÓNICA SRI • EMISIÓN AUTORIZADA';
+            font-size: 8px;
             font-weight: 900;
-            color: #D4AF37;
-            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.9), 0 -1px 0 rgba(255, 215, 0, 0.3);
-            letter-spacing: 1.8px;
+            color: #F59E0B;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8), 0 0 10px rgba(245, 158, 11, 0.3);
+            letter-spacing: 1.5px;
             text-transform: uppercase;
         }
 
-        /* GANCHOS DE ENGRAPADO METÁLICOS REALES DE IMPRENTA */
+        /* MICROSELLOS DE SEGURIDAD FISCAL EN LOS EXTREMOS (EN VEZ DE GRAPAS VIEJAS) */
         .lomo-engomado-header::before {
-            content: '';
+            content: '🇪🇨 SRI';
             position: absolute;
-            top: 50%;
-            left: 20px;
-            width: 22px;
-            height: 5px;
-            background: linear-gradient(180deg, #E2E8F0 0%, #94A3B8 50%, #475569 100%);
-            border-radius: 2px;
-            box-shadow: 
-                1px 1px 2px rgba(0,0,0,0.8),
-                inset 0 1px 0 rgba(255,255,255,0.8);
-            transform: translateY(-50%);
+            left: 10px;
+            font-size: 8px;
+            font-weight: 900;
+            color: #93C5FD;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            border-radius: 4px;
+            padding: 1px 5px;
+            letter-spacing: 0.5px;
         }
 
         .lomo-staple-right {
             position: absolute;
-            top: 50%;
-            right: 20px;
-            width: 22px;
-            height: 5px;
-            background: linear-gradient(180deg, #E2E8F0 0%, #94A3B8 50%, #475569 100%);
-            border-radius: 2px;
-            box-shadow: 
-                1px 1px 2px rgba(0,0,0,0.8),
-                inset 0 1px 0 rgba(255,255,255,0.8);
-            transform: translateY(-50%);
+            right: 10px;
+            font-size: 8px;
+            font-weight: 900;
+            color: #F59E0B;
+            background: rgba(245, 158, 11, 0.12);
+            border: 1px solid rgba(245, 158, 11, 0.5);
+            border-radius: 4px;
+            padding: 1px 5px;
+            letter-spacing: 0.5px;
             pointer-events: none;
+        }
+        .lomo-staple-right::after {
+            content: 'OFICIAL';
         }
 
         .linea-troquelada-perforada {
@@ -1508,11 +1517,9 @@
             padding: 12px;
             color: #1E40AF;
             box-shadow: 
-                -2px 2px 0 #DBEAFE,
-                -4px 4px 0 #BFDBFE,
-                -6px 6px 0 #93C5FD,
-                -8px 8px 0 #4A2E1B,
-                -12px 16px 36px rgba(0, 0, 0, 0.45);
+                0 2px 4px rgba(10, 25, 47, 0.06),
+                0 12px 28px -6px rgba(29, 78, 216, 0.25),
+                0 20px 48px -10px rgba(29, 78, 216, 0.35);
             position: relative;
             overflow: hidden;
             animation: fadeInCarbon 0.4s ease forwards;
@@ -1676,17 +1683,17 @@
         .cliente-line-input {
             flex: 1;
             border: none;
-            border-bottom: 1.5px dashed var(--paper-border);
+            border-bottom: 1.5px dashed rgba(30, 58, 138, 0.4);
             background: transparent;
-            font-family: var(--font-hand);
-            font-size: 17px;
-            font-weight: 700;
-            color: #1B2D4F;
+            font-family: var(--font-sans);
+            font-size: 13.5px;
+            font-weight: 600;
+            color: var(--navy-deep);
             outline: none;
-            padding: 1px 4px;
-            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            padding: 3px 6px;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .cliente-line-input:focus { border-bottom: 2px solid var(--stamp-blue); background: rgba(29, 78, 216, 0.04); padding-left: 6px; }
+        .cliente-line-input:focus { border-bottom: 2px solid var(--sun-gold); background: rgba(245, 158, 11, 0.05); padding-left: 8px; }
 
         /* ESTILOS REPISA DE TALONARIOS 3D (HISTORIAL 📚) */
         .talonarios-shelf-grid {
@@ -1704,27 +1711,26 @@
             position: relative;
             cursor: pointer;
             box-shadow: 
-                -3px 3px 0 #EBE7DC,
-                -5px 5px 0 #4A2E1B,
-                -8px 10px 18px rgba(0,0,0,0.35);
+                0 4px 12px rgba(10, 25, 47, 0.12),
+                0 10px 24px -5px rgba(10, 25, 47, 0.2);
             transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .talonario-tomo-card:active, .talonario-tomo-card:hover {
             transform: translateY(-4px) rotateZ(-1.5deg);
             box-shadow: 
-                -4px 4px 0 #EBE7DC,
-                -8px 8px 0 #4A2E1B,
-                -12px 16px 24px rgba(0,0,0,0.45);
+                0 8px 20px rgba(10, 25, 47, 0.18),
+                0 16px 32px -5px rgba(10, 25, 47, 0.3);
         }
 
         .tomo-lomo-binding {
-            background: #4A2E1B;
-            color: #FFF;
+            background: linear-gradient(90deg, #0A192F 0%, #1E3A8A 100%);
+            border-bottom: 1.5px solid #F59E0B;
+            color: #F59E0B;
             font-size: 9px;
             font-weight: 800;
             text-align: center;
-            padding: 2px 4px;
+            padding: 3px 4px;
             border-radius: 4px;
             margin-bottom: 8px;
             letter-spacing: 0.5px;
@@ -2395,7 +2401,7 @@
         .dust-particle { opacity: 0 !important; animation: none !important; }
 
         /* 7) Sello grabado del lomo: oro apagado sin glow */
-        .lomo-engomado-header::after { color: #C9A96B !important; text-shadow: 0 1px 1px rgba(0, 0, 0, 0.85) !important; }
+        .lomo-engomado-header::after { color: #F59E0B !important; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85) !important; }
 
         /* ========================================================
            PORTAL DE IMPRENTAS ALIADAS & LOGIN SELECTOR (DESIGN SYSTEM)
@@ -2562,12 +2568,25 @@
         <header class="app-header">
             <div class="app-header-inner">
                 <div class="app-brand">
-                    <div class="app-logo-badge">TA</div>
-                    <div class="app-title">Talonario Amigo</div>
+                    <div class="app-logo-badge">☀️</div>
+                    <div>
+                        <div class="app-title" style="display: flex; align-items: center; gap: 8px;">
+                            <span>Talonario Amigo</span>
+                            <span id="platform-badge" style="font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 6px; letter-spacing: 0.3px; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #F59E0B;">ECUADOR 🇪🇨</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="user-status-pill" onclick="appState.toggleRoleSwitcherModal()">
-                    <span class="status-dot"></span>
-                    <span id="current-user-role-label">Emisor Activo</span>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <button id="web-pos-fullscreen-btn" type="button" onclick="appState.toggleFullScreenPOS()" title="Pantalla Completa Punto de Venta" style="display: none; background: rgba(245, 158, 11, 0.12); border: 1px solid #F59E0B; color: #F59E0B; font-size: 10.5px; font-weight: 800; padding: 5px 10px; border-radius: 8px; cursor: pointer;">
+                        ⛶ POS
+                    </button>
+                    <button id="web-qr-apk-btn" type="button" onclick="appState.openQrDownloadModal()" title="Escanear QR para App Móvil" style="display: none; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); color: #FFF; font-size: 10.5px; font-weight: 700; padding: 5px 10px; border-radius: 8px; cursor: pointer;">
+                        📱 App QR
+                    </button>
+                    <div class="user-status-pill" onclick="appState.toggleRoleSwitcherModal()">
+                        <span class="status-dot"></span>
+                        <span id="current-user-role-label">Emisor Activo</span>
+                    </div>
                 </div>
             </div>
         </header>
@@ -3481,7 +3500,7 @@
 
                 return `
                 <div class="facturador-workstation">
-                  <div style="width:100%; max-width:470px; margin:0 auto;">
+                  <div style="width:100%; max-width:640px; margin:0 auto;">
 
                     <!-- BARRA MINIMALISTA DE ACCIONES SUAVES -->
                     <div style="background:rgba(15, 23, 42, 0.7); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,0.1); border-radius:14px; padding:8px 12px; margin-bottom:8px; display:flex; align-items:center; gap:8px;">
@@ -4252,13 +4271,112 @@
                 this.evaluateStateAndRender();
             }
 
+            isNativeApp() {
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.get('app') === 'native' || urlParams.get('mode') === 'app' || urlParams.get('platform') === 'android') {
+                    try { localStorage.setItem('ta_is_native_app', 'true'); } catch (e) {}
+                    return true;
+                }
+                if (localStorage.getItem('ta_is_native_app') === 'true') {
+                    return true;
+                }
+                if (typeof window !== 'undefined' && window.Capacitor && typeof window.Capacitor.isNativePlatform === 'function' && window.Capacitor.isNativePlatform()) {
+                    return true;
+                }
+                if (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) {
+                    return true;
+                }
+                if (navigator.userAgent && /TalonarioAmigoApp|Capacitor/i.test(navigator.userAgent)) {
+                    return true;
+                }
+                return false;
+            }
+
+            toggleFullScreenPOS() {
+                this.triggerHaptic(15);
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(() => {});
+                } else {
+                    if (document.exitFullscreen) document.exitFullscreen();
+                }
+            }
+
+            openQrDownloadModal() {
+                this.triggerHaptic(15);
+                let modal = document.getElementById('qr-apk-modal');
+                if (!modal) {
+                    modal = document.createElement('div');
+                    modal.id = 'qr-apk-modal';
+                    modal.style.cssText = 'position:fixed; inset:0; background:rgba(10,25,47,0.88); backdrop-filter:blur(10px); display:flex; align-items:center; justify-content:center; z-index:9999; padding:16px;';
+                    modal.innerHTML = `
+                        <div style="background:#0A192F; border:2px solid #F59E0B; border-radius:18px; max-width:420px; width:100%; padding:24px; color:#FFF; box-shadow:0 25px 60px rgba(0,0,0,0.6); position:relative; text-align:center;">
+                            <button onclick="document.getElementById('qr-apk-modal').style.display='none'" style="position:absolute; top:14px; right:14px; background:rgba(255,255,255,0.1); border:none; color:#CBD5E1; width:30px; height:30px; border-radius:50%; font-size:14px; cursor:pointer;">✕</button>
+                            <div style="display:inline-flex; align-items:center; justify-content:center; width:52px; height:52px; background:rgba(245,158,11,0.15); border:1.5px solid #F59E0B; border-radius:14px; font-size:26px; margin-bottom:12px;">
+                                📱
+                            </div>
+                            <h3 style="font-family:var(--font-serif-header); font-size:20px; font-weight:800; color:#FFFFFF; margin-bottom:6px;">Lleva tu Talonario en el Celular</h3>
+                            <p style="font-size:12px; color:#CBD5E1; line-height:1.4; margin-bottom:16px;">
+                                Escanea con la cámara de tu teléfono para descargar e instalar la <strong>App Oficial Android (.APK v1.0)</strong> de Talonario Amigo Ecuador.
+                            </p>
+                            <div style="background:#FFF; padding:14px; border-radius:14px; display:inline-block; margin-bottom:16px; box-shadow:0 8px 24px rgba(0,0,0,0.3);">
+                                <div id="modal-qr-container" style="display:flex; justify-content:center;"></div>
+                            </div>
+                            <div style="display:flex; flex-direction:column; gap:8px;">
+                                <a href="/TalonarioAmigo_v1.0.apk" download="TalonarioAmigo_v1.0.apk" style="background:linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color:#0A192F; text-decoration:none; padding:12px; border-radius:10px; font-weight:900; font-size:13px; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 16px rgba(245,158,11,0.4);">
+                                    <span>⬇️</span> <span>Descargar APK Directo</span>
+                                </a>
+                                <div style="font-size:10.5px; color:#94A3B8; margin-top:4px;">
+                                    💡 <em>En tu mostrador facturas en la PC; en entregas y ferias usas tu celular.</em>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    document.body.appendChild(modal);
+                }
+                modal.style.display = 'flex';
+                
+                setTimeout(() => {
+                    const qrBox = document.getElementById('modal-qr-container');
+                    if (qrBox) {
+                        qrBox.innerHTML = '';
+                        if (typeof QRCode !== 'undefined') {
+                            new QRCode(qrBox, {
+                                text: "https://talonarioamigo.com/TalonarioAmigo_v1.0.apk",
+                                width: 160,
+                                height: 160,
+                                colorDark: "#0A192F",
+                                colorLight: "#FFFFFF",
+                                correctLevel: QRCode.CorrectLevel.M
+                            });
+                        } else {
+                            qrBox.innerHTML = '<a href="/TalonarioAmigo_v1.0.apk" style="color:#0A192F; font-weight:bold;">Descargar APK</a>';
+                        }
+                    }
+                }, 50);
+            }
+
             updateHeaderStatusPill() {
                 const label = document.getElementById('current-user-role-label');
+                const posBtn = document.getElementById('web-pos-fullscreen-btn');
+                const qrBtn = document.getElementById('web-qr-apk-btn');
+                const platformBadge = document.getElementById('platform-badge');
+                
+                const isNative = this.isNativeApp();
+                if (platformBadge) {
+                    platformBadge.textContent = isNative ? 'APP MÓVIL 📱' : 'MOSTRADOR WEB 🏢';
+                    platformBadge.style.color = isNative ? '#4ADE80' : '#F59E0B';
+                    platformBadge.style.borderColor = isNative ? 'rgba(74,222,128,0.4)' : 'rgba(245,158,11,0.4)';
+                    platformBadge.style.background = isNative ? 'rgba(74,222,128,0.1)' : 'rgba(245,158,11,0.15)';
+                }
+
+                if (posBtn) posBtn.style.display = isNative ? 'none' : 'inline-block';
+                if (qrBtn) qrBtn.style.display = isNative ? 'none' : 'inline-block';
+
                 if (!label) return;
                 if (!this.state.isLoggedIn) { label.textContent = 'Sin sesión'; return; }
                 if (this.state.currentRole === 'SUPER_ADMIN') { label.textContent = '👑 SuperAdmin'; return; }
                 if (this.state.currentRole === 'RESELLER') { label.textContent = '🏭 Imprenta'; return; }
-                label.textContent = `Modo: ${this.getAppModeLabel()}`;
+                label.textContent = isNative ? '📱 Talonario Bolsillo' : `🏢 ${this.getAppModeLabel()}`;
             }
 
             evaluateStateAndRender() {
@@ -4325,6 +4443,20 @@
                         break;
                     case 'ACCOUNT':
                         this.container.innerHTML = this.renderAccountScreen();
+                        setTimeout(() => {
+                            const accQr = document.getElementById('qr-apk-account-widget');
+                            if (accQr && typeof QRCode !== 'undefined') {
+                                accQr.innerHTML = '';
+                                new QRCode(accQr, {
+                                    text: "https://talonarioamigo.com/TalonarioAmigo_v1.0.apk",
+                                    width: 68,
+                                    height: 68,
+                                    colorDark: "#0A192F",
+                                    colorLight: "#FFFFFF",
+                                    correctLevel: QRCode.CorrectLevel.L
+                                });
+                            }
+                        }, 100);
                         break;
                     default:
                         if (this.state.experienceLevel === 'EXPERT') {
@@ -4343,12 +4475,29 @@
                 return `
                     <div class="responsive-panel-container" style="display: flex; flex-direction: column; gap: 18px; padding: 6px 4px; max-width: 640px; margin: 0 auto; width: 100%;">
                         
-                        <!-- CABECERA DE MODO COMERCIANTE ("Buenos días, Carlos. Tu talonario está listo.") -->
-                        <div style="background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%); color: #FFF; border-radius: var(--radius-container); padding: 22px 20px; border: 1px solid #334155; box-shadow: 0 10px 25px rgba(15, 23, 42, 0.25);">
-                            <div style="font-size: 12px; font-weight: 700; color: #94A3B8; letter-spacing: 0.5px; text-transform: uppercase;">☀️ MODO COMERCIANTE ACTIVO</div>
-                            <h2 style="font-family: var(--font-serif-header); font-size: 24px; font-weight: 800; margin-top: 4px; color: #FFFFFF;">Buenos días, Carlos.</h2>
-                            <p style="font-size: 13px; color: #CBD5E1; margin-top: 4px;">Tu talonario está listo para facturar hoy.</p>
+${this.isNativeApp() ? `
+                        <!-- CABECERA MODO MÓVIL BOLSILLO ANDROID -->
+                        <div style="background: linear-gradient(135deg, #0A192F 0%, #1E3A8A 100%); color: #FFF; border-radius: var(--radius-container); padding: 20px 18px; border: 1.5px solid rgba(245, 158, 11, 0.35); box-shadow: 0 10px 25px rgba(10, 25, 47, 0.3);">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div style="font-size: 11.5px; font-weight: 800; color: #F59E0B; letter-spacing: 0.5px;">☀️ TALONARIO DE BOLSILLO · ECUADOR</div>
+                                <span style="background: rgba(34, 197, 94, 0.2); color: #4ADE80; font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 12px; border: 1px solid #22C55E;">🟢 CONECTADO SRI</span>
+                            </div>
+                            <h2 style="font-family: var(--font-serif-header); font-size: 22px; font-weight: 800; margin-top: 6px; color: #FFFFFF;">Buenos días, Carlos.</h2>
+                            <p style="font-size: 12.5px; color: #CBD5E1; margin-top: 3px;">Talonario móvil listo para emitir en un toque desde tu celular.</p>
                         </div>
+` : `
+                        <!-- CABECERA ESTACIÓN DE MOSTRADOR Y CAJA WEB -->
+                        <div style="background: linear-gradient(135deg, #0A192F 0%, #172554 100%); color: #FFF; border-radius: var(--radius-container); padding: 22px 20px; border: 1.5px solid rgba(245, 158, 11, 0.35); box-shadow: 0 10px 25px rgba(10, 25, 47, 0.3);">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div style="font-size: 11.5px; font-weight: 800; color: #F59E0B; letter-spacing: 0.5px;">🏢 ESTACIÓN DE MOSTRADOR & CAJA WEB</div>
+                                <div style="display: flex; gap: 6px;">
+                                    <button type="button" onclick="appState.toggleFullScreenPOS()" style="background: rgba(245, 158, 11, 0.15); border: 1px solid #F59E0B; color: #F59E0B; font-size: 10.5px; font-weight: 800; padding: 3px 8px; border-radius: 6px; cursor: pointer;">⛶ Pantalla Completa POS</button>
+                                </div>
+                            </div>
+                            <h2 style="font-family: var(--font-serif-header); font-size: 24px; font-weight: 800; margin-top: 6px; color: #FFFFFF;">Buenos días, Carlos.</h2>
+                            <p style="font-size: 13px; color: #CBD5E1; margin-top: 4px;">Tu estación central de facturación está conectada al SRI con firma digital.</p>
+                        </div>
+`}
 
                         <!-- ÚNICO LLAMADO A LA ACCIÓN ESTELAR (SINGLE CTA REGLE APPLE) -->
                         <button onclick="appState.switchTab('EMITIR')" style="width: 100%; background: #1E293B; color: #FFFFFF; border: 1.5px solid #334155; border-radius: var(--radius-card); padding: 18px; font-family: var(--font-sans); font-size: 15px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; box-shadow: 0 8px 20px rgba(15, 23, 42, 0.35); transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);">
@@ -4608,19 +4757,33 @@
                             </button>
                         </div>
 
-                        <!-- BANNER DESCARGA DE APP ANDROID OFICIAL (APK DIRECTO) -->
-                        <div style="margin-top: 14px; padding: 12px 14px; background: #0F172A; border-radius: var(--radius-card); display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+${this.isNativeApp() ? `
+                        <!-- ESTADO APK NATIVA EN LOGIN (CERO BANNERS DE DESCARGA) -->
+                        <div style="margin-top: 14px; padding: 12px 14px; background: linear-gradient(135deg, #0A192F 0%, #1E3A8A 100%); border-radius: var(--radius-card); border: 1.5px solid rgba(245, 158, 11, 0.4); display: flex; align-items: center; justify-content: space-between; gap: 10px;">
                             <div style="display: flex; align-items: center; gap: 10px;">
                                 <span style="font-size: 22px;">📱</span>
                                 <div>
-                                    <div style="font-size: 11.5px; font-weight: 800; color: #FFFFFF;">App Móvil Oficial Android</div>
-                                    <div style="font-size: 10px; color: #94A3B8;">Instala el archivo APK directo en tu celular</div>
+                                    <div style="font-size: 11.5px; font-weight: 800; color: #F59E0B; letter-spacing: 0.5px;">TALONARIO MÓVIL ANDROID OFICIAL</div>
+                                    <div style="font-size: 10px; color: #E2E8F0;">Modo Express de Bolsillo · Emisión en 10 segundos</div>
                                 </div>
                             </div>
-                            <a href="/TalonarioAmigo_v1.0.apk" download="TalonarioAmigo_v1.0.apk" style="background: #16A34A; color: #FFF; text-decoration: none; padding: 7px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 2px 6px rgba(22,163,74,0.3);">
-                                ⬇️ Descargar
+                            <span style="background: rgba(22, 163, 74, 0.2); border: 1px solid #16A34A; color: #4ADE80; padding: 4px 8px; border-radius: 20px; font-size: 10px; font-weight: 800;">✓ ACTIVO</span>
+                        </div>
+` : `
+                        <!-- BANNER DESCARGA DE APP ANDROID OFICIAL (APK DIRECTO) EN LA WEB -->
+                        <div style="margin-top: 14px; padding: 12px 14px; background: linear-gradient(135deg, #0A192F 0%, #172554 100%); border-radius: var(--radius-card); border: 1.5px solid rgba(245, 158, 11, 0.35); display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span style="font-size: 22px;">📱</span>
+                                <div>
+                                    <div style="font-size: 11.5px; font-weight: 800; color: #F59E0B;">LLEVA TU TALONARIO EN EL BOLSILLO</div>
+                                    <div style="font-size: 10px; color: #CBD5E1;">Instala la App Oficial Android (.APK v1.0)</div>
+                                </div>
+                            </div>
+                            <a href="/TalonarioAmigo_v1.0.apk" download="TalonarioAmigo_v1.0.apk" style="background: #F59E0B; color: #0A192F; text-decoration: none; padding: 7px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 2px 6px rgba(245,158,11,0.4);">
+                                ⬇️ Descargar APK
                             </a>
                         </div>
+`}
 
                         <div style="margin-top: 18px; text-align: center; border-top: 1px dashed #CBD5E1; padding-top: 14px;">
                             <a href="https://wa.me/593993050689?text=Hola%2C%20necesito%20ayuda%20para%20ingresar%20a%20mi%20cuenta%20de%20Talonario%20Amigo" target="_blank" style="font-size: 11px; color: #64748B; text-decoration: none;">
@@ -6741,7 +6904,7 @@
 
                 return `
                     <div class="facturador-workstation">
-                        <div style="width: 100%; max-width: 460px; margin: 0 auto; position: relative;">
+                        <div style="width: 100%; max-width: 640px; margin: 0 auto; position: relative;">
                             <div class="factura-paper-container paper-glide-in" id="receipt-paper-card">
                                 <!-- IMPERFECCIÓN HUMANA 3D: ESQUINA LEVEMENTE LEVANTADA -->
                                 <div class="leaf-corner-curl"></div>
@@ -6901,8 +7064,13 @@
 
                                     <!-- TABLA DE DETALLE CON INSERCIÓN DINÁMICA INFINITA (SIN TEXTO RENGLÓN ESTÁTICO) -->
                                     <div class="tabla-productos-wrapper">
-                                        <svg class="watermark-sketch" viewBox="0 0 100 100" fill="currentColor">
-                                            <path d="M50 10 C30 30, 20 60, 50 90 C80 60, 70 30, 50 10 Z" fill="#4A4A4A"/>
+                                        <!-- FILIGRANA DE SEGURIDAD GEOMÉTRICA FISCAL (GUILLOCHÉ SRI ECUADOR) -->
+                                        <svg class="watermark-sketch" viewBox="0 0 200 200" fill="none" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 170px; height: 170px; opacity: 0.06; pointer-events: none;">
+                                            <circle cx="100" cy="100" r="92" stroke="#0A192F" stroke-width="1.5" stroke-dasharray="4,2"/>
+                                            <circle cx="100" cy="100" r="74" stroke="#F59E0B" stroke-width="1.5"/>
+                                            <circle cx="100" cy="100" r="54" stroke="#0A192F" stroke-width="1"/>
+                                            <path d="M100 10 L100 190 M10 100 L190 100 M36 36 L164 164 M36 164 L164 36" stroke="#F59E0B" stroke-width="0.8"/>
+                                            <polygon points="100,60 112,88 140,100 112,112 100,140 88,112 60,100 88,88" fill="#F59E0B" opacity="0.6"/>
                                         </svg>
 
                                         <table class="tabla-realista">
@@ -7751,21 +7919,49 @@
                 return `
                     <div class="responsive-panel-container" style="display: flex; flex-direction: column; gap: 14px; padding: 4px; max-width: 1080px; margin: 0 auto; width: 100%;">
                         
-                        <!-- BANNER OFICIAL DESCARGA APP ANDROID (APK DIRECTO) -->
-                        <div style="background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); border-radius: var(--radius-container); padding: 18px 22px; border: 1.5px solid #334155; box-shadow: 0 10px 25px rgba(15, 23, 42, 0.25); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 14px;">
+${this.isNativeApp() ? `
+                        <!-- ESTADO APK NATIVA EN CUENTA (CERO BANNERS DE DESCARGA) -->
+                        <div style="background: linear-gradient(135deg, #0A192F 0%, #1E3A8A 100%); border-radius: var(--radius-container); padding: 16px 20px; border: 1.5px solid rgba(245, 158, 11, 0.35); box-shadow: 0 10px 25px rgba(10, 25, 47, 0.3); display: flex; justify-content: space-between; align-items: center; gap: 12px;">
                             <div style="display: flex; align-items: center; gap: 14px;">
-                                <div style="width: 44px; height: 44px; background: rgba(34, 197, 94, 0.15); border: 1.5px solid #22C55E; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px;">
-                                    🤖
+                                <div style="width: 44px; height: 44px; background: rgba(245, 158, 11, 0.15); border: 1.5px solid #F59E0B; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px;">
+                                    ⚡
                                 </div>
                                 <div>
-                                    <div style="font-size: 13.5px; font-weight: 800; color: #FFFFFF;">Aplicación Oficial Android (.APK v1.0)</div>
-                                    <div style="font-size: 11px; color: #94A3B8; margin-top: 2px;">Instala Talonario Amigo en tu teléfono Android para facturar con un toque</div>
+                                    <div style="font-size: 13.5px; font-weight: 800; color: #FFFFFF;">Dispositivo Móvil Autorizado (APK v1.0)</div>
+                                    <div style="font-size: 11px; color: #CBD5E1; margin-top: 2px;">Talonario de Bolsillo activo en este teléfono celular. Emite sin cables ni computadoras.</div>
                                 </div>
                             </div>
-                            <a href="/TalonarioAmigo_v1.0.apk" download="TalonarioAmigo_v1.0.apk" style="background: #16A34A; color: white; text-decoration: none; padding: 10px 18px; border-radius: var(--radius-btn); font-weight: 800; font-size: 12px; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(22, 163, 74, 0.35);">
-                                <span>⬇️</span> <span>Descargar APK (5 MB)</span>
-                            </a>
+                            <span style="background: #16A34A; color: white; padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 800; display: inline-flex; align-items: center; gap: 6px;">
+                                <span>🟢</span> <span>App Lista</span>
+                            </span>
                         </div>
+` : `
+                        <!-- BANNER OFICIAL DESCARGA APP ANDROID CON QR EN LA WEB -->
+                        <div style="background: linear-gradient(135deg, #0A192F 0%, #172554 100%); border-radius: var(--radius-container); padding: 18px 22px; border: 1.5px solid rgba(245, 158, 11, 0.4); box-shadow: 0 10px 25px rgba(10, 25, 47, 0.25); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 14px;">
+                            <div style="flex: 1; min-width: 240px;">
+                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                                    <span style="background: #F59E0B; color: #0A192F; font-size: 9.5px; font-weight: 900; padding: 2px 7px; border-radius: 6px;">COMPLEMENTO DE BOLSILLO</span>
+                                    <span style="font-size: 11px; color: #93C5FD; font-weight: 700;">ECUADOR 🇪🇨</span>
+                                </div>
+                                <div style="font-size: 13.5px; font-weight: 800; color: #FFFFFF;">¿Sales a entregar pedidos o a la feria? Lleva el Talonario en tu celular</div>
+                                <div style="font-size: 11px; color: #CBD5E1; margin-top: 3px; line-height: 1.4;">
+                                    Descarga la App Oficial Android (.APK) o escanea el código QR desde tu celular para facturar en cualquier lugar.
+                                </div>
+                                <div style="display: flex; gap: 10px; align-items: center; margin-top: 10px;">
+                                    <a href="/TalonarioAmigo_v1.0.apk" download="TalonarioAmigo_v1.0.apk" style="background: #F59E0B; color: #0A192F; text-decoration: none; padding: 8px 16px; border-radius: var(--radius-btn); font-weight: 800; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);">
+                                        <span>⬇️</span> <span>Descargar APK (5 MB)</span>
+                                    </a>
+                                    <button type="button" onclick="appState.openQrDownloadModal()" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: #FFF; padding: 8px 14px; border-radius: var(--radius-btn); font-weight: 700; font-size: 11.5px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                                        <span>📷</span> <span>Ver Código QR</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div style="background: #FFFFFF; padding: 8px; border-radius: 10px; cursor: pointer; text-align: center;" onclick="appState.openQrDownloadModal()" title="Toca para ampliar el Código QR">
+                                <div id="qr-apk-account-widget"></div>
+                                <div style="font-size: 8.5px; font-weight: 800; color: #0A192F; margin-top: 4px;">ESCANEAR QR</div>
+                            </div>
+                        </div>
+`}
 
                         <!-- CONTENEDOR AGRUPADO ESTILO APPLE SETTINGS -->
                         <div id="account-settings-container" style="background: #FCFBF6; border: 2.5px solid var(--paper-border); border-radius: var(--radius-container); overflow: hidden; box-shadow: var(--shadow-paper);">
@@ -8487,18 +8683,19 @@
                     const rotateX = ((y - centerY) / centerY) * -3; // Max 3deg
                     const rotateY = ((x - centerX) / centerX) * 3;
 
-                    paper.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.01, 1.01, 1.01)`;
+                    paper.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.008, 1.008, 1.008)`;
                     paper.style.boxShadow = `
-                        ${-rotateY * 2}px ${rotateX * 2 + 20}px 48px rgba(0, 0, 0, 0.45),
-                        -2px 2px 0 #EBE7DC, -4px 4px 0 #D6D1C4, -6px 6px 0 #4A2E1B
+                        ${-rotateY * 2}px ${rotateX * 2 + 16}px 40px rgba(10, 25, 47, 0.35),
+                        0 2px 8px rgba(10, 25, 47, 0.12)
                     `;
                 });
 
                 paper.addEventListener('mouseleave', () => {
                     paper.style.transform = `rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
                     paper.style.boxShadow = `
-                        -2px 2px 0 #EBE7DC, -4px 4px 0 #D6D1C4, -6px 6px 0 #4A2E1B,
-                        0 20px 48px rgba(0, 0, 0, 0.45)
+                        0 2px 4px rgba(10, 25, 47, 0.06),
+                        0 12px 28px -6px rgba(10, 25, 47, 0.25),
+                        0 20px 48px -10px rgba(10, 25, 47, 0.35)
                     `;
                 });
             }
