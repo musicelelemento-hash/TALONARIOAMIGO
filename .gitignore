@@ -2,10 +2,14 @@
 /node_modules
 /vendor
 
-# Entornos y secretos (Render inyecta las variables por render.yaml)
+# Entornos y secretos (Render inyecta las variables por panel; NUNCA se commitean)
 /.env
-/.env.local
-/.env.*.local
+.env*
+!.env.example
+
+# Binarios de release (se generan en CI, no se commitean)
+*.apk
+*.aab
 
 # Laravel storage / cache
 /storage/logs/*.log
