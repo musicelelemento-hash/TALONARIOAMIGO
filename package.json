@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node -e \"const fs = require('fs'); fs.copyFileSync('public/index.html', 'public/dist/index.html'); fs.copyFileSync('public/landing.html', 'public/dist/landing.html'); if (fs.existsSync('public/TalonarioAmigo_v1.0.apk')) { fs.copyFileSync('public/TalonarioAmigo_v1.0.apk', 'public/dist/TalonarioAmigo_v1.0.apk'); } console.log('✓ Public files & APK synced to public/dist for Vercel');\"",
+    "build": "vite build && node -e \"const fs = require('fs'); if (fs.existsSync('public/landing.html')) fs.copyFileSync('public/landing.html', 'public/dist/landing.html'); if (fs.existsSync('public/TalonarioAmigo_v1.0.apk')) fs.copyFileSync('public/TalonarioAmigo_v1.0.apk', 'public/dist/TalonarioAmigo_v1.0.apk'); console.log('✓ Public files synced to public/dist for Vercel');\"",
     "preview": "vite preview"
   },
   "devDependencies": {
