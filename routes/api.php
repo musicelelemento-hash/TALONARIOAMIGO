@@ -21,10 +21,17 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-// Health Check público y ultra-rápido para Render y Cron-job Keep-Alive
+// Health Check público: mantiene despierto el contenedor de Render Y resetea la inactividad de Supabase
 Route::get('/health', function () {
+    $dbConnected = false;
+    try {
+        DB::select('SELECT 1');
+        $dbConnected = true;
+    } catch (\Throwable $e) {}
+
     return response()->json([
         'status' => 'ok',
+        'database' => $dbConnected ? 'active' : 'reconnecting',
         'service' => 'Talonario Amigo API SRI',
         'timestamp' => now()->toIso8601String()
     ]);
