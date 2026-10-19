@@ -14,12 +14,11 @@ Cada agente posee responsabilidades delimitadas, herramientas designadas, contra
 ## 📊 RESUMEN DE CANTIDAD Y JERARQUÍA
 
 ```
-Total de Agentes Activos: 20
+Total de Agentes Activos: 22
 ├── NIVEL 0: Dirección Estratégica & Comando Maestro (1 Agente)
 ├── NIVEL 1: Escuadrón Tributario, Validación & Cumplimiento SRI Ecuador (4 Agentes)
 ├── NIVEL 1: Escuadrón de Producto, Experiencia Táctil, Voz & Móvil (4 Agentes)
-├── NIVEL 1: Escuadrón de Visión Computacional & Escaneo Háptico (1 Agente)
-├── NIVEL 1: Escuadrón de Despacho Transaccional & Omnicanalidad (1 Agente)
+├── NIVEL 1: Escuadrón de Visión, Benchmarking Competitivo & Despacho (4 Agentes)
 ├── NIVEL 1: Escuadrón de Expansión B2B, Red de Imprentas & Crecimiento (4 Agentes)
 └── NIVEL 2: Escuadrón de Infraestructura Cloud, Bóvedas, Datos & Resiliencia (5 Agentes)
 ```
@@ -73,11 +72,11 @@ Total de Agentes Activos: 20
 * [07_mobile_capacitor_engineer.md](file:///.agents/agents/07_mobile_capacitor_engineer.md): Empaquetado APK Android, plugins nativos (Haptics, visor de archivos) y rendimiento 60 FPS en móviles de bajo costo.
 * [13_voice_ai_tactile_officer.md](file:///.agents/agents/13_voice_ai_tactile_officer.md): Reconocimiento de voz para dialectos ecuatorianos, normalización acústica de Cédula/RUC, teléfonos, correos y productos dictados.
 
-### 👁️ NIVEL 1: ESCUADRÓN DE VISIÓN COMPUTACIONAL & ESCANEO HÁPTICO
+### 👁️ NIVEL 1: ESCUADRÓN DE VISIÓN COMPUTACIONAL, BENCHMARKING & DESPACHO
 * [14_ocr_gravity_vision_specialist.md](file:///.agents/agents/14_ocr_gravity_vision_specialist.md): In-browser OCR Tesseract WASM, validación Módulo 10, animación de caída por gravedad y lectura de Certificados RUC PDF.
-
-### 📨 NIVEL 1: ESCUADRÓN DE DESPACHO TRANSACCIONAL & OMNICANALIDAD
 * [15_resend_ride_dispatch_officer.md](file:///.agents/agents/15_resend_ride_dispatch_officer.md): Despacho de XML y RIDE PDF vía Resend API con dominio `talonarioamigo.com`, plantillas HTML en papel marfil y WhatsApp fallback.
+* [21_billing_benchmark_feature_harvester.md](file:///.agents/agents/21_billing_benchmark_feature_harvester.md): Benchmarking exhaustivo de facturadores (Contífico, Facturero Móvil, Dátil, Square, Stripe), cosecha de flujos de alta conversión (1-tap WhatsApp, RUC auto-lookup, Consumidor Final ágil) y adaptación al Realismo Táctil.
+* [22_pos_thermal_receipt_architect.md](file:///.agents/agents/22_pos_thermal_receipt_architect.md): Formato de tickets de punto de venta (58mm/80mm) con QR oficial del SRI para impresión térmica en mostrador y ferreterías.
 
 ### 💼 NIVEL 1: ESCUADRÓN DE EXPANSIÓN B2B, RED DE IMPRENTAS Y CRECIMIENTO
 * [08_b2b_reseller_director.md](file:///.agents/agents/08_b2b_reseller_director.md): Estrategia de canal mayorista, paquetes de licencias y portal de administración.

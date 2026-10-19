@@ -67,9 +67,11 @@ Consulta la arquitectura completa y contratos en [SISTEMA_MULTI_AGENTES.md](file
   - [06_frontend_spa_engineer.md](file:///c:/Programacion/Aplicaciones/Talonario%20Amigo/.agents/agents/06_frontend_spa_engineer.md)
   - [07_mobile_capacitor_engineer.md](file:///c:/Programacion/Aplicaciones/Talonario%20Amigo/.agents/agents/07_mobile_capacitor_engineer.md)
   - [13_voice_ai_tactile_officer.md](file:///c:/Programacion/Aplicaciones/Talonario%20Amigo/.agents/agents/13_voice_ai_tactile_officer.md)
-- **NIVEL 1 (Escuadrón Visión & Despacho Omnicanal):**
+- **NIVEL 1 (Escuadrón Visión, Benchmarking Competitivo & Despacho Omnicanal):**
   - [14_ocr_gravity_vision_specialist.md](file:///c:/Programacion/Aplicaciones/Talonario%20Amigo/.agents/agents/14_ocr_gravity_vision_specialist.md)
   - [15_resend_ride_dispatch_officer.md](file:///c:/Programacion/Aplicaciones/Talonario%20Amigo/.agents/agents/15_resend_ride_dispatch_officer.md)
+  - [21_billing_benchmark_feature_harvester.md](file:///c:/Programacion/Aplicaciones/Talonario%20Amigo/.agents/agents/21_billing_benchmark_feature_harvester.md)
+  - [22_pos_thermal_receipt_architect.md](file:///c:/Programacion/Aplicaciones/Talonario%20Amigo/.agents/agents/22_pos_thermal_receipt_architect.md)
 - **NIVEL 1 (Escuadrón B2B, Imprentas & Crecimiento):**
   - [08_b2b_reseller_director.md](file:///c:/Programacion/Aplicaciones/Talonario%20Amigo/.agents/agents/08_b2b_reseller_director.md)
   - [09_viral_growth_marketer.md](file:///c:/Programacion/Aplicaciones/Talonario%20Amigo/.agents/agents/09_viral_growth_marketer.md)

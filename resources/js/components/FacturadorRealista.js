@@ -201,7 +201,10 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
             </div>
         ` : ''}
 
-        <div class="factura-talonario-container stacked-bloc-depth paper-glide-in ${mode === 'tranquilo' ? 'mode-tranquilo-view' : ''}" id="receipt-paper-card">
+        <div class="factura-talonario-container stacked-bloc-depth notched-edge paper-glide-in ${mode === 'tranquilo' ? 'mode-tranquilo-view' : ''}" id="receipt-paper-card">
+            <!-- Micro-perforación de desprendimiento de hoja física -->
+            <div class="tear-perforation-strip"></div>
+
             <!-- Principio 3: Esquina Doblada 3D Interactiva (Leaf Corner Curl) -->
             <div class="leaf-corner-curl" title="Tocar para ojear tomos físicos archivados" onclick="window.appState.openTomosModal()"></div>
 
@@ -298,7 +301,10 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                     <span style="font-size: 11px; font-weight: 800; color: #1E293B; text-transform: uppercase; letter-spacing: 0.5px;">
                         Datos del Cliente Receptor
                     </span>
-                    <div style="display: flex; gap: 6px; align-items: center;">
+                    <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+                        <button type="button" class="btn-voice-dictate" style="background: #10B981; border-color: #059669; color: #FFFFFF; font-weight: 800; padding: 4px 10px; font-size: 11px;" onclick="window.appState.selectFrequentClient('CONSUMIDOR FINAL', 'Ecuador', '9999999999999')" title="Llenar instantáneamente como Consumidor Final ($0 a $50)">
+                            ⚡ Consumidor Final
+                        </button>
                         <label for="scanner-camera-input" class="btn-voice-dictate" style="background: #FEF3C7; border-color: #F59E0B; color: #B45309; cursor: pointer; padding: 4px 10px; font-size: 11px;" title="Tomar foto con cámara de la tablet/móvil a la Cédula o RUC">
                             📷 Foto Cédula / RUC
                         </label>
@@ -483,6 +489,14 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                 <button class="btn-stamp-action" onclick="window.appState.executeEmit3DSequence()">
                     ✒️ FIRMAR Y EMITIR AL SRI (XAdES-BES)
                 </button>
+                <div style="display: flex; gap: 8px; justify-content: center; margin-top: 10px; flex-wrap: wrap;">
+                    <button type="button" class="mode-chip-btn" style="background: #10B981; border-color: #059669; color: #FFFFFF; font-weight: 700; font-size: 11px; padding: 6px 14px;" onclick="window.appState.shareFacturaWhatsapp()" title="Compartir comprobante actual directamente por WhatsApp">
+                        📲 Enviar por WhatsApp
+                    </button>
+                    <button type="button" class="mode-chip-btn" style="background: #1E293B; border-color: #334155; color: #F8FAFC; font-weight: 700; font-size: 11px; padding: 6px 14px;" onclick="window.print()" title="Imprimir ticket para impresora térmica de rollo 58mm o 80mm">
+                        🖨️ Imprimir Ticket POS
+                    </button>
+                </div>
             </div>
 
             <!-- Acceso Rápido a Gobernanza y 20 Agentes de Élite (Modo Dueño/Imprenta) -->
