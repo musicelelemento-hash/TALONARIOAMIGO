@@ -145,7 +145,7 @@ export const invoiceValidator = {
                 valid: false,
                 code: 'CONSUMIDOR_FINAL_EXCEEDED',
                 title: 'Límite de Consumidor Final Superado ($50.00)',
-                message: `El total de la factura es de \$${totalCalculado.toFixed(2)}. Según la resolución SRI NAC-DGERCGC22-00000024, toda venta superior a \$50.00 no puede emitirse a Consumidor Final.`,
+                message: `El total de la factura es de $${totalCalculado.toFixed(2)}. Según la resolución SRI NAC-DGERCGC22-00000024, toda venta superior a $50.00 no puede emitirse a Consumidor Final.`,
                 solution: 'Solicita el nombre y número de cédula o RUC del comprador para poder emitir.'
             };
         }

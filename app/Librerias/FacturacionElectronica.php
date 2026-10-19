@@ -1,8 +1,5 @@
 <?php
-namespace App\Librerias;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
-use GuzzleHttp\Client;
+namespace LibreriasSri;
 
 
 class FacturacionElectronica
@@ -1415,4 +1412,3 @@ private function getOpenSslErrors()
       }
 
 }
-

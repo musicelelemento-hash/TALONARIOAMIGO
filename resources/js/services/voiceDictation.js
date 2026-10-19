@@ -59,7 +59,11 @@ class VoiceDictationService {
         }
 
         if (this.isListening) {
-            try { this.recognition.stop(); } catch (e) {}
+            try {
+                this.recognition.stop();
+            } catch (_e) {
+                // ignore recognition stop error
+            }
         }
 
         this.recognition.onstart = () => {
@@ -108,7 +112,9 @@ class VoiceDictationService {
         if (this.recognition && this.isListening) {
             try {
                 this.recognition.stop();
-            } catch (e) {}
+            } catch (_e) {
+                // ignore recognition stop error
+            }
         }
         this.isListening = false;
     }
@@ -172,7 +178,6 @@ class VoiceDictationService {
 
         // 1. Detección de Cédula o RUC
         // Buscar menciones como "cédula...", "ruc...", "identificación..." o dígitos continuos de 10/13
-        const rucRegex = /(?:c[eé]dula|ruc|identificaci[oó]n|ci)?\s*:?\s*(\b(?:\d[\s-]*){10,13}\b|[a-záéíóú\s]{10,40})/i;
         const idMatches = textLower.match(/(?:c[eé]dula|ruc|identificaci[oó]n|ci)\s+(?:n[uú]mero\s+)?([a-z0-9\s]{8,35})/i);
         
         let foundId = '';
@@ -223,7 +228,7 @@ class VoiceDictationService {
         }
 
         // 3. Detección de Correo Electrónico
-        const emailMatch = textLower.match(/(?:correo|email|mail|electr[oó]nico)\s*:?\s*([a-z0-9\s._@\-]+)/i);
+        const emailMatch = textLower.match(/(?:correo|email|mail|electr[oó]nico)\s*:?\s*([a-z0-9\s._@-]+)/i);
         let normalizedEmail = '';
         if (emailMatch && emailMatch[1]) {
             normalizedEmail = this.normalizeSpokenEmail(emailMatch[1]);
@@ -319,7 +324,7 @@ class VoiceDictationService {
         text = words.join(' ');
 
         // 2. Extraer precio al final: "a X dólares" / "a X con Y" / "a X.Y"
-        const priceRegex = /\ba\s+(\d+(?:[\.,]\d+)?|\w+)(?:\s*(?:con|punto)\s*(\d+|\w+))?(?:\s*(?:d[oó]lares|centavos|ctvs))?$/i;
+        const priceRegex = /\ba\s+(\d+(?:[.,]\d+)?|\w+)(?:\s*(?:con|punto)\s*(\d+|\w+))?(?:\s*(?:d[oó]lares|centavos|ctvs))?$/i;
         const match = text.match(priceRegex);
 
         if (match) {

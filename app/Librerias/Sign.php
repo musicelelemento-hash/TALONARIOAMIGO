@@ -1,7 +1,7 @@
 <?php
-namespace App\Librerias;
+namespace LibreriasSri;
 
-use App\Traits\TraitXadesbes;
+use LibreriasSri\TraitXadesbes;
 
 abstract class Sign
 {

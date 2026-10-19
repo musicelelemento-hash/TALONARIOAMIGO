@@ -19,7 +19,7 @@ class OfflineQueueService {
         try {
             const raw = localStorage.getItem(this.storageKey);
             return raw ? JSON.parse(raw) : [];
-        } catch (e) {
+        } catch (_e) {
             return [];
         }
     }
@@ -55,7 +55,11 @@ class OfflineQueueService {
 
     notifyListeners(count) {
         this.listeners.forEach((fn) => {
-            try { fn(count); } catch (e) {}
+            try {
+                fn(count);
+            } catch (_e) {
+                // listener error ignored
+            }
         });
     }
 

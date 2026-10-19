@@ -69,7 +69,7 @@ export async function extractDataFromSriPdf(file) {
         ].filter(Boolean).join(' - ');
 
         // 4. Contactos
-        const emailMatch = cleanText.match(/[\w\.-]+@[\w\.-]+\.\w{2,}/g);
+        const emailMatch = cleanText.match(/[\w.-]+@[\w.-]+\.\w{2,}/g);
         const validEmail = emailMatch ? emailMatch.find((e) => !e.includes('sri.gob.ec')) : '';
         const phoneMatch = textOnly.match(/(?:CELULAR|TELEFONO|TELF)[^0-9]*(\d{9,10})/);
         const validPhone = phoneMatch ? phoneMatch[1] : (textOnly.match(/\b09\d{8}\b/) ? textOnly.match(/\b09\d{8}\b/)[0] : '');
@@ -101,11 +101,11 @@ export async function extractDataFromSriPdf(file) {
             lista_obligaciones: listaObligaciones,
             actividad_economica: actividad,
             es_artesano: esArtesano,
-            cantidad_establecimientos,
+            cantidad_establecimientos: cantidadEstablecimientos,
             isCertificate,
         };
     } catch (error) {
         console.error('Error en extracción PDF:', error);
-        throw new Error('No se pudo procesar el PDF.');
+        throw new Error('No se pudo procesar el PDF.', { cause: error });
     }
 }

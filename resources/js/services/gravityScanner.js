@@ -81,7 +81,7 @@ export class GravityScannerService {
     /**
      * Extrae Cédula, RUC, Nombre, Dirección, Teléfono, Correo y Productos del texto OCR
      */
-    parseExtractedText(text, fileName = '') {
+    parseExtractedText(text, _fileName = '') {
         const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
         const fullText = lines.join(' ');
 
@@ -171,7 +171,7 @@ export class GravityScannerService {
         // 6. Extraer Productos / Filas de Tabla si las hay
         for (const line of lines) {
             // Ejemplo: "2 Quintales de maíz 18.50" o "10 Cajas banano 6.85 68.50"
-            const itemMatch = line.match(/^(\d+)\s+([A-Za-zÁÉÍÓÚñáéíóú\s\.\-\(\)]+?)\s+(\d+(?:[\.,]\d{2}))(?:\s+\d+(?:[\.,]\d{2}))?$/);
+            const itemMatch = line.match(/^(\d+)\s+([A-Za-zÁÉÍÓÚñáéíóú\s.()-]+?)\s+(\d+(?:[.,]\d{2}))(?:\s+\d+(?:[.,]\d{2}))?$/);
             if (itemMatch) {
                 const cantidad = parseInt(itemMatch[1], 10);
                 const descripcion = itemMatch[2].trim();
@@ -204,7 +204,7 @@ export class GravityScannerService {
 
     cleanEntityName(str) {
         return str
-            .replace(/[0-9:;#\*\<\>]/g, '')
+            .replace(/[0-9:;#*<>]/g, '')
             .split(/\s+/)
             .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
             .join(' ')

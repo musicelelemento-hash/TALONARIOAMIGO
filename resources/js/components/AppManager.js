@@ -511,36 +511,6 @@ export class AppManager {
         this.showToast('🧹 Renglones del talonario limpiados.');
     }
 
-    finishBlueCopyPreview() {
-        if (this.blueCopyTimer) clearTimeout(this.blueCopyTimer);
-        this.state.isShowingBlueCopy = false;
-        this.state.currentDocNumber = (parseInt(this.state.currentDocNumber, 10) || 126) + 1;
-        this.triggerHaptic(20);
-        soundFx.playPaperSlide();
-        this.evaluateStateAndRender();
-        this.showToast(`📄 Hoja N° 001-001-${String(this.state.currentDocNumber).padStart(9, '0')} lista para emitir.`);
-    }
-
-    shareFacturaWhatsapp() {
-        this.triggerHaptic(15);
-        const receipt = this.state.lastReceipt;
-        const num = receipt?.secuencial || String(this.state.currentDocNumber || 126).padStart(9, '0');
-        const cliente = receipt?.cliente?.nombre || document.getElementById('cliente-nombre-input')?.value || 'Consumidor Final';
-        const total = receipt?.total || document.getElementById('grand-total-display')?.innerText || '$55.55';
-        const clave = receipt?.claveAcceso || '';
-
-        const msg = `*TALONARIO AMIGO — FACTURA ELECTRÓNICA SRI*\n\n`
-            + `📄 *Comprobante:* N° 001-001-${num}\n`
-            + `👤 *Cliente:* ${cliente}\n`
-            + `💰 *Total Cobrado:* ${total}\n`
-            + `✓ *Estado:* AUTORIZADO POR EL SRI\n`
-            + (clave ? `🔑 *Clave Acceso:* ${clave}\n` : '')
-            + `\n_Emitido con la tranquilidad del papel. https://talonarioamigo.com_`;
-
-        const waUrl = `https://wa.me/?text=${encodeURIComponent(msg)}`;
-        window.open(waUrl, '_blank');
-        this.showToast('📲 Abriendo WhatsApp para compartir comprobante...');
-    }
 
     // GESTIÓN DE MODOS DE EXPERIENCIA (Tranquilo 👴 / Comerciante 🏪 / Pro ⚡)
     setExperienceMode(mode) {
@@ -1242,17 +1212,6 @@ export class AppManager {
         this.container.innerHTML = renderLoginScreen();
     }
 
-    setDemoMode(isDemo) {
-        this.triggerHaptic(20);
-        soundFx.playPaperSlide();
-        this.state.isDemoMode = isDemo;
-        if (!isDemo && (!this.state.hasSignature || !this.state.isConfigured)) {
-            this.showToast('🚨 Modo Real SRI activado: Se requiere firma .p12 para emitir comprobantes legales.');
-        } else if (isDemo) {
-            this.showToast('🏪 Modo Demostración Activo: Puedes probar sin consecuencias fiscales.');
-        }
-        this.evaluateStateAndRender();
-    }
 
     openOnboardingModal() {
         this.triggerHaptic(20);

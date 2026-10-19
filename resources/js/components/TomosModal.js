@@ -60,9 +60,7 @@ export function renderTomosModal(activeTomoMonth = 'AGOSTO 2026', tomosData = nu
         </button>
     `).join('');
 
-    let hojasListHtml = '';
-    if (comprobantes.length === 0) {
-        hojasListHtml = `
+    const hojasListHtml = comprobantes.length === 0 ? `
             <div style="background: #FFFFFF; border: 2px dashed #CBD5E1; border-radius: 14px; padding: 36px 20px; text-align: center; color: #64748B;">
                 <div style="font-size: 40px; margin-bottom: 12px;">📑</div>
                 <div style="font-weight: 800; font-size: 15px; color: #1E293B; margin-bottom: 6px;">
@@ -75,9 +73,7 @@ export function renderTomosModal(activeTomoMonth = 'AGOSTO 2026', tomosData = nu
                     <span>✒️ Emitir mi Primera Hoja</span>
                 </button>
             </div>
-        `;
-    } else {
-        hojasListHtml = comprobantes.map(h => {
+        ` : comprobantes.map(h => {
             const num = h.secuencial || (h.numero_comprobante ? h.numero_comprobante.split('-')[2] : '000000001');
             const numComp = h.numero_comprobante || `001-001-${num}`;
             const fechaStr = h.fecha_emision ? new Date(h.fecha_emision).toLocaleDateString('es-EC', { day: '2-digit', month: '2-digit', year: 'numeric' }) : 'Hoy';
@@ -126,7 +122,6 @@ export function renderTomosModal(activeTomoMonth = 'AGOSTO 2026', tomosData = nu
                 </div>
             `;
         }).join('');
-    }
 
     return `
         <div class="tomos-modal-overlay" style="position: fixed; inset: 0; background: rgba(15,23,42,0.85); backdrop-filter: blur(8px); z-index: 9999; display: flex; justify-content: center; align-items: center; padding: 16px;" onclick="if(event.target === this) window.appState.closeTomosModal()">

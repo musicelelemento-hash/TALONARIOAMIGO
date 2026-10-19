@@ -1,5 +1,5 @@
 <?php
-namespace App\Librerias;
+namespace LibreriasSri;
 
 
 class SignDOcumentToSRI extends Sign
