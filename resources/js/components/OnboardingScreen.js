@@ -29,12 +29,12 @@ export function renderOnboardingScreen() {
                 <form onsubmit="event.preventDefault(); window.appState.saveOnboarding();" style="display: flex; flex-direction: column; gap: 12px;">
                     <div>
                         <label style="display: block; font-size: 10px; font-weight: 800; text-transform: uppercase; color:#475569;">Número de RUC (13 dígitos)</label>
-                        <input type="text" id="onb-ruc" class="form-input" value="0706050986001" maxlength="13" required>
+                        <input type="text" id="onb-ruc" class="form-input" maxlength="13" placeholder="Ej. 1790012345001" required>
                     </div>
 
                     <div>
                         <label style="display: block; font-size: 10px; font-weight: 800; text-transform: uppercase; color:#475569;">Razón Social / Nombre Comercial</label>
-                        <input type="text" id="onb-nombre" class="form-input" value="Carlos Alexander Balladares Gómez" required>
+                        <input type="text" id="onb-nombre" class="form-input" placeholder="Ej. Mi Comercio S.A." required>
                     </div>
 
                     <div>
@@ -125,12 +125,12 @@ export function renderOnboardingModal() {
                 <form onsubmit="event.preventDefault(); window.appState.saveOnboarding();" style="display: flex; flex-direction: column; gap: 10px;">
                     <div>
                         <label style="display: block; font-size: 10px; font-weight: 800; text-transform: uppercase; color:#475569;">Número de RUC (13 dígitos)</label>
-                        <input type="text" id="onb-ruc" class="form-input" value="0706050986001" maxlength="13" required>
+                        <input type="text" id="onb-ruc" class="form-input" maxlength="13" placeholder="Ej. 1790012345001" required>
                     </div>
 
                     <div>
                         <label style="display: block; font-size: 10px; font-weight: 800; text-transform: uppercase; color:#475569;">Razón Social / Nombre Comercial</label>
-                        <input type="text" id="onb-nombre" class="form-input" value="Carlos Alexander Balladares Gómez" required>
+                        <input type="text" id="onb-nombre" class="form-input" placeholder="Ej. Mi Comercio S.A." required>
                     </div>
 
                     <div>

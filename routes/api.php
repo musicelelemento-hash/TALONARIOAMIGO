@@ -68,9 +68,13 @@ Route::get('/health/db', function () {
     ]);
 });
 
-// Endpoint seguro para ejecutar migraciones pendientes en Supabase Postgres
-Route::get('/health/migrate', function (Request $request) {
-    if ($request->get('key') !== env('APP_KEY', 'talonario_secret_key')) {
+// Ejecuta migraciones y seed de superadmin. Requiere el token dedicado MIGRATE_TOKEN
+// enviado por header (nunca en la URL, que queda en logs). No reutiliza APP_KEY.
+Route::post('/health/migrate', function (Request $request) {
+    $expected = env('MIGRATE_TOKEN');
+    $provided = $request->header('X-Migrate-Token');
+
+    if (empty($expected) || empty($provided) || !hash_equals($expected, $provided)) {
         return response()->json(['error' => 'Unauthorized'], 403);
     }
     try {
@@ -81,9 +85,10 @@ Route::get('/health/migrate', function (Request $request) {
             'output' => \Artisan::output()
         ]);
     } catch (\Throwable $e) {
+        \Log::error('migrate endpoint failed: ' . $e->getMessage());
         return response()->json([
             'status' => 'error',
-            'message' => $e->getMessage()
+            'message' => 'Migration failed. Check server logs.'
         ], 500);
     }
 });

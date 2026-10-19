@@ -31,11 +31,11 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
     const blocPercent = Math.round((currentSheetInBloc / totalSheetsInBloc) * 100);
 
     const emisor = emisorData?.user?.emisor || emisorData?.emisor || {};
-    const nombreEmisor = emisor.razon_social || 'Carlos Alexander Balladares Gómez';
-    const rucEmisor = emisor.ruc || '0706050986001';
-    const actividadEmisor = emisor.nombre_comercial || 'VENTA AL POR MAYOR DE CACAO.';
-    const direccionEmisor = emisor.direccion_matriz || 'VIA PRINCIPAL SN Y CALLE SN';
-    const telefonoEmisor = emisorData?.supportWhatsapp || '0993050689';
+    const nombreEmisor = emisor.razon_social || '';
+    const rucEmisor = emisor.ruc || '';
+    const actividadEmisor = emisor.nombre_comercial || '';
+    const direccionEmisor = emisor.direccion_matriz || '';
+    const telefonoEmisor = emisorData?.supportWhatsapp || '';
     const regimenEmisor = emisor.tipo_regimen === 'GENERAL' ? '"RÉGIMEN GENERAL"' : '"CONTRIBUYENTE NEGOCIO POPULAR - RÉGIMEN RIMPE"';
     const docTypeLabel = emisor.tipo_regimen === 'GENERAL' ? 'FACTURA ELECTRÓNICA' : 'NOTA DE VENTA';
 
@@ -66,8 +66,8 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                         <div class="emisor-actividad" style="color:#2563EB;">${esc(actividadEmisor)}</div>
                         <div class="emisor-detalles" style="color:#1D4ED8;">
                             <strong>Dirección:</strong> ${esc(direccionEmisor)}<br>
-                            <strong>Celular:</strong> ${esc(telefonoEmisor)}<br>
-                            <strong>EL GUABO - EL ORO - ECUADOR</strong>
+                        <strong>Celular:</strong> ${esc(telefonoEmisor)}<br>
+                        <strong>ECUADOR</strong>
                         </div>
                     </div>
 
@@ -76,7 +76,7 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                         <div class="document-type-banner" style="background:#1D4ED8; color:#FFFFFF;">COPIA AZUL AUTOCOPIATIVA</div>
                         <div class="serie-row" style="color:#1D4ED8;">SERIE: 001-001</div>
                         <div class="numeralia-roja" style="color:#1E40AF;">${docNumStr}</div>
-                        <div class="aut-sri-row" style="color:#1D4ED8;">AUT. S R I: 1133462787</div>
+                        <div class="aut-sri-row" style="color:#1D4ED8;">AUT. S R I: ${esc(emisor.numero_autorizacion || 'PENDIENTE')}</div>
                     </div>
                 </div>
 
@@ -245,7 +245,7 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                     <div class="emisor-detalles">
                         <strong>Dirección:</strong> ${esc(direccionEmisor)}<br>
                         <strong>Celular:</strong> ${esc(telefonoEmisor)}<br>
-                        <strong>EL GUABO - EL ORO - ECUADOR</strong>
+                        <strong>ECUADOR</strong>
                     </div>
                 </div>
 
@@ -262,7 +262,7 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                         ` : 'SERIE: 001-001'}
                     </div>
                     <div class="numeralia-roja" id="doc-secuencial-num">${docNumStr}</div>
-                    <div class="aut-sri-row">AUT. S R I: 1133462787</div>
+                    <div class="aut-sri-row">AUT. S R I: ${esc(emisor.numero_autorizacion || 'PENDIENTE')}</div>
                     <div class="fecha-grid-box">
                         <div>DIA<br><strong style="font-size:11px;">${new Date().getDate()}</strong></div>
                         <div>MES<br><strong style="font-size:11px;">${String(new Date().getMonth() + 1).padStart(2, '0')}</strong></div>
@@ -324,7 +324,7 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                     <span class="cliente-label">RUC / CI #</span>
                     <input type="text" id="cliente-ruc-input" class="cliente-line-input" style="max-width: 140px;" value="1712345678" placeholder="10 o 13 dígitos" onfocus="window.appState.onInputFocus()">
                     <span class="cliente-label" style="margin-left: 6px;">Tel / Cel:</span>
-                    <input type="text" id="cliente-telefono-input" class="cliente-line-input" style="max-width: 130px;" value="0993050689" placeholder="099..." onfocus="window.appState.onInputFocus()">
+                    <input type="text" id="cliente-telefono-input" class="cliente-line-input" style="max-width: 130px;" placeholder="099..." onfocus="window.appState.onInputFocus()">
                     <span class="cliente-label" style="margin-left: 6px;">Guía:</span>
                     <input type="text" id="cliente-guia-input" class="cliente-line-input" style="max-width: 80px;" placeholder="Opcional" onfocus="window.appState.onInputFocus()">
                 </div>

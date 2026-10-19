@@ -193,7 +193,7 @@ export class GravityScannerService {
             data.cliente.direccion = 'El Guabo, El Oro, Ecuador';
         }
         if (!data.cliente.telefono) {
-            data.cliente.telefono = '0993050689';
+            data.cliente.telefono = '';
         }
         if (!data.cliente.email) {
             data.cliente.email = 'cliente@talonarioamigo.com';
@@ -223,7 +223,7 @@ export class GravityScannerService {
                     nombre: 'Carlos Alberto Mendoza Loor',
                     identificacion: '0928374651',
                     direccion: 'Cdla. Las Brisas Mz. 14 Villa 3, Machala',
-                    telefono: '0993050689',
+                    telefono: '',
                     email: 'carlos.mendoza@gmail.com'
                 },
                 items: []

@@ -34,7 +34,7 @@ export class AppManager {
             hasSignature: true,         // Archivo .p12 subido
             isActive: true,             // Estado activo/desactivado
             currentDocNumber: 126,
-            supportWhatsapp: "0993050689",
+            supportWhatsapp: "",
             experienceMode: 'comerciante', // 'tranquilo', 'comerciante', 'pro'
             isShowingBlueCopy: false,
             businessLogo: localStorage.getItem('ta_business_logo') || '',
@@ -145,7 +145,7 @@ export class AppManager {
                 const demoResellerData = {
                     reseller_info: {
                         name: "Imprenta Moderna Guayaquil (Distribuidor Autorizado)",
-                        whatsapp_support: "0993050689"
+                        whatsapp_support: ""
                     },
                     quota: {
                         total_allocated: 50,
@@ -452,7 +452,7 @@ export class AppManager {
         if (nomInput) nomInput.value = 'Juan Alberto Pérez Gómez';
         if (rucInput) rucInput.value = '0928374615';
         if (dirInput) dirInput.value = 'Av. 9 de Octubre y Boyacá, Guayaquil';
-        if (telInput) telInput.value = '0993050689';
+        if (telInput) telInput.value = '0981234567';
         if (emailInput) emailInput.value = 'juan.perez@ejemplo.com';
 
         const rows = document.querySelectorAll('#realista-items-body tr');
@@ -564,7 +564,7 @@ export class AppManager {
     }
 
     // SELECCIÓN DE CLIENTE FRECUENTE (PRINCIPIO 14)
-    selectFrequentClient(nombre, direccion, identificacion, telefono = '0993050689', email = 'cliente@talonarioamigo.com') {
+    selectFrequentClient(nombre, direccion, identificacion, telefono = '', email = '') {
         this.triggerHaptic(15);
         soundFx.playPencil();
         const nomInput = document.getElementById('cliente-nombre-input');
@@ -959,11 +959,11 @@ export class AppManager {
     // COMPARTIR FACTURA O NOTA DE VENTA DIRECTA POR WHATSAPP AL CLIENTE
     shareFacturaWhatsapp() {
         const rc = this.state.lastReceipt;
-        const emisorNombre = 'Carlos Alexander Balladares Gómez';
+        const emisorNombre = this.state.user?.emisor?.razon_social || this.state.emisor?.razon_social || 'Emisor';
         const docNum = rc ? rc.secuencial : String(this.state.currentDocNumber).padStart(9, '0');
-        const total = rc ? rc.total : '$85.00';
+        const total = rc ? rc.total : '';
         const clienteNombre = rc?.cliente?.nombre || 'Cliente Frecuente';
-        const clave = rc?.claveAcceso || '2807202601070605098600120010010000001261234567813';
+        const clave = rc?.claveAcceso || '';
 
         const msg = `*COMPROBANTE ELECTRÓNICO — TALONARIO AMIGO SRI*\n\n`
             + `🏪 *Emisor:* ${emisorNombre}\n`
@@ -1116,7 +1116,7 @@ export class AppManager {
                 items: payload.items,
                 total: document.getElementById('grand-total-display')?.innerText || '$85.00',
                 secuencial: secuencial,
-                claveAcceso: res.claveAcceso || '2807202601070605098600120010010000001261234567813',
+                claveAcceso: res.claveAcceso || '',
                 numeroAutorizacion: res.numeroAutorizacion || ''
             };
 
