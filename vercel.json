@@ -1,0 +1,24 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "npm run build",
+  "outputDirectory": "TALONARIOAMIGO/public/dist",
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/landing",
+      "destination": "/landing.html"
+    },
+    {
+      "source": "/imprentas",
+      "destination": "/landing.html"
+    },
+    {
+      "source": "/reseller",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
