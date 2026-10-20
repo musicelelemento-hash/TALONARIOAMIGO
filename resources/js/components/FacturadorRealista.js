@@ -484,21 +484,11 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                 </div>
             </div>
 
-            <!-- Pie de Imprenta Autorizada -->
-            <div class="imprenta-pie">
-                <strong>IMPRENTA "CORDOVA"</strong> • RUC: 0702065319001 • N° Aut. 8634 • PEDRO MANUEL CÓRDOVA RODRÍGUEZ<br>
-                DIRECCIÓN: COLÓN E / SUCRE Y AV. ROCAFUERTE / PASAJE 📞 0993083943<br>
-                <strong>N° 00000101 al 00000150 - Fecha de Autorización: 15/Junio/2026</strong>
-            </div>
 
             <!-- Firmas de Conformidad -->
             <div class="firmas-row">
                 <div class="firma-col">RECIBÍ CONFORME</div>
                 <div class="firma-col">ENTREGUE CONFORME</div>
-            </div>
-
-            <div style="text-align: center; margin-top: 10px; font-size: 10px; font-weight: 800;">
-                Fecha de Caducidad: 15/Junio/2027
             </div>
 
             <!-- Botón Acción Enviar SRI con Animaciones AAA -->
