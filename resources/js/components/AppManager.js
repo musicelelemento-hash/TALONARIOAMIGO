@@ -191,6 +191,7 @@ export class AppManager {
                 this.state.tomosSearchQuery
             );
         }
+        this.setupTactilePaperInteractions();
     }
 
     // CAMBIO DE ROL OPERATIVO (CLIENT / RESELLER / SUPER_ADMIN)
@@ -955,15 +956,81 @@ export class AppManager {
         soundFx.playPaperSlide();
         this.evaluateStateAndRender();
 
-        // Animación de Tacómetro Odometer
+        // Animación de Tacómetro Odometer en el folio nuevo (rodillos de imprenta)
         setTimeout(() => {
-            const numEl = document.getElementById('doc-secuencial-num');
-            if (numEl) {
-                numEl.classList.remove('odometer-spin');
-                void numEl.offsetWidth;
-                numEl.classList.add('odometer-spin');
+            const reels = document.querySelectorAll('#doc-secuencial-num .odometer-digit-reel');
+            if (reels.length) {
+                reels.forEach((reel, idx) => {
+                    if (idx >= reels.length - 3) {
+                        setTimeout(() => {
+                            reel.classList.remove('rolling');
+                            void reel.offsetWidth;
+                            reel.classList.add('rolling');
+                        }, (idx - (reels.length - 3)) * 60);
+                    }
+                });
             }
-        }, 60);
+        }, 80);
+    }
+
+    /**
+     * EXPERIENCIA TÁCTIL 2.5D & PARALLAX DEL PAPEL (PRINCIPOS 1, 3 Y 4)
+     * Microinteracción física al mover el cursor, inclinar la tablet o enfocar renglones.
+     */
+    setupTactilePaperInteractions() {
+        const paperCard = document.getElementById('receipt-paper-card');
+        if (!paperCard) return;
+
+        if (this._paperCleanup) {
+            this._paperCleanup();
+            this._paperCleanup = null;
+        }
+
+        const handlePointerMove = (e) => {
+            if (this.state.isShowingBlueCopy) return;
+            const rect = paperCard.getBoundingClientRect();
+            const clientX = e.clientX ?? (e.touches && e.touches[0]?.clientX);
+            const clientY = e.clientY ?? (e.touches && e.touches[0]?.clientY);
+            if (clientX === undefined || clientY === undefined) return;
+
+            const x = (clientX - (rect.left + rect.width / 2)) / (rect.width / 2);
+            const y = (clientY - (rect.top + rect.height / 2)) / (rect.height / 2);
+
+            const rx = Math.max(Math.min(-y * 2.2, 2.5), -2.5).toFixed(2);
+            const ry = Math.max(Math.min(x * 2.8, 3.0), -3.0).toFixed(2);
+
+            paperCard.style.setProperty('--rx', `${rx}deg`);
+            paperCard.style.setProperty('--ry', `${ry}deg`);
+        };
+
+        const handlePointerLeave = () => {
+            paperCard.style.setProperty('--rx', '0deg');
+            paperCard.style.setProperty('--ry', '0deg');
+            paperCard.style.setProperty('--scale', '1');
+        };
+
+        const handleFocusIn = () => {
+            paperCard.style.setProperty('--scale', '0.996');
+        };
+
+        const handleFocusOut = () => {
+            paperCard.style.setProperty('--scale', '1');
+        };
+
+        const workstation = document.querySelector('.app-shell-viewport') || paperCard.parentElement;
+        if (workstation) {
+            workstation.addEventListener('mousemove', handlePointerMove, { passive: true });
+            workstation.addEventListener('mouseleave', handlePointerLeave, { passive: true });
+            paperCard.addEventListener('focusin', handleFocusIn, { passive: true });
+            paperCard.addEventListener('focusout', handleFocusOut, { passive: true });
+
+            this._paperCleanup = () => {
+                workstation.removeEventListener('mousemove', handlePointerMove);
+                workstation.removeEventListener('mouseleave', handlePointerLeave);
+                paperCard.removeEventListener('focusin', handleFocusIn);
+                paperCard.removeEventListener('focusout', handleFocusOut);
+            };
+        }
     }
 
     // CARGA DE LOGOTIPO PERSONALIZADO DEL NEGOCIO

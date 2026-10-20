@@ -13,6 +13,20 @@ function esc(value) {
     return String(value ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
+function renderMechanicalOdometer(numStr, isBlueCopy = false) {
+    const digits = String(numStr || '000000126').padStart(9, '0').split('');
+    const idAttr = isBlueCopy ? 'id="doc-secuencial-blue"' : 'id="doc-secuencial-num"';
+    return `
+        <div class="numeralia-roja ${isBlueCopy ? 'numeralia-azul' : ''}" ${idAttr} title="Folio N° ${esc(numStr)}">
+            ${digits.map((digit, idx) => `
+                <span class="odometer-digit-reel" data-pos="${idx}">
+                    <span class="odometer-digit-val">${esc(digit)}</span>
+                </span>
+            `).join('')}
+        </div>
+    `;
+}
+
 export function renderFacturadorRealista(emisorData, currentDocNumber, experienceMode = 'comerciante', isShowingBlueCopy = false) {
     const isDemo = emisorData?.isDemoMode !== false;
     const hasSignature = !!emisorData?.hasSignature;
@@ -75,7 +89,7 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                         <div class="ruc-title-row" style="color:#1D4ED8;">R U C: ${esc(rucEmisor)}</div>
                         <div class="document-type-banner" style="background:#1D4ED8; color:#FFFFFF;">COPIA AZUL AUTOCOPIATIVA</div>
                         <div class="serie-row" style="color:#1D4ED8;">SERIE: 001-001</div>
-                        <div class="numeralia-roja" style="color:#1E40AF;">${docNumStr}</div>
+                        ${renderMechanicalOdometer(docNumStr, true)}
                         <div class="aut-sri-row" style="color:#1D4ED8;">AUT. S R I: ${esc(emisor.numero_autorizacion || 'PENDIENTE')}</div>
                     </div>
                 </div>
@@ -174,7 +188,7 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
         <!-- Principio 16: Grosor y Estado del Bloc Físico de 50 Hojas -->
         <div class="bloc-stack-info">
             <div style="display: flex; align-items: center; gap: 8px;">
-                <strong>📒 Bloc Físico N° 01</strong> <span style="color:#64748B;">(N° 00000101 al 00000150)</span>
+                <strong>📒 Bloc Físico N° 01</strong> <span style="color:#475569; font-weight: 600;">(N° 00000101 al 00000150)</span>
                 ${emisorData?.offlinePendingCount > 0 ? `
                     <span class="offline-queue-badge" title="Comprobantes guardados localmente sin conexión">
                         📡 ${emisorData.offlinePendingCount} en cola offline
@@ -264,7 +278,7 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                             </select>
                         ` : 'SERIE: 001-001'}
                     </div>
-                    <div class="numeralia-roja" id="doc-secuencial-num">${docNumStr}</div>
+                    ${renderMechanicalOdometer(docNumStr, false)}
                     <div class="aut-sri-row">AUT. S R I: ${esc(emisor.numero_autorizacion || 'PENDIENTE')}</div>
                     <div class="fecha-grid-box">
                         <div>DIA<br><strong style="font-size:11px;">${new Date().getDate()}</strong></div>
@@ -389,7 +403,7 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
             <!-- Chips Rápidos de Productos Táctiles (Modo Comerciante) -->
             ${mode === 'comerciante' ? `
                 <div class="quick-chips-wrapper">
-                    <span style="font-size:11px; font-weight:800; color:#64748B; align-self:center; margin-right:4px;">Rápidos:</span>
+                    <span style="font-size:11px; font-weight:800; color:#475569; align-self:center; margin-right:4px;">Rápidos:</span>
                     <button type="button" class="quick-product-chip" onclick="window.appState.addQuickProduct('🌽 Quintal de Maíz', 18.50)">🌽 Maíz ($18.50)</button>
                     <button type="button" class="quick-product-chip" onclick="window.appState.addQuickProduct('☕ Quintal de Café', 45.00)">☕ Café ($45.00)</button>
                     <button type="button" class="quick-product-chip" onclick="window.appState.addQuickProduct('🥥 Quintal de Cacao Fino', 60.00)">🥥 Cacao ($60.00)</button>
