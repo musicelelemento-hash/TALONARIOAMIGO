@@ -1,0 +1,11 @@
+node_modules
+vendor
+.git
+.vscode
+.agents
+talonario-amigo-mobile
+cloudflare
+*.log
+.env
+.env.*
+!.env.example
