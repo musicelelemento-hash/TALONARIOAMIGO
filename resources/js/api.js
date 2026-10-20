@@ -19,6 +19,7 @@ export const API_BASE_URL = storedApiUrl || (forceProd ? PROD_API_URL : (isLocal
 class ApiClient {
     constructor() {
         this.baseUrl = API_BASE_URL;
+        this.prodUrl = PROD_API_URL;
     }
 
     getToken() {
@@ -43,11 +44,28 @@ class ApiClient {
             opts.body = JSON.stringify(body);
         }
 
-        const res = await fetch(`${this.baseUrl}${path}`, opts);
+        let res;
+        try {
+            res = await fetch(`${this.baseUrl}${path}`, opts);
+        } catch (_fetchErr) {
+            // Si falló por conexión a localhost (porque no corre php artisan serve local), auto-conectar al backend en Render
+            if (this.baseUrl !== this.prodUrl) {
+                console.warn(`[API] Falló conexión a ${this.baseUrl}. Reintentando con backend en Render...`);
+                try {
+                    res = await fetch(`${this.prodUrl}${path}`, opts);
+                    this.baseUrl = this.prodUrl;
+                } catch (_prodErr) {
+                    throw new Error('No se pudo establecer conexión con el servidor. Revisa tu conexión a internet.', { cause: _prodErr });
+                }
+            } else {
+                throw new Error('No se pudo establecer conexión con el servidor. Revisa tu conexión a internet.', { cause: _fetchErr });
+            }
+        }
+
         let data = null;
         try {
             data = await res.json();
-        } catch (e) {
+        } catch (_e) {
             /* body podría no ser JSON */
         }
 
@@ -100,13 +118,30 @@ class ApiClient {
         form.append('firma_p12', file);
         form.append('password', password);
         const token = this.getToken();
-        const res = await fetch(`${this.baseUrl}/v1/onboarding/firma`, {
-            method: 'POST',
-            headers: token ? { Authorization: `Bearer ${token}` } : {},
-            body: form,
-        });
+        const headers = token ? { Authorization: `Bearer ${token}` } : {};
+
+        let res;
+        try {
+            res = await fetch(`${this.baseUrl}/v1/onboarding/firma`, {
+                method: 'POST',
+                headers,
+                body: form,
+            });
+        } catch (_fetchErr) {
+            if (this.baseUrl !== this.prodUrl) {
+                res = await fetch(`${this.prodUrl}/v1/onboarding/firma`, {
+                    method: 'POST',
+                    headers,
+                    body: form,
+                });
+                this.baseUrl = this.prodUrl;
+            } else {
+                throw new Error('No se pudo subir la firma. Revisa tu conexión a internet.', { cause: _fetchErr });
+            }
+        }
+
         let data = null;
-        try { data = await res.json(); } catch (e) { /* may not be JSON */ }
+        try { data = await res.json(); } catch (_e) { /* may not be JSON */ }
         if (!res.ok) {
             const err = new Error((data && data.message) || `Error HTTP ${res.status}`);
             err.status = res.status;
