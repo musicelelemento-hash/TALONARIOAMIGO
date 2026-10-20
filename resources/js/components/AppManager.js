@@ -10,6 +10,7 @@ import { renderFacturadorRealista } from './FacturadorRealista.js';
 import { renderSuperAdminPanel } from './SuperAdminPanel.js';
 import { renderResellerPanel } from './ResellerPanel.js';
 import { renderTomosModal } from './TomosModal.js';
+import { Talonario3DExperience } from './Talonario3DExperience.js';
 import { api } from '../api.js';
 import { extractDataFromSriPdf } from '../services/sriPdf.js';
 import { soundFx } from '../services/soundFx.js';
@@ -40,6 +41,7 @@ export class AppManager {
             businessLogo: localStorage.getItem('ta_business_logo') || '',
             lastReceipt: null,
             isTomosModalOpen: false,
+            is3DModalOpen: false,
             activeTomoMonth: 'AGOSTO 2026',
             audioEnabled: soundFx.isSoundEnabled(),
             isListeningVoice: false,
@@ -549,6 +551,63 @@ export class AppManager {
         if (emailInput) emailInput.value = email;
         gravityScanner.applyGravityDropAnimation();
         this.showToast(`👤 Cliente seleccionado: ${nombre}`);
+    }
+
+    // =========================================================================
+    // EXPERIENCIA 3D TÁCTIL (THREE.JS / WEBGL REALISTA)
+    // =========================================================================
+    open3DExperienceModal() {
+        this.triggerHaptic(20);
+        soundFx.playPaperSlide();
+        this.state.is3DModalOpen = true;
+        this.evaluateStateAndRender();
+
+        setTimeout(() => {
+            const canvasContainer = document.getElementById('talonario-3d-canvas-container');
+            if (canvasContainer) {
+                const emisor = this.state.user?.emisor || this.state.emisor || {};
+                const docNumStr = String(this.state.currentDocNumber || 126).padStart(9, '0');
+                const clienteNombre = document.getElementById('cliente-nombre-input')?.value || 'CONSUMIDOR FINAL';
+                const totalDisplay = document.getElementById('grand-total-display')?.innerText || '$85.00';
+
+                this.active3DExperience = new Talonario3DExperience(canvasContainer, {
+                    docNumber: docNumStr,
+                    nombreEmisor: emisor.razon_social || 'ABARROTES & BODEGA CENTRAL',
+                    rucEmisor: emisor.ruc || '0706482023001',
+                    regimen: emisor.tipo_regimen === 'GENERAL' ? 'RÉGIMEN GENERAL' : 'CONTRIBUYENTE NEGOCIO POPULAR - RÉGIMEN RIMPE',
+                    clienteNombre: clienteNombre,
+                    total: totalDisplay,
+                    onTearComplete: () => {
+                        this.showToast('✓ Hoja desprendida en 3D. Duplicado azul archivado.');
+                    }
+                });
+            }
+        }, 60);
+    }
+
+    close3DExperienceModal() {
+        this.triggerHaptic(10);
+        if (this.active3DExperience) {
+            this.active3DExperience.destroy();
+            this.active3DExperience = null;
+        }
+        this.state.is3DModalOpen = false;
+        this.evaluateStateAndRender();
+    }
+
+    reset3DCamera() {
+        if (this.active3DExperience) {
+            this.active3DExperience.resetCamera();
+            this.triggerHaptic(10);
+            soundFx.playPaperSlide();
+        }
+    }
+
+    trigger3DTearAnimation() {
+        if (this.active3DExperience) {
+            this.triggerHaptic([30, 20, 50]);
+            this.active3DExperience.tearSheet();
+        }
     }
 
     // GESTIÓN DE TOMOS FÍSICOS (PRINCIPIO 13)

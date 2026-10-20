@@ -162,6 +162,9 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                 <button type="button" class="mode-chip-btn" style="background: transparent; border: 1px solid #CBD5E1; color: #475569; font-size: 11px;" onclick="window.appState.toggleAudio()" title="Activar/Silenciar Efectos de Sonido">
                     ${emisorData?.audioEnabled !== false ? '🔊 Sonido' : '🔇 Silencio'}
                 </button>
+                <button type="button" class="mode-chip-btn" style="background: linear-gradient(135deg, #1E293B, #0F172A); color: #FDE68A; border: 1.5px solid #F59E0B; font-size: 11px; font-weight: 800; display: inline-flex; align-items: center; gap: 5px; box-shadow: 0 2px 8px rgba(245,158,11,0.25); cursor: pointer;" onclick="window.appState.open3DExperienceModal()" title="Ver y girar el bloc en 3D volumétrico real">
+                    <span>📐 Bloc Físico 3D</span>
+                </button>
                 <button type="button" class="mode-chip-btn" style="background: #0F172A; color: #F8FAFC; border: 1px solid #334155; font-size: 11px;" onclick="window.appState.openTomosModal()">
                     📒 Mis Tomos Físicos
                 </button>
@@ -532,6 +535,62 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                 <p style="color: #94A3B8; font-size: 12px; margin-bottom: 12px;">
                     Extrayendo Cédula, RUC, Nombre, Dirección, Teléfono, Correo y Productos...
                 </p>
+            </div>
+        ` : ''}
+
+        <!-- Modal 3D Experiencia Háptica: Bloc Físico de Facturas (Three.js PBR WebGL) -->
+        ${emisorData?.is3DModalOpen ? `
+            <div class="modal-backdrop-dark" id="modal-3d-experience" style="position: fixed; inset: 0; z-index: 99999; background: rgba(15, 23, 42, 0.88); backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; padding: 16px;">
+                <div style="background: #0F172A; border: 1.5px solid #334155; border-radius: 24px; max-width: 720px; width: 100%; overflow: hidden; box-shadow: 0 25px 60px rgba(0,0,0,0.75); display: flex; flex-direction: column;">
+                    
+                    <!-- Header -->
+                    <div style="padding: 16px 20px; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; background: #16213E;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 24px;">📐</span>
+                            <div>
+                                <h3 style="margin: 0; font-size: 15px; font-weight: 800; color: #F8FAFC; font-family: var(--font-sans);">
+                                    BLOC FÍSICO 3D — TALONARIO AUTOCOPIATIVO
+                                </h3>
+                                <p style="margin: 2px 0 0 0; font-size: 11px; color: #94A3B8; font-family: var(--font-sans);">
+                                    Arrastra con el dedo o ratón para girar 360° • Papel Marfil & Duplicado Azul
+                                </p>
+                            </div>
+                        </div>
+                        <button type="button" onclick="window.appState.close3DExperienceModal()" style="background: rgba(255,255,255,0.08); border: none; color: #94A3B8; font-size: 16px; font-weight: 800; width: 32px; height: 32px; border-radius: 8px; cursor: pointer;">
+                            ✕
+                        </button>
+                    </div>
+
+                    <!-- 3D Viewport Stage -->
+                    <div id="talonario-3d-canvas-container" style="width: 100%; height: 440px; position: relative; background: radial-gradient(circle at center, #1E293B 0%, #0F172A 100%);">
+                        <div style="position: absolute; top: 12px; left: 16px; z-index: 10; pointer-events: none;">
+                            <span style="background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.15); color: #FDE68A; font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 999px; font-family: monospace;">
+                                60 FPS • THREE.JS PBR SHADERS
+                            </span>
+                        </div>
+                        <div style="position: absolute; bottom: 12px; right: 16px; z-index: 10; pointer-events: none;">
+                            <span style="background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.15); color: #94A3B8; font-size: 10px; padding: 4px 10px; border-radius: 999px;">
+                                👆 Arrastra para inclinar o rotar
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Footer Controls -->
+                    <div style="padding: 14px 20px; border-top: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; background: #0B132B;">
+                        <button type="button" onclick="window.appState.reset3DCamera()" style="background: transparent; border: 1px solid #475569; color: #CBD5E1; padding: 8px 14px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer;">
+                            🔄 Centrar Vista
+                        </button>
+                        <div style="display: flex; gap: 8px;">
+                            <button type="button" onclick="window.appState.trigger3DTearAnimation()" style="background: #16A34A; border: none; color: #FFFFFF; padding: 8px 18px; border-radius: 10px; font-size: 12px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 14px rgba(22,163,74,0.35);">
+                                <span>✒️ Desprender Hoja (Física 3D)</span>
+                            </button>
+                            <button type="button" onclick="window.appState.close3DExperienceModal()" style="background: #1E293B; border: 1px solid #475569; color: #F8FAFC; padding: 8px 14px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer;">
+                                Listo
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         ` : ''}
     `;

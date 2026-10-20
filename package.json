@@ -23,6 +23,7 @@
     "node-forge": "^1.4.0",
     "pdfjs-dist": "^6.2.108",
     "qrcode": "^1.5.4",
-    "tesseract.js": "^7.0.0"
+    "tesseract.js": "^7.0.0",
+    "three": "^0.185.1"
   }
 }

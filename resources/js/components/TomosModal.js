@@ -163,10 +163,18 @@ export function renderTomosModal(activeTomoMonth = 'AGOSTO 2026', tomosData = nu
                 </div>
 
                 <!-- Resumen de Hojas del Tomo Seleccionado -->
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding: 0 4px;">
-                    <span style="font-size: 13px; font-weight: 800; color: #0F172A;">
-                        ${comprobantes.length} ${comprobantes.length === 1 ? 'Hoja Archivada' : 'Hojas Archivadas'} en este Tomo:
-                    </span>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding: 0 4px; flex-wrap: wrap; gap: 8px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 13px; font-weight: 800; color: #0F172A;">
+                            ${comprobantes.length} ${comprobantes.length === 1 ? 'Hoja Archivada' : 'Hojas Archivadas'} en este Tomo:
+                        </span>
+                        <button type="button" 
+                                onclick="window.appState.open3DExperienceModal()"
+                                style="background: linear-gradient(135deg, #4A2E1B 0%, #1E293B 100%); color: #FCFBF6; border: 1px solid #78350F; padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.15);"
+                                title="Girar e inspeccionar este bloc físico en 3D">
+                            <span>📐 Inspeccionar Tomo 3D</span>
+                        </button>
+                    </div>
                     <span style="font-family: var(--font-mono-num); font-size: 13px; font-weight: 800; color: #16A34A;">
                         Total Facturado: $${totalTomoMonto.toFixed(2)}
                     </span>
@@ -177,8 +185,13 @@ export function renderTomosModal(activeTomoMonth = 'AGOSTO 2026', tomosData = nu
                     ${hojasListHtml}
                 </div>
 
-                <!-- Botón de Cierre Inferior -->
-                <div style="text-align: center; border-top: 1px solid #E2E8F0; padding-top: 16px;">
+                <!-- Botones de Acción Inferiores -->
+                <div style="display: flex; justify-content: center; gap: 12px; border-top: 1px solid #E2E8F0; padding-top: 16px; flex-wrap: wrap;">
+                    <button type="button" 
+                            style="background: #1E293B; color: #FCFBF6; border: 1px solid #475569; border-radius: 10px; padding: 11px 20px; font-size: 13px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;"
+                            onclick="window.appState.open3DExperienceModal()">
+                        <span>📐 Girar Bloc en 3D</span>
+                    </button>
                     <button type="button" class="btn-stamp" style="background: #0F172A; width: auto; padding: 11px 28px; font-size: 13px; display: inline-flex; align-items: center; gap: 8px;" onclick="window.appState.closeTomosModal()">
                         <span>✒️ Volver a Emitir al Talonario</span>
                     </button>
