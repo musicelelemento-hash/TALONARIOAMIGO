@@ -1093,87 +1093,86 @@ var Hw=Object.defineProperty;var H_=o=>{throw TypeError(o)};var Vw=(o,t,e)=>t in
                 </div>
             </div>
         `:`
-        <!-- Franja Flotante de Modo Demostración en Vivo -->
-        ${o!=null&&o.isDemoGuest?`
-            <div class="demo-top-strip">
-                <div class="demo-top-strip-info">
-                    <span class="demo-top-strip-badge">
-                        <span class="live-dot-pulse"></span>
-                        <span>Modo Demostración en Vivo</span>
-                    </span>
-                    <span>Estás probando el talonario interactivo con datos de muestra. Cero riesgo legal.</span>
+        <!-- CONSOLA DE MOSTRADOR TABLET UNIFICADA (ESTILO STRIPE / APPLE RESTFUL) -->
+        <header class="mostrador-console-header">
+            <div class="mostrador-console-left">
+                <div class="mostrador-brand-pill">
+                    <span class="mostrador-brand-icon">TA</span>
+                    <div class="mostrador-brand-texts">
+                        <span class="mostrador-brand-title">Talonario Amigo</span>
+                        <span class="mostrador-brand-sub">
+                            ${n?'<span class="live-dot-pulse"></span> Modo Demostración':"🔴 Emisión Real SRI"}
+                        </span>
+                    </div>
                 </div>
-                <div class="demo-top-strip-actions">
-                    <button type="button" class="demo-chip-btn" onclick="window.appState.loadDemoSampleData()" title="Cargar productos típicos de tienda">
-                        ✨ Cargar Ejemplo
+
+                <!-- Selector de Modo de Experiencia -->
+                <div class="mostrador-mode-segmented">
+                    <button type="button" class="mostrador-seg-btn ${n?"active":""}" onclick="window.appState.setDemoMode(true)" title="Modo Prueba sin consecuencias fiscales">
+                        🏪 Demo
                     </button>
-                    <button type="button" class="demo-chip-btn" onclick="window.appState.toggleVoiceDictation()" title="Probar dictado por voz">
-                        🎙️ Probar Voz
+                    <button type="button" class="mostrador-seg-btn ${n?"":"active-sri"}" onclick="window.appState.setDemoMode(false)" title="Modo Real con emisión al SRI Ecuador">
+                        🔴 Real SRI
                     </button>
-                    <button type="button" class="demo-chip-btn" onclick="document.getElementById('gravity-file-input')?.click()" title="Probar escaneo por foto">
-                        📷 Probar Foto
+                    <span style="width: 1px; height: 16px; background: rgba(255,255,255,0.15); margin: 0 2px;"></span>
+                    <button type="button" class="mostrador-seg-btn ${d==="tranquilo"?"active":""}" onclick="window.appState.setExperienceMode('tranquilo')">
+                        👴 Tranquilo
                     </button>
-                    <button type="button" class="demo-chip-btn demo-chip-btn-primary" onclick="window.appState.openRegister()" title="Crear cuenta para facturar de verdad">
-                        🚀 Crear Cuenta Real
+                    <button type="button" class="mostrador-seg-btn ${d==="comerciante"?"active":""}" onclick="window.appState.setExperienceMode('comerciante')">
+                        🏪 Comerciante
                     </button>
-                    <button type="button" class="demo-chip-btn demo-chip-btn-exit" onclick="window.appState.exitDemoMode()" title="Volver a la portada">
+                    <button type="button" class="mostrador-seg-btn ${d==="pro"?"active":""}" onclick="window.appState.setExperienceMode('pro')">
+                        ⚡ Pro
+                    </button>
+                </div>
+
+                <!-- Estado del bloc físico discreto -->
+                <div class="mostrador-bloc-pill" title="Bloc físico de ${f} hojas (${v} disponibles)">
+                    <span>📒 Hoja <strong>${g}</strong>/${f}</span>
+                    <div class="mostrador-bloc-microbar">
+                        <div style="width: ${x}%;"></div>
+                    </div>
+                    ${(o==null?void 0:o.offlinePendingCount)>0?`
+                        <span class="offline-queue-badge" title="Comprobantes en cola offline">
+                            📡 ${o.offlinePendingCount}
+                        </span>
+                    `:""}
+                </div>
+            </div>
+
+            <div class="mostrador-console-right">
+                ${o!=null&&o.isDemoGuest?`
+                    <button type="button" class="mostrador-action-chip" onclick="window.appState.loadDemoSampleData()" title="Cargar productos de ejemplo">
+                        ✨ Ejemplo
+                    </button>
+                    <button type="button" class="mostrador-action-chip" onclick="window.appState.toggleVoiceDictation()" title="Dictar por voz">
+                        🎙️ Dictar
+                    </button>
+                    <button type="button" class="mostrador-action-chip" onclick="document.getElementById('gravity-file-input')?.click()" title="Escanear proforma o cédula">
+                        📷 Foto
+                    </button>
+                    <button type="button" class="mostrador-action-chip" onclick="window.appState.open3DExperienceModal()" title="Ver y girar bloc en 3D">
+                        📐 3D
+                    </button>
+                    <button type="button" class="mostrador-action-chip mostrador-cta-register" onclick="window.appState.openRegister()" title="Crear cuenta para facturar de verdad">
+                        🚀 Activar Mi RUC
+                    </button>
+                    <button type="button" class="mostrador-action-chip mostrador-exit-btn" onclick="window.appState.exitDemoMode()" title="Volver al portal">
                         ✕ Salir
                     </button>
-                </div>
-            </div>
-        `:""}
-
-        <!-- Barra Selector de Experiencia y Ambiente (Demo / Real) -->
-        <div class="mode-switcher-bar" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-            <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center;">
-                <div style="display: inline-flex; background: rgba(0,0,0,0.06); padding: 2px; border-radius: 999px; margin-right: 4px;">
-                    <button type="button" class="mode-chip-btn ${n?"active":""}" style="${n?"background: #10B981; color: #FFFFFF; border: none; font-weight: 800;":"background: transparent; color: #64748B; border: none;"}" onclick="window.appState.setDemoMode(true)" title="Modo Demostración sin consecuencias fiscales">
-                        🏪 Modo Demo
+                `:`
+                    <button type="button" class="mostrador-action-chip" onclick="window.appState.toggleAudio()" title="Activar/Silenciar Efectos de Sonido">
+                        ${(o==null?void 0:o.audioEnabled)!==!1?"🔊 Sonido":"🔇 Silencio"}
                     </button>
-                    <button type="button" class="mode-chip-btn ${n?"":"active"}" style="${n?"background: transparent; color: #64748B; border: none;":"background: #DC2626; color: #FFFFFF; border: none; font-weight: 800;"}" onclick="window.appState.setDemoMode(false)" title="Modo Real con emisión directa ante el SRI Ecuador">
-                        🔴 Modo Real SRI
+                    <button type="button" class="mostrador-action-chip" onclick="window.appState.open3DExperienceModal()" title="Ver y girar el bloc en 3D">
+                        📐 Bloc 3D
                     </button>
-                </div>
-                <button class="mode-chip-btn ${d==="tranquilo"?"active":""}" onclick="window.appState.setExperienceMode('tranquilo')">
-                    👴 Tranquilo
-                </button>
-                <button class="mode-chip-btn ${d==="comerciante"?"active":""}" onclick="window.appState.setExperienceMode('comerciante')">
-                    🏪 Comerciante
-                </button>
-                <button class="mode-chip-btn ${d==="pro"?"active":""}" onclick="window.appState.setExperienceMode('pro')">
-                    ⚡ Pro
-                </button>
+                    <button type="button" class="mostrador-action-chip" onclick="window.appState.openTomosModal()" title="Historial de tomos encuadernados">
+                        📒 Mis Tomos
+                    </button>
+                `}
             </div>
-            <div style="display: flex; gap: 6px; align-items: center;">
-                <button type="button" class="mode-chip-btn" style="background: transparent; border: 1px solid #CBD5E1; color: #475569; font-size: 11px;" onclick="window.appState.toggleAudio()" title="Activar/Silenciar Efectos de Sonido">
-                    ${(o==null?void 0:o.audioEnabled)!==!1?"🔊 Sonido":"🔇 Silencio"}
-                </button>
-                <button type="button" class="mode-chip-btn" style="background: linear-gradient(135deg, #1E293B, #0F172A); color: #FDE68A; border: 1.5px solid #F59E0B; font-size: 11px; font-weight: 800; display: inline-flex; align-items: center; gap: 5px; box-shadow: 0 2px 8px rgba(245,158,11,0.25); cursor: pointer;" onclick="window.appState.open3DExperienceModal()" title="Ver y girar el bloc en 3D volumétrico real">
-                    <span>📐 Bloc Físico 3D</span>
-                </button>
-                <button type="button" class="mode-chip-btn" style="background: #0F172A; color: #F8FAFC; border: 1px solid #334155; font-size: 11px;" onclick="window.appState.openTomosModal()">
-                    📒 Mis Tomos Físicos
-                </button>
-            </div>
-        </div>
-
-        <!-- Principio 16: Grosor y Estado del Bloc Físico de 50 Hojas -->
-        <div class="bloc-stack-info">
-            <div style="display: flex; align-items: center; gap: 8px;">
-                <strong>📒 Bloc Físico N° 01</strong> <span style="color:#475569; font-weight: 600;">(N° 00000101 al 00000150)</span>
-                ${(o==null?void 0:o.offlinePendingCount)>0?`
-                    <span class="offline-queue-badge" title="Comprobantes guardados localmente sin conexión">
-                        📡 ${o.offlinePendingCount} en cola offline
-                    </span>
-                `:""}
-            </div>
-            <div style="display: flex; align-items: center; gap: 6px;">
-                <span>Hoja <strong>${g}</strong> de ${f} (${v} hojas restantes)</span>
-                <div class="bloc-progress-track" title="${x}% emitido">
-                    <div class="bloc-progress-bar" style="width: ${x}%;"></div>
-                </div>
-            </div>
-        </div>
+        </header>
 
         <!-- LÍNEA ROJA PROMINENTE EN MODO REAL (FALTA FIRMA O CONFIGURACIÓN) -->
         ${l?`
@@ -1386,31 +1385,33 @@ var Hw=Object.defineProperty;var H_=o=>{throw TypeError(o)};var Vw=(o,t,e)=>t in
 
             <!-- Tabla de Detalle con Inputs Interactivos -->
             <div class="tabla-productos-wrapper">
-                <svg class="watermark-sketch" viewBox="0 0 100 100" fill="currentColor">
-                    <path d="M50 10 C30 30, 20 60, 50 90 C80 60, 70 30, 50 10 Z" fill="#4A4A4A"/>
-                </svg>
-
                 <table class="tabla-realista">
                     <thead>
                         <tr>
-                            <th style="width: 12%;">CANT.</th>
+                            <th style="width: 10%;">CANT.</th>
                             <th style="width: 58%;">D E S C R I P C I Ó N</th>
-                            <th style="width: 15%;">P. UNITARIO</th>
-                            <th style="width: 15%;">PRECIO TOTAL</th>
+                            <th style="width: 16%;">P. UNITARIO</th>
+                            <th style="width: 16%;">PRECIO TOTAL</th>
                         </tr>
                     </thead>
                     <tbody id="realista-items-body">
                         <tr>
-                            <td style="text-align: center;"><input type="number" class="table-input" value="500" oninput="window.appState.recalculateTotals()" onfocus="window.appState.onInputFocus()"></td>
-                            <td><input type="text" class="table-input" value="Quintales de Cacao Fino de Aroma (Exportación)" onfocus="window.appState.onInputFocus()"></td>
-                            <td style="text-align: right;"><input type="number" step="0.01" class="table-input" value="0.12" style="text-align:right;" oninput="window.appState.recalculateTotals()" onfocus="window.appState.onInputFocus()"></td>
-                            <td style="text-align: right; padding-right: 6px;" class="row-total">$60.00</td>
+                            <td style="text-align: center;"><input type="number" class="table-input table-input-qty" value="1" oninput="window.appState.recalculateTotals()" onfocus="window.appState.onInputFocus()"></td>
+                            <td><input type="text" class="table-input" value="Quintal de Arroz Flor Especial" onfocus="window.appState.onInputFocus()"></td>
+                            <td style="text-align: right;"><input type="number" step="0.01" class="table-input table-input-price" value="42.00" style="text-align:right;" oninput="window.appState.recalculateTotals()" onfocus="window.appState.onInputFocus()"></td>
+                            <td style="text-align: right; padding-right: 10px;" class="row-total">$42.00</td>
                         </tr>
                         <tr>
-                            <td style="text-align: center;"><input type="number" class="table-input" value="1" oninput="window.appState.recalculateTotals()" onfocus="window.appState.onInputFocus()"></td>
-                            <td><input type="text" class="table-input" value="Licencia Digital Talonario Amigo SRI" onfocus="window.appState.onInputFocus()"></td>
-                            <td style="text-align: right;"><input type="number" step="0.01" class="table-input" value="25.00" style="text-align:right;" oninput="window.appState.recalculateTotals()" onfocus="window.appState.onInputFocus()"></td>
-                            <td style="text-align: right; padding-right: 6px;" class="row-total">$25.00</td>
+                            <td style="text-align: center;"><input type="number" class="table-input table-input-qty" value="2" oninput="window.appState.recalculateTotals()" onfocus="window.appState.onInputFocus()"></td>
+                            <td><input type="text" class="table-input" value="Aceite Palma de Oro 1 Litro" onfocus="window.appState.onInputFocus()"></td>
+                            <td style="text-align: right;"><input type="number" step="0.01" class="table-input table-input-price" value="3.50" style="text-align:right;" oninput="window.appState.recalculateTotals()" onfocus="window.appState.onInputFocus()"></td>
+                            <td style="text-align: right; padding-right: 10px;" class="row-total">$7.00</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center;"><input type="number" class="table-input table-input-qty" value="5" oninput="window.appState.recalculateTotals()" onfocus="window.appState.onInputFocus()"></td>
+                            <td><input type="text" class="table-input" value="Azúcar San Carlos 1 Kg" onfocus="window.appState.onInputFocus()"></td>
+                            <td style="text-align: right;"><input type="number" step="0.01" class="table-input table-input-price" value="1.10" style="text-align:right;" oninput="window.appState.recalculateTotals()" onfocus="window.appState.onInputFocus()"></td>
+                            <td style="text-align: right; padding-right: 10px;" class="row-total">$5.50</td>
                         </tr>
                     </tbody>
                 </table>
@@ -1452,7 +1453,7 @@ var Hw=Object.defineProperty;var H_=o=>{throw TypeError(o)};var Vw=(o,t,e)=>t in
 
                 <div class="total-cobrar-box">
                     <div class="total-cobrar-header">TOTAL A COBRAR <span style="font-size:14px;">➔</span></div>
-                    <div class="total-cobrar-monto" id="grand-total-display">$85.00</div>
+                    <div class="total-cobrar-monto" id="grand-total-display">$54.50</div>
                 </div>
             </div>
 
