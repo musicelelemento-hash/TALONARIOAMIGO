@@ -1,0 +1,20 @@
+{
+  "appId": "com.talonarioamigo.app",
+  "appName": "Talonario Amigo",
+  "webDir": "www",
+  "server": {
+    "url": "https://talonarioamigo.com?app=native",
+    "cleartext": false,
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": false
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1200,
+      "backgroundColor": "#0F172A",
+      "showSpinner": false
+    }
+  }
+}

@@ -1,27 +1,41 @@
 # Dependencias
-/node_modules
-/vendor
+node_modules/
+vendor/
+**/node_modules/
+**/vendor/
 
-# Entornos y secretos (Render inyecta las variables por panel; NUNCA se commitean)
-/.env
-.env*
+# Entornos y secretos
+.env
+.env.*
 !.env.example
+**/.env
+**/.env.*
+!**/.env.example
 
-# Binarios de release (se generan en CI, no se commitean)
+# Binarios y paquetes compilados
 *.apk
 *.aab
 
-# Laravel storage / cache
-/storage/logs/*.log
-/storage/framework/cache/*
-/storage/framework/sessions/*
-/storage/framework/views/*
-/bootstrap/cache/*.php
+# Capacitor & Android build caches
+talonario-amigo-mobile/android/.gradle/
+talonario-amigo-mobile/android/app/build/
+talonario-amigo-mobile/android/.idea/
+talonario-amigo-mobile/android/local.properties
+talonario-amigo-mobile/android/captures/
 
-# Archivos construidos que no son fuente (se suben desde CI/Pages)
-/public/storage
+# Laravel storage y cache
+TALONARIOAMIGO/storage/logs/*.log
+TALONARIOAMIGO/storage/framework/cache/*
+TALONARIOAMIGO/storage/framework/sessions/*
+TALONARIOAMIGO/storage/framework/views/*
+TALONARIOAMIGO/bootstrap/cache/*.php
+TALONARIOAMIGO/public/storage
+
+# Vercel y temporales
+.vercel
 .DS_Store
 Thumbs.db
-.vercel
 composer.phar
 .phpunit.result.cache
+*.log
+.wrangler/

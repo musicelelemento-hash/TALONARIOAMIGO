@@ -1,0 +1,27 @@
+# Dependencias
+/node_modules
+/vendor
+
+# Entornos y secretos (Render inyecta las variables por panel; NUNCA se commitean)
+/.env
+.env*
+!.env.example
+
+# Binarios de release (se generan en CI, no se commitean)
+*.apk
+*.aab
+
+# Laravel storage / cache
+/storage/logs/*.log
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/bootstrap/cache/*.php
+
+# Archivos construidos que no son fuente (se suben desde CI/Pages)
+/public/storage
+.DS_Store
+Thumbs.db
+.vercel
+composer.phar
+.phpunit.result.cache

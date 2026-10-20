@@ -1,0 +1,31 @@
+{
+  "name": "talonario-amigo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Frontend SPA de Talonario Amigo (módulos ES vanilla). Se sirve desde el backend Laravel y se empaqueta con Capacitor para Android.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && node -e \"const fs = require('fs'); if (fs.existsSync('public/landing.html')) fs.copyFileSync('public/landing.html', 'public/dist/landing.html'); if (fs.existsSync('public/TalonarioAmigo_v1.0.apk')) fs.copyFileSync('public/TalonarioAmigo_v1.0.apk', 'public/dist/TalonarioAmigo_v1.0.apk'); console.log('✓ Public files synced to public/dist for Vercel');\"",
+    "sync:mobile": "node scripts/sync_mobile.mjs",
+    "build:mobile": "npm run build && node scripts/sync_mobile.mjs",
+    "lint": "eslint resources/js",
+    "format": "prettier --write resources/js",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.13.0",
+    "globals": "^17.13.0",
+    "prettier": "^3.9.10",
+    "vite": "^5.4.0"
+  },
+  "dependencies": {
+    "jsbarcode": "^3.12.3",
+    "node-forge": "^1.4.0",
+    "pdfjs-dist": "^6.2.108",
+    "qrcode": "^1.5.4",
+    "tesseract.js": "^7.0.0",
+    "three": "^0.185.1"
+  }
+}

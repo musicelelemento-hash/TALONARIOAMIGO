@@ -1,0 +1,7 @@
+name = "talonario-keepalive"
+main = "worker-keepalive.js"
+compatibility_date = "2024-11-01"
+
+# Ping cada 2 minutos para mantener vivo el servicio free de Render.
+[triggers]
+crons = ["*/2 * * * *"]
