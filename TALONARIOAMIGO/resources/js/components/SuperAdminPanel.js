@@ -49,7 +49,7 @@ export function renderSuperAdminPanel(dashboardData, activeTab = 'resellers') {
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <div class="receipt-number">PANEL DE CONTROL TOTAL — DUEÑO</div>
                     <button type="button" class="mode-chip-btn" style="background:#1E293B; color:#FFF; font-size:11px;" onclick="window.appState.setRole('CLIENT')">
-                        ️ Ir al Talonario
+                         Ir al Talonario
                     </button>
                 </div>
                 <div class="emisor-title">Plataforma Global Talonario Amigo</div>
@@ -88,7 +88,7 @@ export function renderSuperAdminPanel(dashboardData, activeTab = 'resellers') {
                      Imprentas & Lotes B2B
                 </button>
                 <button type="button" class="mode-chip-btn ${activeTab === 'agents' ? 'active' : ''}" onclick="window.appState.switchSuperAdminTab('agents')" style="display: flex; align-items: center; gap: 6px;">
-                    ️ Centro de Mando Multi-Agente
+                     Centro de Mando Multi-Agente
                     <span style="font-size: 10px; background: #16A34A; color: white; padding: 1px 7px; border-radius: 999px; font-weight: 800;">12 Activos</span>
                 </button>
             </div>
@@ -144,12 +144,12 @@ export function renderSuperAdminPanel(dashboardData, activeTab = 'resellers') {
                     <!-- NIVEL 1: ESCUADRÓN TRIBUTARIO & SRI -->
                     <div style="margin-bottom: 20px;">
                         <div style="font-size: 11px; font-weight: 800; color: #15803D; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.05em;">
-                            ️ NIVEL 1: ESCUADRÓN TRIBUTARIO & CUMPLIMIENTO SRI ECUADOR
+                             NIVEL 1: ESCUADRÓN TRIBUTARIO & CUMPLIMIENTO SRI ECUADOR
                         </div>
                         <div style="display: flex; flex-direction: column; gap: 8px;">
                             <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
                                 <div>
-                                    <strong style="font-size: 13px; color: #0F172A;">️ Agente 02: SRI_COMPLIANCE_OFFICER</strong><br>
+                                    <strong style="font-size: 13px; color: #0F172A;"> Agente 02: SRI_COMPLIANCE_OFFICER</strong><br>
                                     <small style="color: #64748B;">Esquemas XML Factura v1.1.0, Módulo 11 y Regímenes RIMPE.</small>
                                 </div>
                                 <button type="button" class="sim-btn" style="background: #16A34A; color: white; padding: 5px 12px; font-size: 11px;" onclick="window.appState.runAgentDiagnostic('02_sri')">
@@ -162,7 +162,7 @@ export function renderSuperAdminPanel(dashboardData, activeTab = 'resellers') {
                                     <small style="color: #64748B;">Bóveda criptográfica de firmas electrónicas y validación X.509.</small>
                                 </div>
                                 <button type="button" class="sim-btn" style="background: #0F172A; color: white; padding: 5px 12px; font-size: 11px;" onclick="window.appState.runAgentDiagnostic('03_p12')">
-                                    ️ Auditar Bóveda
+                                     Auditar Bóveda
                                 </button>
                             </div>
                             <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
@@ -252,12 +252,12 @@ export function renderSuperAdminPanel(dashboardData, activeTab = 'resellers') {
                     <!-- NIVEL 2: ESCUADRÓN INFRAESTRUCTURA EDGE & CALIDAD -->
                     <div style="margin-bottom: 20px;">
                         <div style="font-size: 11px; font-weight: 800; color: #475569; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.05em;">
-                            ️ NIVEL 2: ESCUADRÓN DE INFRAESTRUCTURA EDGE, SEGURIDAD & CALIDAD
+                             NIVEL 2: ESCUADRÓN DE INFRAESTRUCTURA EDGE, SEGURIDAD & CALIDAD
                         </div>
                         <div style="display: flex; flex-direction: column; gap: 8px;">
                             <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
                                 <div>
-                                    <strong style="font-size: 13px; color: #0F172A;">️ Agente 11: EDGE_INFRA_ENGINEER</strong><br>
+                                    <strong style="font-size: 13px; color: #0F172A;"> Agente 11: EDGE_INFRA_ENGINEER</strong><br>
                                     <small style="color: #64748B;">Cloudflare Pages, Cloudflare R2 y base de datos Supabase Postgres.</small>
                                 </div>
                                 <button type="button" class="sim-btn" style="background: #0F172A; color: white; padding: 5px 12px; font-size: 11px;" onclick="window.appState.runAgentDiagnostic('11_edge')">

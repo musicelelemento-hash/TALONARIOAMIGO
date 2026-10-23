@@ -9,6 +9,7 @@
     "sync:mobile": "npm run sync:mobile --prefix TALONARIOAMIGO",
     "build:mobile": "npm run build:mobile --prefix TALONARIOAMIGO",
     "open:android": "npm run open:android --prefix talonario-amigo-mobile",
+    "desktop": "npm run start --prefix talonario-amigo-desktop",
     "lint": "npm run lint --prefix TALONARIOAMIGO"
   }
 }

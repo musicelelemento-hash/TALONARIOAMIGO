@@ -241,7 +241,7 @@ export class AppManager {
                 msg: 'Orquestación general nominal. 12 agentes operando en sincronía de 4 niveles. Principio de tranquilidad garantizado al 100%.'
             },
             '02_sri': {
-                name: '️ Agente 02: SRI_COMPLIANCE_OFFICER',
+                name: 'Agente 02: SRI_COMPLIANCE_OFFICER',
                 msg: 'Algoritmo matemático Módulo 11 verificado. Validación de RUC 13 dígitos y esquemas XML Factura v1.1.0 conformes a ficha técnica SRI.'
             },
             '03_p12': {
@@ -277,7 +277,7 @@ export class AppManager {
                 msg: 'Métricas de retención: 142 usuarios registrados, 8 imprentas aliadas y 240 slots contabilizados con historial por tomos físicos.'
             },
             '11_edge': {
-                name: '️ Agente 11: EDGE_INFRA_ENGINEER',
+                name: 'Agente 11: EDGE_INFRA_ENGINEER',
                 msg: 'Infraestructura de borde Cloudflare Pages + Supabase Postgres respondiendo con latencia media < 40ms y certificados TLS v1.3.'
             },
             '12_qa': {
@@ -285,11 +285,11 @@ export class AppManager {
                 msg: 'Suite de pruebas de emisión, desgarro 3D y dictado por voz ejecutadas exitosamente. Cero regresiones detectadas.'
             },
             '13_voice_ai': {
-                name: '️ Agente 13: VOICE_AI_TACTILE_OFFICER',
+                name: 'Agente 13: VOICE_AI_TACTILE_OFFICER',
                 msg: 'Extracción fonética activa: Cédula (10d), RUC (13d), teléfonos 09 y correos reconocidos en tiempo real con micro-háptica.'
             },
             '14_ocr_gravity': {
-                name: '️ Agente 14: OCR_GRAVITY_VISION_SPECIALIST',
+                name: 'Agente 14: OCR_GRAVITY_VISION_SPECIALIST',
                 msg: 'Tesseract WASM en cliente operativo. Escaneo por gravedad y Módulo 10 integrados en visor de cámara.'
             },
             '15_resend_ride': {
@@ -297,11 +297,11 @@ export class AppManager {
                 msg: 'API Resend verificada en talonarioamigo.com. Plantilla HTML en papel marfil y WhatsApp fallback listos.'
             },
             '16_cloud_vault': {
-                name: '️ Agente 16: CLOUD_VAULT_R2_ARCHITECT',
+                name: 'Agente 16: CLOUD_VAULT_R2_ARCHITECT',
                 msg: 'Bóveda Cloudflare R2 sin costo de egreso enlazada para archivo legal de comprobantes por 7 años.'
             },
             '17_supabase_data': {
-                name: '️ Agente 17: SUPABASE_DATA_GOVERNOR',
+                name: 'Agente 17: SUPABASE_DATA_GOVERNOR',
                 msg: 'Supabase Postgres 17 con RLS multi-tenant y connection pooling PgBouncer en puerto 6543 activo.'
             },
             '18_micro_billing': {
@@ -309,7 +309,7 @@ export class AppManager {
                 msg: 'Arquitectura desacoplada de emisión y colas de contingencia offline ante caídas del SRI.'
             },
             '19_b2b_imprentas': {
-                name: '️ Agente 19: B2B_IMPRENTAS_NETWORK_ARCHITECT',
+                name: 'Agente 19: B2B_IMPRENTAS_NETWORK_ARCHITECT',
                 msg: 'Red física de imprentas del SRI con alta en 30s por PDF RUC y soporte WhatsApp local.'
             },
             '20_invoice_validation': {
@@ -362,7 +362,7 @@ export class AppManager {
                             DEMO EN VIVO
                         </span>
                         <span style="font-size: 12px; color: #FFFFFF; font-weight: 700;">
-                            Vista actual: <strong style="color: #FDE68A;">${activeRole === 'CLIENT' ? 'Comerciante' : activeRole === 'RESELLER' ? 'Imprenta Aliada' : '️ Administrador'}</strong>
+                            Vista actual: <strong style="color: #FDE68A;">${activeRole === 'CLIENT' ? 'Comerciante' : activeRole === 'RESELLER' ? 'Imprenta Aliada' : 'Administrador'}</strong>
                         </span>
                     </div>
 
@@ -374,7 +374,7 @@ export class AppManager {
                              Imprenta Aliada
                         </button>
                         <button type="button" class="demo-chip-btn ${activeRole === 'SUPER_ADMIN' ? 'demo-chip-btn-primary' : ''}" onclick="window.appState.exploreRole('SUPER_ADMIN')" title="Ver como administrador">
-                            ️ Administrador
+                             Administrador
                         </button>
                         <button type="button" class="demo-chip-btn demo-chip-btn-primary" onclick="window.appState.openRegister()" title="Crear cuenta real con RUC">
                              Crear Cuenta Real
@@ -404,14 +404,14 @@ export class AppManager {
             this.evaluateStateAndRender();
             setTimeout(() => {
                 this.loadDemoSampleData(false);
-                this.showToast('¡Mostrador Comerciante listo! Toca el papel o dicta por voz ️');
+                this.showToast('¡Mostrador Comerciante listo! Toca el papel o dicta por voz ');
             }, 120);
         } else if (role === 'RESELLER') {
             this.evaluateStateAndRender();
             this.showToast('¡Bienvenido al Panel de Imprenta Aliada! Explora clientes, lotes y márgenes B2B.');
         } else if (role === 'SUPER_ADMIN') {
             this.evaluateStateAndRender();
-            this.showToast('️ ¡Centro de Mando Administrador activo! Explora los 20 Agentes y Métricas.');
+            this.showToast('¡Centro de Mando Administrador activo! Explora los 20 Agentes y Métricas.');
         }
     }
 
@@ -432,7 +432,7 @@ export class AppManager {
 
         setTimeout(() => {
             this.loadDemoSampleData(false);
-            this.showToast('¡Bienvenido al Modo Demostración! Toca el papel o dicta productos por voz ️');
+            this.showToast('¡Bienvenido al Modo Demostración! Toca el papel o dicta productos por voz ');
         }, 150);
     }
 
@@ -679,7 +679,7 @@ export class AppManager {
             : '';
         const url = `${apiBase}/api/v1/facturacion/comprobantes/${encodeURIComponent(claveAcceso)}/xml`;
         window.open(url, '_blank');
-        this.showToast('️ Descargando XML firmado SRI...');
+        this.showToast('Descargando XML firmado SRI...');
     }
 
     printHistoricalFactura(_num) {
@@ -690,7 +690,7 @@ export class AppManager {
     // TICKET TÉRMICO POS (Agente 22): imprime el comprobante en rollo continuo 58/80mm con QR SRI.
     async printThermalTicket() {
         this.triggerHaptic(15);
-        this.showToast(`️ Preparando ticket térmico de ${getThermalWidth()}mm…`);
+        this.showToast(`Preparando ticket térmico de ${getThermalWidth()}mm…`);
         await printThermalTicket(this.state);
     }
 
@@ -825,7 +825,7 @@ export class AppManager {
                     }
                     if (emailInput && parsed.cliente.email) {
                         emailInput.value = parsed.cliente.email;
-                        feedback.push(`️ ${parsed.cliente.email}`);
+                        feedback.push(` ${parsed.cliente.email}`);
                     }
                     if (dirInput && parsed.cliente.direccion) {
                         dirInput.value = parsed.cliente.direccion;
@@ -844,9 +844,9 @@ export class AppManager {
                 }
 
                 if (feedback.length > 0) {
-                    this.showToast(`️ Reconocido: ${feedback.join(' · ')}`);
+                    this.showToast(`Reconocido: ${feedback.join(' · ')}`);
                 } else {
-                    this.showToast(`️ Audio capturado: "${raw}"`);
+                    this.showToast(`Audio capturado: "${raw}"`);
                 }
 
                 this.evaluateStateAndRender();
@@ -854,7 +854,7 @@ export class AppManager {
             onError: (_err) => {
                 this.state.isListeningVoice = false;
                 this.state.voiceLiveTranscript = '';
-                this.showToast('️ No se detectó audio o el micrófono requiere permisos.');
+                this.showToast('No se detectó audio o el micrófono requiere permisos.');
                 this.evaluateStateAndRender();
             },
             onEnd: () => {
@@ -865,7 +865,7 @@ export class AppManager {
 
         if (!success) {
             this.state.isListeningVoice = false;
-            this.showToast('️ Tu dispositivo o navegador no tiene habilitado el reconocimiento de voz.');
+            this.showToast('Tu dispositivo o navegador no tiene habilitado el reconocimiento de voz.');
             this.evaluateStateAndRender();
         }
     }
@@ -1164,7 +1164,7 @@ export class AppManager {
                     }
                 }
                 
-                this.showToast(`️ ${preFlight.title}: ${preFlight.message}`);
+                this.showToast(` ${preFlight.title}: ${preFlight.message}`);
                 return;
             }
 
@@ -1411,7 +1411,7 @@ export class AppManager {
                 errEl.innerText = msg;
                 errEl.style.display = 'block';
             }
-            this.showToast('️ ' + msg);
+            this.showToast(' ' + msg);
             if (submitBtn) {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = '<span>CREAR MI FACTURADOR + PAGAR</span>';

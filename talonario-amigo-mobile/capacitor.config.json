@@ -3,7 +3,6 @@
   "appName": "Talonario Amigo",
   "webDir": "www",
   "server": {
-    "url": "https://talonarioamigo.com?app=native",
     "cleartext": false,
     "androidScheme": "https"
   },
@@ -13,7 +12,7 @@
   "plugins": {
     "SplashScreen": {
       "launchShowDuration": 1200,
-      "backgroundColor": "#0F172A",
+      "backgroundColor": "#0B1220",
       "showSpinner": false
     }
   }

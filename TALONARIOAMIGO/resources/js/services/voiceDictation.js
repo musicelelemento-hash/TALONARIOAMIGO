@@ -239,7 +239,7 @@ class VoiceDictationService {
         if (normalizedEmail) {
             result.cliente.email = normalizedEmail;
             result.isClient = true;
-            result.detectedTags.push(`️ Email: ${normalizedEmail}`);
+            result.detectedTags.push(`Email: ${normalizedEmail}`);
         }
 
         // 4. Detección de Dirección

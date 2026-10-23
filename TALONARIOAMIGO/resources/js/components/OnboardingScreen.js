@@ -19,7 +19,9 @@ export function renderOnboardingScreen() {
                      style="border: 2px dashed #CBD5E1; border-radius: 14px; padding: 22px; text-align: center; cursor: pointer; background: #F8FAFC; margin-bottom: 18px; transition: all .15s ease;"
                      onmouseover="this.style.borderColor='#1D4ED8'; this.style.background='#FFFFFF'"
                      onmouseout="this.style.borderColor='#CBD5E1'; this.style.background='#F8FAFC'">
-                    <div style="font-size: 30px;"></div>
+                    <div style="display:flex;justify-content:center;color:#64748B;">
+                        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg>
+                    </div>
                     <div style="font-weight: 800; font-size: 13px; color: #0F172A; margin-top: 4px;">Subir Certificado de RUC (PDF)</div>
                     <div style="font-size: 11px; color: #64748B; margin-top: 2px;">Toca para seleccionar el PDF oficial del SRI</div>
                     <input type="file" id="onb-ruc-file" accept=".pdf,application/pdf" style="display:none" onchange="window.appState.handleRucPdf(this)">
@@ -110,13 +112,15 @@ export function renderOnboardingModal() {
                 </div>
                 
                 <p style="font-size: 12px; color: #64748B; margin-bottom: 14px;">
-                    Sube tu certificado digital <strong>.p12</strong>y tu RUC del SRI para emitir comprobantes legales. O sube tu Certificado de RUC (PDF) para autocompletar todo en segundos.
+                    Sube tu certificado digital <strong>.p12</strong> y tu RUC del SRI para emitir comprobantes legales. O sube tu Certificado de RUC (PDF) para autocompletar todo en segundos.
                 </p>
 
                 <!-- Zona de carga del Certificado RUC PDF -->
                 <div onclick="document.getElementById('onb-modal-ruc-file').click()"
                      style="border: 2px dashed #93C5FD; border-radius: 12px; padding: 14px; text-align: center; cursor: pointer; background: #EFF6FF; margin-bottom: 14px; transition: all .15s ease;">
-                    <div style="font-size: 24px;"></div>
+                    <div style="display:flex;justify-content:center;color:#2563EB;">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg>
+                    </div>
                     <div style="font-weight: 800; font-size: 12px; color: #1E40AF; margin-top: 2px;">Subir Certificado de RUC (PDF del SRI)</div>
                     <div style="font-size: 10px; color: #3B82F6;">Autocompleta RUC, razón social y dirección al instante</div>
                     <input type="file" id="onb-modal-ruc-file" accept=".pdf,application/pdf" style="display:none" onchange="window.appState.handleRucPdf(this)">

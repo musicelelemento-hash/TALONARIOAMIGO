@@ -107,7 +107,7 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                              Enviar Factura al Cliente por WhatsApp
                         </button>
                         <button class="btn-stamp" style="background: #1D4ED8; border-color: #1D4ED8; width: auto; padding: 10px 22px; font-size: 12px;" onclick="window.appState.finishBlueCopyPreview()">
-                            ️ Pasar a Nueva Hoja
+                             Pasar a Nueva Hoja
                         </button>
                         ${emisorData?.isDemoGuest ? `
                             <button type="button" class="btn-stamp" style="background: #10B981; border-color: #10B981; width: auto; padding: 10px 22px; font-size: 12px; color: white; font-weight: 900;" onclick="window.appState.openRegister()">
@@ -175,7 +175,7 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                          Ejemplo
                     </button>
                     <button type="button" class="mostrador-action-chip" onclick="window.appState.toggleVoiceDictation()" title="Dictar por voz">
-                        ️ Dictar
+                         Dictar
                     </button>
                     <button type="button" class="mostrador-action-chip" onclick="document.getElementById('gravity-file-input')?.click()" title="Escanear proforma o cédula">
                          Foto
@@ -209,11 +209,11 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                 <div class="alerta-roja-content">
                     <span class="alerta-roja-icon"></span>
                     <div class="alerta-roja-text">
-                        <strong>ATENCIÓN — MODO REAL SRI:</strong>Falta vincular tu <strong>Firma Electrónica (.p12)</strong>o completar configuración tributaria para emitir comprobantes legales.
+                        <strong>ATENCIÓN — MODO REAL SRI:</strong> Falta vincular tu <strong>Firma Electrónica (.p12)</strong> o completar configuración tributaria para emitir comprobantes legales.
                     </div>
                 </div>
                 <button type="button" class="btn-alerta-roja" onclick="window.appState.openOnboardingModal()">
-                    ️ Vincular Firma y Configurar (30 seg) ➔
+                     Vincular Firma y Configurar (30 seg) ➔
                 </button>
             </div>
         ` : ''}
@@ -228,9 +228,8 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
             <!-- Saludo Cálido para Modo Tranquilo -->
             ${mode === 'tranquilo' ? `
                 <div class="mode-tranquilo-greeting">
-                    <span style="font-size: 18px;"></span>
                     <div>
-                        <strong>Buenos días, Don Carlos.</strong>Tu talonario está listo para emitir. Solo confirma los datos y toca el botón de abajo.
+                        <strong>Buenos días, Don Carlos.</strong> Tu talonario está listo para emitir. Solo confirma los datos y toca el botón de abajo.
                     </div>
                 </div>
             ` : ''}
@@ -253,7 +252,7 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                             <div class="rimpe-badge">${esc(regimenEmisor)}</div>
                         </div>
                         <label for="business-logo-input" style="cursor: pointer; font-size: 10px; font-weight: 800; color: #1D4ED8; background: #EBF3FF; padding: 3px 8px; border-radius: 6px; border: 1px solid #BFDBFE; white-space: nowrap;">
-                            ️ ${emisorData?.businessLogo ? 'Cambiar Logo' : '+ Tu Logo'}
+                             ${emisorData?.businessLogo ? 'Cambiar Logo' : '+ Tu Logo'}
                         </label>
                         <input type="file" id="business-logo-input" accept="image/*" style="display: none;" onchange="window.appState.handleLogoUpload(this)">
                     </div>
@@ -271,8 +270,7 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                     <div class="ruc-title-row">R U C: ${esc(rucEmisor)}</div>
                     <div class="document-type-banner">${esc(docTypeLabel)}</div>
                     <div class="serie-row">
-                        ${mode === 'pro' ? `
-                            SERIE: <select id="pro-serie-select" style="font-family: inherit; font-size: 11px; font-weight: 800; border: none; background: transparent; cursor: pointer;">
+                        ${mode === 'pro' ? `SERIE: <select id="pro-serie-select" style="font-family: inherit; font-size: 11px; font-weight: 800; border: none; background: transparent; cursor: pointer;">
                                 <option value="001-001">001-001 (Matriz)</option>
                                 <option value="001-002">001-002 (Sucursal 1)</option>
                             </select>
@@ -328,7 +326,7 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                         <input type="file" id="scanner-camera-input" accept="image/*" capture="environment" style="display: none;" onchange="window.appState.handleGravityScan(this)">
 
                         <button type="button" class="btn-voice-dictate ${emisorData?.isListeningVoice ? 'listening' : ''}" style="background: #F0FDF4; border-color: #86EFAC; color: #15803D; padding: 4px 10px; font-size: 11px;" onclick="window.appState.startVoiceDictation('client')">
-                            ️ Dictar Cliente
+                             Dictar Cliente
                         </button>
                     </div>
                 </div>
@@ -367,7 +365,7 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                     <input type="file" id="scanner-file-input" accept="image/*,application/pdf" style="display: none;" onchange="window.appState.handleGravityScan(this)">
 
                     <button type="button" class="btn-voice-dictate ${emisorData?.isListeningVoice ? 'listening' : ''}" onclick="window.appState.startVoiceDictation('product')">
-                        ${emisorData?.isListeningVoice ? 'Detener Dictado' : '️ Dictar Productos'}
+                        ${emisorData?.isListeningVoice ? 'Detener Dictado' : 'Dictar Productos'}
                     </button>
                 </div>
             </div>
@@ -383,7 +381,7 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                             <div class="voice-wave-bar"></div>
                         </div>
                         <div>
-                            <strong style="font-size: 12px; color: #4ADE80;">️ Escuchando... Di en voz alta:</strong>
+                            <strong style="font-size: 12px; color: #4ADE80;"> Escuchando... Di en voz alta:</strong>
                             <div style="font-size: 11px; color: #E2E8F0; margin-top: 2px;">
                                 ${emisorData?.voiceLiveTranscript ? `"${esc(emisorData.voiceLiveTranscript)}"` : 'Ej: "Cliente Juan Pérez cédula 0928374651 teléfono 0993050689 correo juan@gmail.com" o "2 quintales de café a 45"'}
                             </div>
@@ -496,14 +494,14 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
             <!-- Botón Acción Enviar SRI con Animaciones AAA -->
             <div style="margin-top: 18px;">
                 <button class="btn-stamp-action" onclick="window.appState.executeEmit3DSequence()">
-                    ️ FIRMAR Y EMITIR AL SRI (XAdES-BES)
+                     FIRMAR Y EMITIR AL SRI (XAdES-BES)
                 </button>
                 <div style="display: flex; gap: 8px; justify-content: center; margin-top: 10px; flex-wrap: wrap;">
                     <button type="button" class="mode-chip-btn" style="background: #10B981; border-color: #059669; color: #FFFFFF; font-weight: 700; font-size: 11px; padding: 6px 14px;" onclick="window.appState.shareFacturaWhatsapp()" title="Compartir comprobante actual directamente por WhatsApp">
                          Enviar por WhatsApp
                     </button>
                     <button type="button" class="mode-chip-btn" style="background: #1E293B; border-color: #334155; color: #F8FAFC; font-weight: 700; font-size: 11px; padding: 6px 14px;" onclick="window.appState.printThermalTicket()" title="Imprimir ticket para impresora térmica de rollo 58mm o 80mm">
-                        ️ Imprimir Ticket POS
+                         Imprimir Ticket POS
                     </button>
                     <span style="display: inline-flex; align-items: center; gap: 3px; background: rgba(15,23,42,0.06); border: 1px solid #CBD5E1; border-radius: 999px; padding: 2px;" title="Ancho del rollo de la impresora térmica">
                         <button type="button" onclick="window.appState.setThermalWidth(58)" style="border: none; border-radius: 999px; padding: 3px 9px; font-size: 10px; font-weight: 800; cursor: pointer; ${thermalWidth === '58' ? 'background:#1E293B; color:#F8FAFC;' : 'background:transparent; color:#475569;'}">58mm</button>
@@ -515,7 +513,7 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
             <!-- Acceso Rápido a Gobernanza y 20 Agentes de Élite (Modo Dueño/Imprenta) -->
             <div style="margin-top: 16px; padding-top: 12px; border-top: 1px dashed #CBD5E1; text-align: center; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;">
                 <button type="button" class="mode-chip-btn" style="background: rgba(15, 23, 42, 0.05); border: 1px solid #CBD5E1; color: #475569; font-size: 10px; padding: 4px 10px;" onclick="window.appState.setRole('SUPER_ADMIN')">
-                    ️ Centro de Mando (20 Agentes de Élite)
+                     Centro de Mando (20 Agentes de Élite)
                 </button>
                 <button type="button" class="mode-chip-btn" style="background: rgba(15, 23, 42, 0.05); border: 1px solid #CBD5E1; color: #475569; font-size: 10px; padding: 4px 10px;" onclick="window.appState.setRole('RESELLER')">
                      Panel Imprenta Aliada
@@ -530,7 +528,9 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                 <div class="scanner-laser-box">
                     <div class="scanner-laser-beam"></div>
                     <div style="display: flex; flex-direction: column; height: 100%; align-items: center; justify-content: center; color: #FFFFFF; font-size: 13px; font-weight: 700; text-align: center; padding: 20px;">
-                        <div style="font-size: 34px; margin-bottom: 8px;"></div>
+                        <div style="margin-bottom: 8px; color: #38BDF8;">
+                            <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V5a1 1 0 0 1 1-1h3"/><path d="M16 4h3a1 1 0 0 1 1 1v3"/><path d="M20 16v3a1 1 0 0 1-1 1h-3"/><path d="M8 20H5a1 1 0 0 1-1-1v-3"/><path d="M3 12h18"/></svg>
+                        </div>
                         <div style="font-size: 14px; font-weight: 800; color: #38BDF8;">
                             ${emisorData?.scannerStatusText || 'Analizando Cédula / RUC / Proforma (OCR)...'}
                         </div>
@@ -556,7 +556,9 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                     <!-- Header -->
                     <div style="padding: 16px 20px; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; background: #16213E;">
                         <div style="display: flex; align-items: center; gap: 10px;">
-                            <span style="font-size: 24px;"></span>
+                            <span style="color: #38BDF8; display: inline-flex;">
+                                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h13v18H6a2 2 0 0 1-2-2V5z"/><path d="M8 3v18"/><path d="M12 7h4M12 11h4"/></svg>
+                            </span>
                             <div>
                                 <h3 style="margin: 0; font-size: 15px; font-weight: 800; color: #F8FAFC; font-family: var(--font-sans);">
                                     BLOC FÍSICO 3D — TALONARIO AUTOCOPIATIVO
@@ -592,7 +594,7 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                         </button>
                         <div style="display: flex; gap: 8px;">
                             <button type="button" onclick="window.appState.trigger3DTearAnimation()" style="background: #16A34A; border: none; color: #FFFFFF; padding: 8px 18px; border-radius: 10px; font-size: 12px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 14px rgba(22,163,74,0.35);">
-                                <span>️ Desprender Hoja (Física 3D)</span>
+                                <span> Desprender Hoja (Física 3D)</span>
                             </button>
                             <button type="button" onclick="window.appState.close3DExperienceModal()" style="background: #1E293B; border: 1px solid #475569; color: #F8FAFC; padding: 8px 14px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer;">
                                 Listo

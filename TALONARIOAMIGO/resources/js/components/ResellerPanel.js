@@ -50,7 +50,7 @@ export function renderResellerPanel(resellerData) {
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <div class="receipt-number">PANEL IMPRENTA RESELLER</div>
                     <button type="button" class="mode-chip-btn" style="background:#1E293B; color:#FFF; font-size:11px;" onclick="window.appState.setRole('CLIENT')">
-                        ️ Ir al Talonario
+                         Ir al Talonario
                     </button>
                 </div>
                 <div class="emisor-title">${esc(info.name)}</div>

@@ -104,9 +104,9 @@ const AGENTS = [
         level: 'NIVEL 1: Escuadrón B2B & Crecimiento',
         role: 'Landing comercial, bucles virales y compartición por WhatsApp',
         check: () => {
-            const landingPath = path.resolve(rootDir, 'public/landing.html');
+            const landingPath = path.resolve(rootDir, 'resources/js/components/LoginScreen.js');
             const exists = fs.existsSync(landingPath);
-            return { status: exists ? 'OK' : 'WARN', detail: exists ? 'Landing page de alta conversión y botones WhatsApp listos.' : 'Landing no encontrada.' };
+            return { status: exists ? 'OK' : 'WARN', detail: exists ? 'Landing SPA de alta conversión y botones WhatsApp listos.' : 'Landing no encontrada.' };
         }
     },
     {

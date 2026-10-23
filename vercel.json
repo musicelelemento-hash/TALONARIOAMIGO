@@ -6,11 +6,11 @@
   "rewrites": [
     {
       "source": "/landing",
-      "destination": "/landing.html"
+      "destination": "/index.html"
     },
     {
       "source": "/imprentas",
-      "destination": "/landing.html"
+      "destination": "/index.html"
     },
     {
       "source": "/reseller",

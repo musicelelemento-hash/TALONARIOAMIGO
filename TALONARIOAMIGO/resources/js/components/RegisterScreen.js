@@ -19,7 +19,9 @@ export function renderRegisterScreen() {
                      style="border: 2px dashed #CBD5E1; border-radius: 14px; padding: 18px; text-align: center; cursor: pointer; background: #F8FAFC; margin-bottom: 14px; transition: all 0.2s ease;"
                      onmouseover="this.style.borderColor='#10B981'; this.style.background='#FFFFFF'"
                      onmouseout="this.style.borderColor='#CBD5E1'; this.style.background='#F8FAFC'">
-                    <div style="font-size: 26px;"></div>
+                    <div style="display:flex;justify-content:center;color:#64748B;">
+                        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg>
+                    </div>
                     <div style="font-weight: 800; font-size: 13px; color: #0F172A;">Subir Certificado de RUC (PDF)</div>
                     <div style="font-size: 10.5px; color: #64748B;">Autocompleta tus datos del facturador al instante</div>
                     <input type="file" id="reg-ruc-file" accept=".pdf,application/pdf" style="display:none" onchange="window.appState.handleRegisterRucPdf(this)">

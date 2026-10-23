@@ -12,9 +12,11 @@ const urlParams = typeof window !== 'undefined' ? new URLSearchParams(window.loc
 const forceProd = urlParams && urlParams.get('api') === 'prod';
 const storedApiUrl = typeof window !== 'undefined' ? localStorage.getItem('ta_api_url') : null;
 
-const isLocal = !forceProd && typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+// En el APK (Capacitor) el hostname es "localhost" pero no hay backend local: siempre Render.
+const isNative = typeof window !== 'undefined' && Boolean(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+const isLocal = !isNative && !forceProd && typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
 
-export const API_BASE_URL = storedApiUrl || (forceProd ? PROD_API_URL : (isLocal ? LOCAL_API_URL : PROD_API_URL));
+export const API_BASE_URL = storedApiUrl || (isNative || forceProd ? PROD_API_URL : (isLocal ? LOCAL_API_URL : PROD_API_URL));
 
 class ApiClient {
     constructor() {

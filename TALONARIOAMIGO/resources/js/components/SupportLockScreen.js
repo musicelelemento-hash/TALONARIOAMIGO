@@ -1,15 +1,17 @@
 /**
  * Componente: SupportLockScreen
- * Pantalla elegante y minimalista de bloqueo cuando la cuenta está inactiva o le falta firma .p12
+ * Pantalla de bloqueo cuando la cuenta está inactiva o le falta la firma .p12.
  */
 export function renderSupportLockScreen(reasonMessage, whatsappNumber) {
-    const defaultNumber = whatsappNumber || "593999999999";
+    const defaultNumber = whatsappNumber || '593999999999';
     const waLink = `https://wa.me/${defaultNumber}?text=Hola,%20requiero%20asistencia%20para%20activar%20mi%20firma%20en%20Talonario%20Amigo`;
 
     return `
         <div class="lock-screen-container" style="max-width: 440px; margin: 20px auto;">
-            <div class="lock-badge">️</div>
-            
+            <div style="width:52px;height:52px;margin:0 auto 16px;display:grid;place-items:center;border-radius:12px;background:#FEF2F2;color:#DC2626;">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+            </div>
+
             <h2 style="font-family: var(--font-serif-header); font-size: 22px; font-weight: 800; color: #0F172A; margin-bottom: 8px;">
                 Talonario Pausado
             </h2>
@@ -19,9 +21,9 @@ export function renderSupportLockScreen(reasonMessage, whatsappNumber) {
             </p>
 
             <div style="background: #FFF8F8; border: 1.5px dashed #D90429; padding: 12px 14px; border-radius: 10px; font-size: 11px; font-family: var(--font-mono-num); text-align: left; margin-bottom: 18px;">
-                 <strong>Estado:</strong>CUENTA_BLOQUEADA_SOPORTE<br>
-                 <strong>Imprenta Asignada:</strong>Imprenta Gráficas Amazonas<br>
-                 <strong>Soporte Técnico:</strong>Respuesta inmediata en horario laboral
+                 <strong>Estado:</strong> CUENTA_BLOQUEADA_SOPORTE<br>
+                 <strong>Imprenta Asignada:</strong> Imprenta Gráficas Amazonas<br>
+                 <strong>Soporte Técnico:</strong> Respuesta inmediata en horario laboral
             </div>
 
             <a href="${waLink}" target="_blank" class="whatsapp-btn">
