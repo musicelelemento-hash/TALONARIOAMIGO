@@ -34,6 +34,7 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
     const showRedWarningLine = !isDemo && (!hasSignature || !isConfigured);
     const docNumStr = String(currentDocNumber || 126).padStart(9, '0');
     const mode = experienceMode || 'comerciante';
+    const thermalWidth = emisorData?.thermalWidth || '80';
 
     // Cálculo del estado y grosor del bloc (Principio 16: Hojas apiladas)
     const docNum = parseInt(currentDocNumber || 126, 10);
@@ -501,9 +502,13 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                     <button type="button" class="mode-chip-btn" style="background: #10B981; border-color: #059669; color: #FFFFFF; font-weight: 700; font-size: 11px; padding: 6px 14px;" onclick="window.appState.shareFacturaWhatsapp()" title="Compartir comprobante actual directamente por WhatsApp">
                         📲 Enviar por WhatsApp
                     </button>
-                    <button type="button" class="mode-chip-btn" style="background: #1E293B; border-color: #334155; color: #F8FAFC; font-weight: 700; font-size: 11px; padding: 6px 14px;" onclick="window.print()" title="Imprimir ticket para impresora térmica de rollo 58mm o 80mm">
+                    <button type="button" class="mode-chip-btn" style="background: #1E293B; border-color: #334155; color: #F8FAFC; font-weight: 700; font-size: 11px; padding: 6px 14px;" onclick="window.appState.printThermalTicket()" title="Imprimir ticket para impresora térmica de rollo 58mm o 80mm">
                         🖨️ Imprimir Ticket POS
                     </button>
+                    <span style="display: inline-flex; align-items: center; gap: 3px; background: rgba(15,23,42,0.06); border: 1px solid #CBD5E1; border-radius: 999px; padding: 2px;" title="Ancho del rollo de la impresora térmica">
+                        <button type="button" onclick="window.appState.setThermalWidth(58)" style="border: none; border-radius: 999px; padding: 3px 9px; font-size: 10px; font-weight: 800; cursor: pointer; ${thermalWidth === '58' ? 'background:#1E293B; color:#F8FAFC;' : 'background:transparent; color:#475569;'}">58mm</button>
+                        <button type="button" onclick="window.appState.setThermalWidth(80)" style="border: none; border-radius: 999px; padding: 3px 9px; font-size: 10px; font-weight: 800; cursor: pointer; ${thermalWidth === '80' ? 'background:#1E293B; color:#F8FAFC;' : 'background:transparent; color:#475569;'}">80mm</button>
+                    </span>
                 </div>
             </div>
 

@@ -18,6 +18,7 @@ import { voiceDictation } from '../services/voiceDictation.js';
 import { gravityScanner } from '../services/gravityScanner.js';
 import { offlineQueue } from '../services/offlineQueue.js';
 import { invoiceValidator } from '../services/invoiceValidator.js';
+import { printThermalTicket, setThermalWidth, getThermalWidth } from './ThermalTicket.js';
 
 export class AppManager {
     constructor(containerId) {
@@ -48,6 +49,7 @@ export class AppManager {
             experienceMode: 'comerciante', // 'tranquilo', 'comerciante', 'pro'
             isShowingBlueCopy: false,
             businessLogo: localStorage.getItem('ta_business_logo') || '',
+            thermalWidth: getThermalWidth(), // 58mm o 80mm para ticket térmico POS
             lastReceipt: null,
             isTomosModalOpen: false,
             is3DModalOpen: false,
@@ -675,6 +677,21 @@ export class AppManager {
     printHistoricalFactura(num) {
         this.triggerHaptic(15);
         window.print();
+    }
+
+    // TICKET TÉRMICO POS (Agente 22): imprime el comprobante en rollo continuo 58/80mm con QR SRI.
+    async printThermalTicket() {
+        this.triggerHaptic(15);
+        this.showToast(`🖨️ Preparando ticket térmico de ${getThermalWidth()}mm…`);
+        await printThermalTicket(this.state);
+    }
+
+    setThermalWidth(mm) {
+        this.triggerHaptic(15);
+        const width = setThermalWidth(mm);
+        this.state.thermalWidth = width;
+        this.showToast(`🧾 Ticket configurado a ${width}mm.`);
+        this.evaluateStateAndRender();
     }
 
     async loadTomosFromBackend() {
