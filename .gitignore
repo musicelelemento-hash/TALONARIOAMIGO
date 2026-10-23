@@ -16,6 +16,11 @@ vendor/
 *.apk
 *.aab
 
+# Artefactos de build (se regeneran con npm run build / cap sync)
+TALONARIOAMIGO/public/dist/
+talonario-amigo-mobile/www/
+!talonario-amigo-mobile/www/.gitkeep
+
 # Capacitor & Android build caches
 talonario-amigo-mobile/android/.gradle/
 talonario-amigo-mobile/android/app/build/

@@ -47,25 +47,24 @@ export class GravityScannerService {
 
         let extractedText = '';
 
-        // Si Tesseract.js está cargado en el navegador, ejecutar OCR real
-        if (typeof window !== 'undefined' && window.Tesseract) {
-            try {
-                if (onProgress) onProgress('Analizando documento con OCR...', 35);
-                const worker = await window.Tesseract.createWorker('spa', 1, {
-                    logger: m => {
-                        if (m.status === 'recognizing text' && onProgress) {
-                            const pct = 35 + Math.round((m.progress || 0) * 50);
-                            onProgress(`Leyendo texto: ${Math.round((m.progress || 0) * 100)}%`, pct);
-                        }
+        // OCR real con Tesseract.js empaquetado por Vite (import dinámico, solo se carga al escanear)
+        try {
+            if (onProgress) onProgress('Analizando documento con OCR...', 35);
+            const { createWorker } = await import('tesseract.js');
+            const worker = await createWorker('spa', 1, {
+                logger: m => {
+                    if (m.status === 'recognizing text' && onProgress) {
+                        const pct = 35 + Math.round((m.progress || 0) * 50);
+                        onProgress(`Leyendo texto: ${Math.round((m.progress || 0) * 100)}%`, pct);
                     }
-                });
-                const ret = await worker.recognize(file);
-                extractedText = ret.data.text || '';
-                await worker.terminate();
-                if (onProgress) onProgress('Extrayendo entidades tributarias...', 90);
-            } catch (ocrErr) {
-                console.warn('OCR en navegador falló o fue cancelado, utilizando procesador heurístico:', ocrErr);
-            }
+                }
+            });
+            const ret = await worker.recognize(file);
+            extractedText = ret.data.text || '';
+            await worker.terminate();
+            if (onProgress) onProgress('Extrayendo entidades tributarias...', 90);
+        } catch (ocrErr) {
+            console.warn('OCR en navegador falló o fue cancelado, utilizando procesador heurístico:', ocrErr);
         }
 
         // Si el OCR no devolvió texto o no estaba disponible, usar heurística contextual por nombre de archivo o datos de demo

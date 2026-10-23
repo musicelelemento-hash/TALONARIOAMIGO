@@ -10,6 +10,9 @@ jobs:
   frontend:
     name: Frontend Lint & Vite Build
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: TALONARIOAMIGO
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -19,6 +22,7 @@ jobs:
         with:
           node-version: 22
           cache: 'npm'
+          cache-dependency-path: TALONARIOAMIGO/package-lock.json
 
       - name: Install Node Dependencies
         run: npm ci
@@ -32,6 +36,9 @@ jobs:
   backend:
     name: Backend PHP Syntax & PHPUnit Tests
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: TALONARIOAMIGO
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4

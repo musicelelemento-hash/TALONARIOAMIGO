@@ -5,9 +5,9 @@
  * se autocompletan RUC, razón social, dirección, régimen (RIMPE) y establecimientos.
  */
 import * as pdfjsLib from 'pdfjs-dist';
+import PdfWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 
-const pdfjsVersion = pdfjsLib.version || '5.4.530';
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsVersion}/build/pdf.worker.min.mjs`;
+pdfjsLib.GlobalWorkerOptions.workerSrc = PdfWorker;
 
 /**
  * @param {File} file - Certificado de RUC (PDF del SRI)

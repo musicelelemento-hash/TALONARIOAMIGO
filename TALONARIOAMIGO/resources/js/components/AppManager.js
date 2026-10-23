@@ -4,7 +4,6 @@
  */
 import { renderLoginScreen } from './LoginScreen.js';
 import { renderRegisterScreen } from './RegisterScreen.js';
-import { renderOnboardingScreen } from './OnboardingScreen.js';
 import { renderSupportLockScreen } from './SupportLockScreen.js';
 import { renderFacturadorRealista } from './FacturadorRealista.js';
 import { renderSuperAdminPanel } from './SuperAdminPanel.js';
@@ -19,6 +18,15 @@ import { gravityScanner } from '../services/gravityScanner.js';
 import { offlineQueue } from '../services/offlineQueue.js';
 import { invoiceValidator } from '../services/invoiceValidator.js';
 import { printThermalTicket, setThermalWidth, getThermalWidth } from './ThermalTicket.js';
+
+function escapeHtml(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
 
 export class AppManager {
     constructor(containerId) {
@@ -674,7 +682,7 @@ export class AppManager {
         this.showToast('⬇️ Descargando XML firmado SRI...');
     }
 
-    printHistoricalFactura(num) {
+    printHistoricalFactura(_num) {
         this.triggerHaptic(15);
         window.print();
     }
@@ -766,7 +774,7 @@ export class AppManager {
         }
     }
 
-    startVoiceDictation(target = 'all') {
+    startVoiceDictation(_target = 'all') {
         this.triggerHaptic(20);
         soundFx.playPencil();
         this.state.isListeningVoice = true;
@@ -779,7 +787,7 @@ export class AppManager {
                 this.state.isListeningVoice = true;
                 this.evaluateStateAndRender();
             },
-            onTranscript: (transcript, isFinal) => {
+            onTranscript: (transcript, _isFinal) => {
                 this.state.voiceLiveTranscript = transcript;
                 const bannerText = document.querySelector('.voice-dictation-banner strong + div');
                 if (bannerText) {
@@ -843,7 +851,7 @@ export class AppManager {
 
                 this.evaluateStateAndRender();
             },
-            onError: (err) => {
+            onError: (_err) => {
                 this.state.isListeningVoice = false;
                 this.state.voiceLiveTranscript = '';
                 this.showToast('⚠️ No se detectó audio o el micrófono requiere permisos.');
@@ -915,10 +923,10 @@ export class AppManager {
                     const tr = document.createElement('tr');
                     const rowTotal = (item.cantidad * item.precioUnitario).toFixed(2);
                     tr.innerHTML = `
-                        <td style="text-align: center;"><input type="number" class="table-input" value="${item.cantidad}" oninput="window.appState.recalculateTotals()" onfocus="window.appState.onInputFocus()"></td>
-                        <td><input type="text" class="table-input" value="${item.descripcion}" onfocus="window.appState.onInputFocus()"></td>
-                        <td style="text-align: right;"><input type="number" step="0.01" class="table-input" value="${Number(item.precioUnitario).toFixed(2)}" style="text-align:right;" oninput="window.appState.recalculateTotals()" onfocus="window.appState.onInputFocus()"></td>
-                        <td style="text-align: right; padding-right: 6px;" class="row-total">$${rowTotal}</td>
+                        <td style="text-align: center;"><input type="number" class="table-input" value="${escapeHtml(item.cantidad)}" oninput="window.appState.recalculateTotals()" onfocus="window.appState.onInputFocus()"></td>
+                        <td><input type="text" class="table-input" value="${escapeHtml(item.descripcion)}" onfocus="window.appState.onInputFocus()"></td>
+                        <td style="text-align: right;"><input type="number" step="0.01" class="table-input" value="${escapeHtml(Number(item.precioUnitario).toFixed(2))}" style="text-align:right;" oninput="window.appState.recalculateTotals()" onfocus="window.appState.onInputFocus()"></td>
+                        <td style="text-align: right; padding-right: 6px;" class="row-total">$${escapeHtml(rowTotal)}</td>
                     `;
                     tbody.appendChild(tr);
                 });
@@ -949,10 +957,10 @@ export class AppManager {
         const total = (cant * Number(precio)).toFixed(2);
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td style="text-align: center;"><input type="number" class="table-input" value="${cant}" oninput="window.appState.recalculateTotals()" onfocus="window.appState.onInputFocus()"></td>
-            <td><input type="text" class="table-input" value="${descripcion}" onfocus="window.appState.onInputFocus()"></td>
-            <td style="text-align: right;"><input type="number" step="0.01" class="table-input" value="${Number(precio).toFixed(2)}" style="text-align:right;" oninput="window.appState.recalculateTotals()" onfocus="window.appState.onInputFocus()"></td>
-            <td style="text-align: right; padding-right: 6px;" class="row-total">$${total}</td>
+            <td style="text-align: center;"><input type="number" class="table-input" value="${escapeHtml(cant)}" oninput="window.appState.recalculateTotals()" onfocus="window.appState.onInputFocus()"></td>
+            <td><input type="text" class="table-input" value="${escapeHtml(descripcion)}" onfocus="window.appState.onInputFocus()"></td>
+            <td style="text-align: right;"><input type="number" step="0.01" class="table-input" value="${escapeHtml(Number(precio).toFixed(2))}" style="text-align:right;" oninput="window.appState.recalculateTotals()" onfocus="window.appState.onInputFocus()"></td>
+            <td style="text-align: right; padding-right: 6px;" class="row-total">$${escapeHtml(total)}</td>
         `;
         tbody.appendChild(tr);
         this.recalculateTotals();
@@ -1351,7 +1359,7 @@ export class AppManager {
     }
 
     async logout() {
-        try { await api.logout(); } catch (e) { /* ignore */ }
+        try { await api.logout(); } catch (_e) { /* ignore */ }
         localStorage.removeItem('ta_auth_token');
         localStorage.removeItem('ta_auth_user');
         this.state.isLoggedIn = false;

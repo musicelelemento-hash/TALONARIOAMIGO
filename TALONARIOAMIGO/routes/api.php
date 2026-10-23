@@ -37,27 +37,23 @@ Route::get('/health', function () {
     ]);
 });
 
-// Diagnóstico extendido de base de datos e integraciones
+// Diagnóstico de base de datos e integraciones (público: NO expone nombres de tabla ni errores crudos)
 Route::get('/health/db', function () {
     $dbConnected = false;
-    $dbError = null;
-    $tables = [];
+    $tablesCount = 0;
     try {
         DB::connection()->getPdo();
         $dbConnected = true;
-        $tableRows = DB::select("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'");
-        $tables = array_map(function ($row) { return $row->table_name ?? $row->TABLE_NAME ?? ''; }, $tableRows);
+        $tablesCount = count(DB::select("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'"));
     } catch (\Throwable $e) {
-        $dbError = $e->getMessage();
+        \Log::warning('health.db check failed: ' . $e->getMessage());
     }
 
     return response()->json([
         'status' => 'ok',
         'database' => [
             'connected' => $dbConnected,
-            'tables_count' => count($tables),
-            'tables' => $tables,
-            'error' => $dbError
+            'tables_count' => $tablesCount,
         ],
         'integrations' => [
             'resend_email' => !empty(env('RESEND_API_KEY')),
@@ -69,12 +65,12 @@ Route::get('/health/db', function () {
 });
 
 // Ejecuta migraciones y seed de superadmin. Requiere el token dedicado MIGRATE_TOKEN
-// enviado por header (nunca en la URL, que queda en logs). No reutiliza APP_KEY.
+// enviado por header (nunca en la URL, que queda en logs). No reutiliza APP_KEY ni fallbacks.
 Route::post('/health/migrate', function (Request $request) {
-    $expected = env('MIGRATE_TOKEN') ?: env('APP_KEY') ?: 'TalonarioAmigo2026MigrateKey';
+    $expected = env('MIGRATE_TOKEN');
     $provided = $request->header('X-Migrate-Token');
 
-    if (empty($provided) || !hash_equals($expected, $provided)) {
+    if (empty($expected) || empty($provided) || !hash_equals($expected, $provided)) {
         return response()->json(['error' => 'Unauthorized'], 403);
     }
     try {

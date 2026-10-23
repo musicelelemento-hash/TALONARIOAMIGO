@@ -15,10 +15,10 @@ class R2StorageService
 
     public function __construct()
     {
-        $this->accountId = env('CLOUDFLARE_ACCOUNT_ID', env('R2_ACCOUNT_ID', '2bfe62a11b28461a4a5c5180341c9d85'));
-        $this->accessKey = env('R2_ACCESS_KEY_ID', 'd2b42da39988788cd31a5eb495267f71');
-        $this->secretKey = env('R2_SECRET_ACCESS_KEY', '29439a8b230c9c60a643f0995535a37b8fc05a604ea29ccaa6c1a634509dc346');
-        $this->endpoint  = env('R2_ENDPOINT', 'https://2bfe62a11b28461a4a5c5180341c9d85.r2.cloudflarestorage.com');
+        $this->accountId = env('CLOUDFLARE_ACCOUNT_ID', env('R2_ACCOUNT_ID'));
+        $this->accessKey = env('R2_ACCESS_KEY_ID');
+        $this->secretKey = env('R2_SECRET_ACCESS_KEY');
+        $this->endpoint  = env('R2_ENDPOINT');
         $this->bucket    = env('R2_BUCKET', env('R2_BUCKET_NAME', 'talonario-amigo-vault'));
     }
 
