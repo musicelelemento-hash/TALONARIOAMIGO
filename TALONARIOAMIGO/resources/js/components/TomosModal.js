@@ -55,14 +55,14 @@ export function renderTomosModal(activeTomoMonth = 'AGOSTO 2026', tomosData = nu
                 class="tomo-tab-btn ${t.activo ? 'active' : ''}" 
                 style="padding: 10px 16px; border-radius: 12px; font-weight: 800; font-size: 13px; cursor: pointer; border: 1.5px solid ${t.activo ? '#16A34A' : '#334155'}; background: ${t.activo ? '#16A34A' : '#1E293B'}; color: #FFFFFF; display: flex; align-items: center; gap: 8px; transition: all 0.2s; white-space: nowrap;"
                 onclick="window.appState.switchTomoMonth('${esc(t.id)}')">
-            <span>📒 ${esc(t.nombre)}</span>
+            <span> ${esc(t.nombre)}</span>
             <span style="font-size: 11px; background: rgba(0,0,0,0.25); padding: 2px 8px; border-radius: 999px;">${t.hojas} Hojas</span>
         </button>
     `).join('');
 
     const hojasListHtml = comprobantes.length === 0 ? `
             <div style="background: #FFFFFF; border: 2px dashed #CBD5E1; border-radius: 14px; padding: 36px 20px; text-align: center; color: #64748B;">
-                <div style="font-size: 40px; margin-bottom: 12px;">📑</div>
+                <div style="font-size: 40px; margin-bottom: 12px;"></div>
                 <div style="font-weight: 800; font-size: 15px; color: #1E293B; margin-bottom: 6px;">
                     Este tomo no tiene hojas emitidas todavía
                 </div>
@@ -70,7 +70,7 @@ export function renderTomosModal(activeTomoMonth = 'AGOSTO 2026', tomosData = nu
                     Cada vez que desprendas una factura en tu talonario, se archivará automáticamente aquí con su copia física y número de autorización SRI.
                 </p>
                 <button type="button" class="btn-stamp" style="background: #0F172A; width: auto; padding: 10px 20px; font-size: 12px; display: inline-flex; align-items: center; gap: 6px;" onclick="window.appState.closeTomosModal()">
-                    <span>✒️ Emitir mi Primera Hoja</span>
+                    <span>️ Emitir mi Primera Hoja</span>
                 </button>
             </div>
         ` : comprobantes.map(h => {
@@ -91,7 +91,7 @@ export function renderTomosModal(activeTomoMonth = 'AGOSTO 2026', tomosData = nu
                             <span style="font-size: 10px; font-weight: 800; background: #DCFCE7; color: #15803D; padding: 2px 6px; border-radius: 6px;">
                                 ${esc(estadoBadge)}
                             </span>
-                            <span style="font-size: 11px; color: #64748B;">📅 ${esc(fechaStr)}</span>
+                            <span style="font-size: 11px; color: #64748B;"> ${esc(fechaStr)}</span>
                         </div>
                         <div style="font-size: 14px; font-weight: 700; color: #0F172A; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                             ${esc(h.cliente_nombre || 'Consumidor Final')}
@@ -107,15 +107,15 @@ export function renderTomosModal(activeTomoMonth = 'AGOSTO 2026', tomosData = nu
                         </div>
                         <div style="margin-top: 6px; display: flex; gap: 6px; justify-content: flex-end; flex-wrap: wrap;">
                             <button type="button" class="btn-whatsapp-direct" style="padding: 4px 8px; font-size: 10px; border-radius: 8px;" onclick="window.appState.shareHistoricalFactura('${esc(numComp)}', '${esc(h.cliente_nombre || '')}', '${esc(totalFmt)}', '${esc(claveAcceso)}')">
-                                💬 WhatsApp
+                                 WhatsApp
                             </button>
                             ${claveAcceso ? `
                                 <button type="button" class="sim-btn" style="background: #0284C7; color: white; padding: 4px 8px; font-size: 10px; border-radius: 8px;" onclick="window.appState.downloadXmlFactura('${esc(claveAcceso)}')">
-                                    ⬇️ XML
+                                    ️ XML
                                 </button>
                             ` : ''}
                             <button type="button" class="sim-btn" style="background: #334155; color: white; padding: 4px 8px; font-size: 10px; border-radius: 8px;" onclick="window.appState.printHistoricalFactura('${esc(numComp)}')">
-                                🖨️ RIDE
+                                ️ RIDE
                             </button>
                         </div>
                     </div>
@@ -134,7 +134,7 @@ export function renderTomosModal(activeTomoMonth = 'AGOSTO 2026', tomosData = nu
                             Principio 13 · Archivo Físico Digital
                         </div>
                         <h2 style="font-family: var(--font-serif-header); font-size: 22px; font-weight: 900; color: #0F172A; margin-top: 2px;">
-                            📒 Mis Tomos Físicos de Facturación
+                             Mis Tomos Físicos de Facturación
                         </h2>
                         <p style="font-size: 12px; color: #64748B; margin-top: 2px;">
                             Tus hojas emitidas organizadas por mes, idéntico a tus blocs de imprenta de toda la vida.
@@ -149,7 +149,7 @@ export function renderTomosModal(activeTomoMonth = 'AGOSTO 2026', tomosData = nu
                 <div style="margin-bottom: 16px; position: relative;">
                     <input type="text" 
                            id="tomos-search-input"
-                           placeholder="🔍 Buscar por nombre del cliente, RUC, cédula o N° de hoja..."
+                           placeholder=" Buscar por nombre del cliente, RUC, cédula o N° de hoja..."
                            value="${esc(searchQuery)}"
                            oninput="window.appState.handleTomosSearch(this.value)"
                            style="width: 100%; padding: 10px 14px; font-size: 13px; border: 1.5px solid #CBD5E1; border-radius: 10px; background: #FFFFFF; color: #0F172A; outline: none; box-sizing: border-box;"
@@ -172,7 +172,7 @@ export function renderTomosModal(activeTomoMonth = 'AGOSTO 2026', tomosData = nu
                                 onclick="window.appState.open3DExperienceModal()"
                                 style="background: linear-gradient(135deg, #4A2E1B 0%, #1E293B 100%); color: #FCFBF6; border: 1px solid #78350F; padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.15);"
                                 title="Girar e inspeccionar este bloc físico en 3D">
-                            <span>📐 Inspeccionar Tomo 3D</span>
+                            <span>Inspeccionar Tomo 3D</span>
                         </button>
                     </div>
                     <span style="font-family: var(--font-mono-num); font-size: 13px; font-weight: 800; color: #16A34A;">
@@ -190,10 +190,10 @@ export function renderTomosModal(activeTomoMonth = 'AGOSTO 2026', tomosData = nu
                     <button type="button" 
                             style="background: #1E293B; color: #FCFBF6; border: 1px solid #475569; border-radius: 10px; padding: 11px 20px; font-size: 13px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;"
                             onclick="window.appState.open3DExperienceModal()">
-                        <span>📐 Girar Bloc en 3D</span>
+                        <span>Girar Bloc en 3D</span>
                     </button>
                     <button type="button" class="btn-stamp" style="background: #0F172A; width: auto; padding: 11px 28px; font-size: 13px; display: inline-flex; align-items: center; gap: 8px;" onclick="window.appState.closeTomosModal()">
-                        <span>✒️ Volver a Emitir al Talonario</span>
+                        <span>️ Volver a Emitir al Talonario</span>
                     </button>
                 </div>
             </div>

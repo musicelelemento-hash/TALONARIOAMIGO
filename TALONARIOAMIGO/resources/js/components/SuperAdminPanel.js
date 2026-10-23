@@ -28,14 +28,14 @@ export function renderSuperAdminPanel(dashboardData, activeTab = 'resellers') {
                 <div>
                     <strong style="font-size: 15px; color: #0F172A;">${esc(r.name)}</strong><br>
                     <small style="color: #64748B; font-family: var(--font-mono-num);">Lotes: ${esc(r.allocated_accounts || 0)} licencias · ${esc(r.total_clients || 0)} clientes</small><br>
-                    <small style="color: #1D4ED8; font-weight: 600;">📞 WhatsApp Soporte: ${esc(r.whatsapp_support || '—')}</small>
+                    <small style="color: #1D4ED8; font-weight: 600;">WhatsApp Soporte: ${esc(r.whatsapp_support || '—')}</small>
                 </div>
                 <div style="text-align: right;">
                     <span class="badge-pill ${active ? 'badge-active' : 'badge-inactive'}" style="display: inline-block; margin-bottom: 6px;">
                         ${active ? 'ACTIVO' : 'SUSPENDIDO'}
                     </span><br>
                     <button class="btn-stamp" style="padding: 6px 12px; font-size: 11px; background: ${active ? '#DC2626' : '#16A34A'}; border-color: ${active ? '#DC2626' : '#16A34A'}; width: auto;" onclick="window.appState.toggleMasterAccount(this, '${esc(r.id)}', ${active})">
-                        ${active ? '🔴 Suspender Imprenta' : '🟢 Activar Imprenta'}
+                        ${active ? 'Suspender Imprenta' : 'Activar Imprenta'}
                     </button>
                 </div>
             </div>`;
@@ -49,7 +49,7 @@ export function renderSuperAdminPanel(dashboardData, activeTab = 'resellers') {
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <div class="receipt-number">PANEL DE CONTROL TOTAL — DUEÑO</div>
                     <button type="button" class="mode-chip-btn" style="background:#1E293B; color:#FFF; font-size:11px;" onclick="window.appState.setRole('CLIENT')">
-                        ✒️ Ir al Talonario
+                        ️ Ir al Talonario
                     </button>
                 </div>
                 <div class="emisor-title">Plataforma Global Talonario Amigo</div>
@@ -58,7 +58,7 @@ export function renderSuperAdminPanel(dashboardData, activeTab = 'resellers') {
 
             <!-- Banner Estado de Salud del Sistema -->
             <div style="background: rgba(22, 163, 74, 0.08); border: 1px solid rgba(22, 163, 74, 0.2); border-radius: 12px; padding: 10px 14px; margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between; font-size: 12px;">
-                <span style="color: #15803D; font-weight: 700;">🟢 Backend SRI: En Línea · Supabase BD: Conectada · Edge: Cloudflare Pages</span>
+                <span style="color: #15803D; font-weight: 700;">Backend SRI: En Línea · Supabase BD: Conectada · Edge: Cloudflare Pages</span>
                 <span style="color: #64748B; font-family: var(--font-mono-num); font-size: 11px;">12 Agentes en Servicio</span>
             </div>
 
@@ -85,10 +85,10 @@ export function renderSuperAdminPanel(dashboardData, activeTab = 'resellers') {
             <!-- Selector de Pestañas Principales -->
             <div style="display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 1.5px solid #E2E8F0; padding-bottom: 10px;">
                 <button type="button" class="mode-chip-btn ${activeTab === 'resellers' ? 'active' : ''}" onclick="window.appState.switchSuperAdminTab('resellers')">
-                    🏢 Imprentas & Lotes B2B
+                     Imprentas & Lotes B2B
                 </button>
                 <button type="button" class="mode-chip-btn ${activeTab === 'agents' ? 'active' : ''}" onclick="window.appState.switchSuperAdminTab('agents')" style="display: flex; align-items: center; gap: 6px;">
-                    🏛️ Centro de Mando Multi-Agente
+                    ️ Centro de Mando Multi-Agente
                     <span style="font-size: 10px; background: #16A34A; color: white; padding: 1px 7px; border-radius: 999px; font-weight: 800;">12 Activos</span>
                 </button>
             </div>
@@ -110,7 +110,7 @@ export function renderSuperAdminPanel(dashboardData, activeTab = 'resellers') {
                             </p>
                         </div>
                         <button type="button" class="btn-stamp" style="width: auto; padding: 10px 18px; font-size: 11px; background: #16A34A; border-color: #16A34A; white-space: nowrap;" onclick="window.appState.runAgentDiagnostic('all')">
-                            🚀 Auditoría Integral (12 Agentes)
+                             Auditoría Integral (12 Agentes)
                         </button>
                     </div>
 
@@ -128,15 +128,15 @@ export function renderSuperAdminPanel(dashboardData, activeTab = 'resellers') {
                     <!-- NIVEL 0: COMANDO SUPREMO -->
                     <div style="margin-bottom: 20px;">
                         <div style="font-size: 11px; font-weight: 800; color: #B45309; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.05em;">
-                            👑 NIVEL 0: DIRECCIÓN ESTRATÉGICA & COMANDO SUPREMO
+                             NIVEL 0: DIRECCIÓN ESTRATÉGICA & COMANDO SUPREMO
                         </div>
                         <div style="background: #FFFFFF; border: 1.5px solid #FDE68A; border-radius: 12px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(180,83,9,0.05);">
                             <div>
-                                <strong style="font-size: 14px; color: #0F172A;">👑 Agente 01: ORCHESTRATOR_MASTER</strong><br>
+                                <strong style="font-size: 14px; color: #0F172A;">Agente 01: ORCHESTRATOR_MASTER</strong><br>
                                 <small style="color: #64748B;">Máxima autoridad. Descompone misiones y protege el principio de tranquilidad.</small>
                             </div>
                             <button type="button" class="btn-stamp" style="width: auto; padding: 6px 12px; font-size: 11px; background: #0F172A;" onclick="window.appState.runAgentDiagnostic('01_orchestrator')">
-                                🚀 Auditar Comando
+                                 Auditar Comando
                             </button>
                         </div>
                     </div>
@@ -144,34 +144,34 @@ export function renderSuperAdminPanel(dashboardData, activeTab = 'resellers') {
                     <!-- NIVEL 1: ESCUADRÓN TRIBUTARIO & SRI -->
                     <div style="margin-bottom: 20px;">
                         <div style="font-size: 11px; font-weight: 800; color: #15803D; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.05em;">
-                            ⚖️ NIVEL 1: ESCUADRÓN TRIBUTARIO & CUMPLIMIENTO SRI ECUADOR
+                            ️ NIVEL 1: ESCUADRÓN TRIBUTARIO & CUMPLIMIENTO SRI ECUADOR
                         </div>
                         <div style="display: flex; flex-direction: column; gap: 8px;">
                             <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
                                 <div>
-                                    <strong style="font-size: 13px; color: #0F172A;">⚖️ Agente 02: SRI_COMPLIANCE_OFFICER</strong><br>
+                                    <strong style="font-size: 13px; color: #0F172A;">️ Agente 02: SRI_COMPLIANCE_OFFICER</strong><br>
                                     <small style="color: #64748B;">Esquemas XML Factura v1.1.0, Módulo 11 y Regímenes RIMPE.</small>
                                 </div>
                                 <button type="button" class="sim-btn" style="background: #16A34A; color: white; padding: 5px 12px; font-size: 11px;" onclick="window.appState.runAgentDiagnostic('02_sri')">
-                                    🔍 Validar Esquemas
+                                     Validar Esquemas
                                 </button>
                             </div>
                             <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
                                 <div>
-                                    <strong style="font-size: 13px; color: #0F172A;">🔐 Agente 03: P12_VAULT_SECURITY</strong><br>
+                                    <strong style="font-size: 13px; color: #0F172A;">Agente 03: P12_VAULT_SECURITY</strong><br>
                                     <small style="color: #64748B;">Bóveda criptográfica de firmas electrónicas y validación X.509.</small>
                                 </div>
                                 <button type="button" class="sim-btn" style="background: #0F172A; color: white; padding: 5px 12px; font-size: 11px;" onclick="window.appState.runAgentDiagnostic('03_p12')">
-                                    🛡️ Auditar Bóveda
+                                    ️ Auditar Bóveda
                                 </button>
                             </div>
                             <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
                                 <div>
-                                    <strong style="font-size: 13px; color: #0F172A;">📡 Agente 04: SOAP_SRI_PIPELINE</strong><br>
+                                    <strong style="font-size: 13px; color: #0F172A;">Agente 04: SOAP_SRI_PIPELINE</strong><br>
                                     <small style="color: #64748B;">Web Services recepcion / autorizacion y resiliencia ante caídas SRI.</small>
                                 </div>
                                 <button type="button" class="sim-btn" style="background: #1D4ED8; color: white; padding: 5px 12px; font-size: 11px;" onclick="window.appState.runAgentDiagnostic('04_soap')">
-                                    ⚡ Test Conexión SRI
+                                     Test Conexión SRI
                                 </button>
                             </div>
                         </div>
@@ -180,34 +180,34 @@ export function renderSuperAdminPanel(dashboardData, activeTab = 'resellers') {
                     <!-- NIVEL 1: ESCUADRÓN DE PRODUCTO & EXPERIENCIA TÁCTIL -->
                     <div style="margin-bottom: 20px;">
                         <div style="font-size: 11px; font-weight: 800; color: #2563EB; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.05em;">
-                            🎨 NIVEL 1: ESCUADRÓN DE PRODUCTO, EXPERIENCIA TÁCTIL & MÓVIL
+                             NIVEL 1: ESCUADRÓN DE PRODUCTO, EXPERIENCIA TÁCTIL & MÓVIL
                         </div>
                         <div style="display: flex; flex-direction: column; gap: 8px;">
                             <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
                                 <div>
-                                    <strong style="font-size: 13px; color: #0F172A;">🎨 Agente 05: TACTILE_DESIGN_SYSTEM</strong><br>
+                                    <strong style="font-size: 13px; color: #0F172A;">Agente 05: TACTILE_DESIGN_SYSTEM</strong><br>
                                     <small style="color: #64748B;">Protector de los 19 Principios, papel al 95% y sonido orgánico.</small>
                                 </div>
                                 <button type="button" class="sim-btn" style="background: #D97706; color: white; padding: 5px 12px; font-size: 11px;" onclick="window.appState.runAgentDiagnostic('05_tactile')">
-                                    📐 Chequear 19 Principios
+                                     Chequear 19 Principios
                                 </button>
                             </div>
                             <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
                                 <div>
-                                    <strong style="font-size: 13px; color: #0F172A;">⚡ Agente 06: FRONTEND_SPA_ENGINEER</strong><br>
+                                    <strong style="font-size: 13px; color: #0F172A;">Agente 06: FRONTEND_SPA_ENGINEER</strong><br>
                                     <small style="color: #64748B;">Arquitectura Vanilla ES Modules, Vite y velocidad ultra-rápida.</small>
                                 </div>
                                 <button type="button" class="sim-btn" style="background: #0F172A; color: white; padding: 5px 12px; font-size: 11px;" onclick="window.appState.runAgentDiagnostic('06_frontend')">
-                                    ⚡ Test Rendimiento SPA
+                                     Test Rendimiento SPA
                                 </button>
                             </div>
                             <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
                                 <div>
-                                    <strong style="font-size: 13px; color: #0F172A;">📱 Agente 07: MOBILE_CAPACITOR_ENGINEER</strong><br>
+                                    <strong style="font-size: 13px; color: #0F172A;">Agente 07: MOBILE_CAPACITOR_ENGINEER</strong><br>
                                     <small style="color: #64748B;">Empaquetado APK Android, plugins nativos de vibración y ciclo móvil.</small>
                                 </div>
                                 <button type="button" class="sim-btn" style="background: #16A34A; color: white; padding: 5px 12px; font-size: 11px;" onclick="window.appState.runAgentDiagnostic('07_mobile')">
-                                    📱 Auditar APK Android
+                                     Auditar APK Android
                                 </button>
                             </div>
                         </div>
@@ -216,34 +216,34 @@ export function renderSuperAdminPanel(dashboardData, activeTab = 'resellers') {
                     <!-- NIVEL 1: ESCUADRÓN B2B & CRECIMIENTO -->
                     <div style="margin-bottom: 20px;">
                         <div style="font-size: 11px; font-weight: 800; color: #7C3AED; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.05em;">
-                            🏭 NIVEL 1: ESCUADRÓN DE EXPANSIÓN B2B, RESELLERS & CRECIMIENTO
+                             NIVEL 1: ESCUADRÓN DE EXPANSIÓN B2B, RESELLERS & CRECIMIENTO
                         </div>
                         <div style="display: flex; flex-direction: column; gap: 8px;">
                             <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
                                 <div>
-                                    <strong style="font-size: 13px; color: #0F172A;">🏭 Agente 08: B2B_RESELLER_DIRECTOR</strong><br>
+                                    <strong style="font-size: 13px; color: #0F172A;">Agente 08: B2B_RESELLER_DIRECTOR</strong><br>
                                     <small style="color: #64748B;">Estructura de lotes (30, 50, 100 licencias) y panel reseller.</small>
                                 </div>
                                 <button type="button" class="sim-btn" style="background: #0F172A; color: white; padding: 5px 12px; font-size: 11px;" onclick="window.appState.runAgentDiagnostic('08_b2b')">
-                                    📈 Proyectar Cuotas B2B
+                                     Proyectar Cuotas B2B
                                 </button>
                             </div>
                             <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
                                 <div>
-                                    <strong style="font-size: 13px; color: #0F172A;">📣 Agente 09: VIRAL_GROWTH_MARKETER</strong><br>
+                                    <strong style="font-size: 13px; color: #0F172A;">Agente 09: VIRAL_GROWTH_MARKETER</strong><br>
                                     <small style="color: #64748B;">Landing page de ventas y despacho de comprobantes por WhatsApp.</small>
                                 </div>
                                 <button type="button" class="sim-btn" style="background: #16A34A; color: white; padding: 5px 12px; font-size: 11px;" onclick="window.appState.runAgentDiagnostic('09_viral')">
-                                    💬 Test Enlace WhatsApp
+                                     Test Enlace WhatsApp
                                 </button>
                             </div>
                             <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
                                 <div>
-                                    <strong style="font-size: 13px; color: #0F172A;">📊 Agente 10: METRICS_RETENTION_ANALYST</strong><br>
+                                    <strong style="font-size: 13px; color: #0F172A;">Agente 10: METRICS_RETENTION_ANALYST</strong><br>
                                     <small style="color: #64748B;">Telemetría de emisión mensual, retención y tomos físicos.</small>
                                 </div>
                                 <button type="button" class="sim-btn" style="background: #1D4ED8; color: white; padding: 5px 12px; font-size: 11px;" onclick="window.appState.runAgentDiagnostic('10_metrics')">
-                                    📊 Ver Métricas Churn
+                                     Ver Métricas Churn
                                 </button>
                             </div>
                         </div>
@@ -252,34 +252,34 @@ export function renderSuperAdminPanel(dashboardData, activeTab = 'resellers') {
                     <!-- NIVEL 2: ESCUADRÓN INFRAESTRUCTURA EDGE & CALIDAD -->
                     <div style="margin-bottom: 20px;">
                         <div style="font-size: 11px; font-weight: 800; color: #475569; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.05em;">
-                            🛡️ NIVEL 2: ESCUADRÓN DE INFRAESTRUCTURA EDGE, SEGURIDAD & CALIDAD
+                            ️ NIVEL 2: ESCUADRÓN DE INFRAESTRUCTURA EDGE, SEGURIDAD & CALIDAD
                         </div>
                         <div style="display: flex; flex-direction: column; gap: 8px;">
                             <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
                                 <div>
-                                    <strong style="font-size: 13px; color: #0F172A;">🛡️ Agente 11: EDGE_INFRA_ENGINEER</strong><br>
+                                    <strong style="font-size: 13px; color: #0F172A;">️ Agente 11: EDGE_INFRA_ENGINEER</strong><br>
                                     <small style="color: #64748B;">Cloudflare Pages, Cloudflare R2 y base de datos Supabase Postgres.</small>
                                 </div>
                                 <button type="button" class="sim-btn" style="background: #0F172A; color: white; padding: 5px 12px; font-size: 11px;" onclick="window.appState.runAgentDiagnostic('11_edge')">
-                                    🌐 Ping Infraestructura
+                                     Ping Infraestructura
                                 </button>
                             </div>
                             <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
                                 <div>
-                                    <strong style="font-size: 13px; color: #0F172A;">🧪 Agente 12: QA_TEST_GUARDIAN</strong><br>
+                                    <strong style="font-size: 13px; color: #0F172A;">Agente 12: QA_TEST_GUARDIAN</strong><br>
                                     <small style="color: #64748B;">Guardián de suites de prueba, build exitoso y cero regresiones.</small>
                                 </div>
                                 <button type="button" class="sim-btn" style="background: #16A34A; color: white; padding: 5px 12px; font-size: 11px;" onclick="window.appState.runAgentDiagnostic('12_qa')">
-                                    🧪 Correr Pruebas QA
+                                     Correr Pruebas QA
                                 </button>
                             </div>
                             <div style="background: #FEF2F2; border: 1.5px solid #FCA5A5; border-radius: 12px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
                                 <div>
-                                    <strong style="font-size: 13px; color: #991B1B;">🔍 Agente 20: INVOICE_VALIDATION_DEBUGGER</strong><br>
+                                    <strong style="font-size: 13px; color: #991B1B;">Agente 20: INVOICE_VALIDATION_DEBUGGER</strong><br>
                                     <small style="color: #7F1D1D;">Validación Pre-Flight, Módulo 10/11, Alerta Línea Roja y diagnóstico rápido SRI.</small>
                                 </div>
                                 <button type="button" class="sim-btn" style="background: #DC2626; color: white; padding: 5px 12px; font-size: 11px;" onclick="window.appState.runAgentDiagnostic('20_invoice_validation')">
-                                    🔍 Probar Validador
+                                     Probar Validador
                                 </button>
                             </div>
                         </div>
@@ -290,7 +290,7 @@ export function renderSuperAdminPanel(dashboardData, activeTab = 'resellers') {
                 <!-- Formulario 1: Dar de Alta una NUEVA Imprenta Reseller -->
                 <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; padding: 20px; margin-bottom: 22px; box-shadow: 0 1px 6px rgba(15,23,42,0.03);">
                     <h4 style="font-family: var(--font-serif-header); font-size: 17px; font-weight: 800; margin-bottom: 12px; color: #0F172A;">
-                        🏭 Registrar Nueva Imprenta Aliada (Reseller)
+                         Registrar Nueva Imprenta Aliada (Reseller)
                     </h4>
                     <form onsubmit="event.preventDefault(); window.appState.createReseller();" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                         <div>
@@ -314,7 +314,7 @@ export function renderSuperAdminPanel(dashboardData, activeTab = 'resellers') {
                             <div style="display: flex; gap: 10px;">
                                 <input type="number" id="new-reseller-package-size" class="form-input" value="30" placeholder="Ej. 30 licencias" style="flex:1;">
                                 <button type="submit" class="btn-stamp" style="width: auto; padding: 10px 20px; font-size: 12px; background: #0F172A;">
-                                    ➕ REGISTRAR IMPRENTA & VENDER LOTE
+                                     REGISTRAR IMPRENTA & VENDER LOTE
                                 </button>
                             </div>
                         </div>
@@ -324,7 +324,7 @@ export function renderSuperAdminPanel(dashboardData, activeTab = 'resellers') {
                 <!-- Formulario 2: Asignar Lote Adicional a Imprenta Existente -->
                 <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; padding: 20px; margin-bottom: 22px; box-shadow: 0 1px 6px rgba(15,23,42,0.03);">
                     <h4 style="font-family: var(--font-serif-header); font-size: 17px; font-weight: 800; margin-bottom: 12px; color: #0F172A;">
-                        📦 Vender / Asignar Lote Adicional a Imprenta Existente
+                         Vender / Asignar Lote Adicional a Imprenta Existente
                     </h4>
                     <form onsubmit="event.preventDefault(); window.appState.assignPackage();" style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 12px; align-items: end;">
                         <div>
@@ -338,7 +338,7 @@ export function renderSuperAdminPanel(dashboardData, activeTab = 'resellers') {
                             <input type="number" id="owner-package-size" class="form-input" value="30" placeholder="Ej. 30 licencias">
                         </div>
                         <button type="submit" class="btn-stamp" style="padding: 10px 18px; font-size: 12px; background: #1D4ED8; border-color: #1D4ED8;">
-                            📦 ASIGNAR LOTE
+                             ASIGNAR LOTE
                         </button>
                     </form>
                 </div>

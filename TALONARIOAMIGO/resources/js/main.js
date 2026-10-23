@@ -7,3 +7,8 @@ import { AppManager } from './components/AppManager.js';
 
 const appManager = new AppManager('app-root');
 appManager.evaluateStateAndRender();
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+    });
+}

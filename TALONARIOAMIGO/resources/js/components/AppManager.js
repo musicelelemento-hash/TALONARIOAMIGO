@@ -93,7 +93,7 @@ export class AppManager {
             const badge = document.querySelector('.offline-queue-badge');
             if (badge) {
                 if (count > 0) {
-                    badge.innerText = `📡 ${count} en cola offline`;
+                    badge.innerText = ` ${count} en cola offline`;
                     badge.style.display = 'inline-flex';
                 } else {
                     badge.style.display = 'none';
@@ -105,10 +105,10 @@ export class AppManager {
         if (typeof window !== 'undefined') {
             window.addEventListener('online', async () => {
                 if (offlineQueue.getPendingCount() > 0) {
-                    this.showToast('📡 Señal recuperada: Sincronizando comprobantes offline con el SRI…');
+                    this.showToast('Señal recuperada: Sincronizando comprobantes offline con el SRI…');
                     const res = await offlineQueue.syncQueue(api);
                     if (res.synced > 0) {
-                        this.showToast(`✅ ${res.synced} comprobante(s) sincronizados con el SRI.`);
+                        this.showToast(`${res.synced} comprobante(s) sincronizados con el SRI.`);
                     }
                     this.state.offlinePendingCount = offlineQueue.getPendingCount();
                     this.evaluateStateAndRender();
@@ -155,7 +155,7 @@ export class AppManager {
                 const data = await api.getOwnerDashboard();
                 this.container.innerHTML = renderSuperAdminPanel(data, this.state.superAdminTab || 'resellers');
             } catch (e) {
-                this.showToast('❌ No se pudo cargar el panel: ' + (e.message || ''));
+                this.showToast('No se pudo cargar el panel: ' + (e.message || ''));
                 this.container.innerHTML = renderSuperAdminPanel({ metrics: this.state.metrics }, this.state.superAdminTab || 'resellers');
             }
             return;
@@ -187,7 +187,7 @@ export class AppManager {
                 const data = await api.getResellerDashboard();
                 this.container.innerHTML = renderResellerPanel(data);
             } catch (e) {
-                this.showToast('❌ No se pudo cargar el panel: ' + (e.message || ''));
+                this.showToast('No se pudo cargar el panel: ' + (e.message || ''));
                 this.container.innerHTML = renderResellerPanel({ quota: this.state.resellerQuota });
             }
             return;
@@ -219,7 +219,7 @@ export class AppManager {
         soundFx.playPaperSlide();
         this.state.currentRole = role;
         this.evaluateStateAndRender();
-        this.showToast(`👑 Rol cambiado a: ${role}`);
+        this.showToast(`Rol cambiado a: ${role}`);
     }
 
     // CONMUTADOR DE PESTAÑAS EN PANEL SUPERADMIN
@@ -237,83 +237,83 @@ export class AppManager {
 
         const AGENT_REPORTS = {
             '01_orchestrator': {
-                name: '👑 Agente 01: ORCHESTRATOR_MASTER',
+                name: 'Agente 01: ORCHESTRATOR_MASTER',
                 msg: 'Orquestación general nominal. 12 agentes operando en sincronía de 4 niveles. Principio de tranquilidad garantizado al 100%.'
             },
             '02_sri': {
-                name: '⚖️ Agente 02: SRI_COMPLIANCE_OFFICER',
+                name: '️ Agente 02: SRI_COMPLIANCE_OFFICER',
                 msg: 'Algoritmo matemático Módulo 11 verificado. Validación de RUC 13 dígitos y esquemas XML Factura v1.1.0 conformes a ficha técnica SRI.'
             },
             '03_p12': {
-                name: '🔐 Agente 03: P12_VAULT_SECURITY',
+                name: 'Agente 03: P12_VAULT_SECURITY',
                 msg: 'Bóveda criptográfica protegida. Certificados de firma electrónica X.509 aislados con AES-256 en reposo sin exposición pública.'
             },
             '04_soap': {
-                name: '📡 Agente 04: SOAP_SRI_PIPELINE',
+                name: 'Agente 04: SOAP_SRI_PIPELINE',
                 msg: 'Conexión SOAP con recepcion y autorizacion SRI operativa. Mecanismo de reintentos exponenciales y cola de contingencia offline activos.'
             },
             '05_tactile': {
-                name: '🎨 Agente 05: TACTILE_DESIGN_SYSTEM',
+                name: 'Agente 05: TACTILE_DESIGN_SYSTEM',
                 msg: 'Auditoría de los 19 Principios aprobada: Papel marfil al 95%, sonido orgánico Web Audio, desprendimiento 3D y esquina doblada conformes.'
             },
             '06_frontend': {
-                name: '⚡ Agente 06: FRONTEND_SPA_ENGINEER',
+                name: 'Agente 06: FRONTEND_SPA_ENGINEER',
                 msg: 'Bundle Vite optimizado con Vanilla ES Modules. Cero latencia en tiempo de renderizado y Core Web Vitals en rango óptimo.'
             },
             '07_mobile': {
-                name: '📱 Agente 07: MOBILE_CAPACITOR_ENGINEER',
+                name: 'Agente 07: MOBILE_CAPACITOR_ENGINEER',
                 msg: 'Instalador APK Android compilado (4.63 MB < 5 MB límite). Plugins hápticos nativos (@capacitor/haptics) activos y enlazados.'
             },
             '08_b2b': {
-                name: '🏭 Agente 08: B2B_RESELLER_DIRECTOR',
+                name: 'Agente 08: B2B_RESELLER_DIRECTOR',
                 msg: 'Estructura comercial de lotes mayoristas para imprentas aliadas activa ($25 PVP / $12 coste reseller por talonario anual).'
             },
             '09_viral': {
-                name: '📣 Agente 09: VIRAL_GROWTH_MARKETER',
+                name: 'Agente 09: VIRAL_GROWTH_MARKETER',
                 msg: 'Landing comercial de alta conversión activa. Despacho de facturas por WhatsApp listo con plantillas legales de comprobantes.'
             },
             '10_metrics': {
-                name: '📊 Agente 10: METRICS_RETENTION_ANALYST',
+                name: 'Agente 10: METRICS_RETENTION_ANALYST',
                 msg: 'Métricas de retención: 142 usuarios registrados, 8 imprentas aliadas y 240 slots contabilizados con historial por tomos físicos.'
             },
             '11_edge': {
-                name: '🛡️ Agente 11: EDGE_INFRA_ENGINEER',
+                name: '️ Agente 11: EDGE_INFRA_ENGINEER',
                 msg: 'Infraestructura de borde Cloudflare Pages + Supabase Postgres respondiendo con latencia media < 40ms y certificados TLS v1.3.'
             },
             '12_qa': {
-                name: '🧪 Agente 12: QA_TEST_GUARDIAN',
+                name: 'Agente 12: QA_TEST_GUARDIAN',
                 msg: 'Suite de pruebas de emisión, desgarro 3D y dictado por voz ejecutadas exitosamente. Cero regresiones detectadas.'
             },
             '13_voice_ai': {
-                name: '🎙️ Agente 13: VOICE_AI_TACTILE_OFFICER',
+                name: '️ Agente 13: VOICE_AI_TACTILE_OFFICER',
                 msg: 'Extracción fonética activa: Cédula (10d), RUC (13d), teléfonos 09 y correos reconocidos en tiempo real con micro-háptica.'
             },
             '14_ocr_gravity': {
-                name: '👁️ Agente 14: OCR_GRAVITY_VISION_SPECIALIST',
+                name: '️ Agente 14: OCR_GRAVITY_VISION_SPECIALIST',
                 msg: 'Tesseract WASM en cliente operativo. Escaneo por gravedad y Módulo 10 integrados en visor de cámara.'
             },
             '15_resend_ride': {
-                name: '📨 Agente 15: RESEND_RIDE_DISPATCH_OFFICER',
+                name: 'Agente 15: RESEND_RIDE_DISPATCH_OFFICER',
                 msg: 'API Resend verificada en talonarioamigo.com. Plantilla HTML en papel marfil y WhatsApp fallback listos.'
             },
             '16_cloud_vault': {
-                name: '🗄️ Agente 16: CLOUD_VAULT_R2_ARCHITECT',
+                name: '️ Agente 16: CLOUD_VAULT_R2_ARCHITECT',
                 msg: 'Bóveda Cloudflare R2 sin costo de egreso enlazada para archivo legal de comprobantes por 7 años.'
             },
             '17_supabase_data': {
-                name: '🗃️ Agente 17: SUPABASE_DATA_GOVERNOR',
+                name: '️ Agente 17: SUPABASE_DATA_GOVERNOR',
                 msg: 'Supabase Postgres 17 con RLS multi-tenant y connection pooling PgBouncer en puerto 6543 activo.'
             },
             '18_micro_billing': {
-                name: '⚡ Agente 18: MICRO_BILLING_QUEUES_SPECIALIST',
+                name: 'Agente 18: MICRO_BILLING_QUEUES_SPECIALIST',
                 msg: 'Arquitectura desacoplada de emisión y colas de contingencia offline ante caídas del SRI.'
             },
             '19_b2b_imprentas': {
-                name: '🖨️ Agente 19: B2B_IMPRENTAS_NETWORK_ARCHITECT',
+                name: '️ Agente 19: B2B_IMPRENTAS_NETWORK_ARCHITECT',
                 msg: 'Red física de imprentas del SRI con alta en 30s por PDF RUC y soporte WhatsApp local.'
             },
             '20_invoice_validation': {
-                name: '🔍 Agente 20: INVOICE_VALIDATION_DEBUGGER',
+                name: 'Agente 20: INVOICE_VALIDATION_DEBUGGER',
                 msg: 'Validador pre-flight desacoplado, Módulo 10/11, Alerta Línea Roja en Modo Real y traductor de errores SRI activos.'
             }
         };
@@ -324,27 +324,27 @@ export class AppManager {
 
         if (agentKey === 'all') {
             if (statusEl) statusEl.innerText = 'AUDITORÍA INTEGRAL EN CURSO...';
-            let fullLog = `[${timestamp}] 🚀 INICIANDO AUDITORÍA INTEGRAL DE LOS 20 AGENTES DE ÉLITE...\n`;
+            let fullLog = `[${timestamp}]  INICIANDO AUDITORÍA INTEGRAL DE LOS 20 AGENTES DE ÉLITE...\n`;
             Object.values(AGENT_REPORTS).forEach(rep => {
                 fullLog += `[OK] ${rep.name}: ${rep.msg}\n`;
             });
-            fullLog += `\n🎉 RESULTADO GLOBAL: 20/20 AGENTES 100% OPERATIVOS Y SIN ALERTAS.`;
+            fullLog += `\n RESULTADO GLOBAL: 20/20 AGENTES 100% OPERATIVOS Y SIN ALERTAS.`;
             if (consoleEl) {
                 consoleEl.innerText = fullLog;
                 consoleEl.scrollTop = consoleEl.scrollHeight;
             }
             if (statusEl) statusEl.innerText = 'AUDITORÍA COMPLETA — 100% OPERATIVO';
-            this.showToast('🎉 Auditoría Integral completada: Los 12 agentes están 100% operativos.');
+            this.showToast('Auditoría Integral completada: Los 12 agentes están 100% operativos.');
         } else {
             const report = AGENT_REPORTS[agentKey];
             if (report) {
-                const logLine = `\n[${timestamp}] ✅ ${report.name}\n➔ ${report.msg}\n`;
+                const logLine = `\n[${timestamp}]  ${report.name}\n➔ ${report.msg}\n`;
                 if (consoleEl) {
                     consoleEl.innerText += logLine;
                     consoleEl.scrollTop = consoleEl.scrollHeight;
                 }
                 if (statusEl) statusEl.innerText = `EJECUTADO: ${report.name}`;
-                this.showToast(`✅ ${report.name}: Operativo`);
+                this.showToast(` ${report.name}: Operativo`);
             }
         }
     }
@@ -362,22 +362,22 @@ export class AppManager {
                             DEMO EN VIVO
                         </span>
                         <span style="font-size: 12px; color: #FFFFFF; font-weight: 700;">
-                            Vista actual: <strong style="color: #FDE68A;">${activeRole === 'CLIENT' ? '🏪 Comerciante' : activeRole === 'RESELLER' ? '🏭 Imprenta Aliada' : '🏛️ Administrador'}</strong>
+                            Vista actual: <strong style="color: #FDE68A;">${activeRole === 'CLIENT' ? 'Comerciante' : activeRole === 'RESELLER' ? 'Imprenta Aliada' : '️ Administrador'}</strong>
                         </span>
                     </div>
 
                     <div class="demo-top-strip-actions">
                         <button type="button" class="demo-chip-btn ${activeRole === 'CLIENT' ? 'demo-chip-btn-primary' : ''}" onclick="window.appState.exploreRole('CLIENT')" title="Ver como comerciante">
-                            🏪 Comerciante
+                             Comerciante
                         </button>
                         <button type="button" class="demo-chip-btn ${activeRole === 'RESELLER' ? 'demo-chip-btn-primary' : ''}" onclick="window.appState.exploreRole('RESELLER')" title="Ver como imprenta">
-                            🏭 Imprenta Aliada
+                             Imprenta Aliada
                         </button>
                         <button type="button" class="demo-chip-btn ${activeRole === 'SUPER_ADMIN' ? 'demo-chip-btn-primary' : ''}" onclick="window.appState.exploreRole('SUPER_ADMIN')" title="Ver como administrador">
-                            🏛️ Administrador
+                            ️ Administrador
                         </button>
                         <button type="button" class="demo-chip-btn demo-chip-btn-primary" onclick="window.appState.openRegister()" title="Crear cuenta real con RUC">
-                            🚀 Crear Cuenta Real
+                             Crear Cuenta Real
                         </button>
                         <button type="button" class="demo-chip-btn demo-chip-btn-exit" onclick="window.appState.exitDemoMode()" title="Volver al portal">
                             ✕ Salir al Portal
@@ -404,14 +404,14 @@ export class AppManager {
             this.evaluateStateAndRender();
             setTimeout(() => {
                 this.loadDemoSampleData(false);
-                this.showToast('🏪 ¡Mostrador Comerciante listo! Toca el papel o dicta por voz 🎙️');
+                this.showToast('¡Mostrador Comerciante listo! Toca el papel o dicta por voz ️');
             }, 120);
         } else if (role === 'RESELLER') {
             this.evaluateStateAndRender();
-            this.showToast('🏭 ¡Bienvenido al Panel de Imprenta Aliada! Explora clientes, lotes y márgenes B2B.');
+            this.showToast('¡Bienvenido al Panel de Imprenta Aliada! Explora clientes, lotes y márgenes B2B.');
         } else if (role === 'SUPER_ADMIN') {
             this.evaluateStateAndRender();
-            this.showToast('🏛️ ¡Centro de Mando Administrador activo! Explora los 20 Agentes y Métricas.');
+            this.showToast('️ ¡Centro de Mando Administrador activo! Explora los 20 Agentes y Métricas.');
         }
     }
 
@@ -432,7 +432,7 @@ export class AppManager {
 
         setTimeout(() => {
             this.loadDemoSampleData(false);
-            this.showToast('🏪 ¡Bienvenido al Modo Demostración! Toca el papel o dicta productos por voz 🎙️');
+            this.showToast('¡Bienvenido al Modo Demostración! Toca el papel o dicta productos por voz ️');
         }, 150);
     }
 
@@ -451,14 +451,14 @@ export class AppManager {
         soundFx.playPaperSlide();
 
         if (!isDemo && !this.state.isLoggedIn) {
-            this.showToast('🔒 Para emitir en Modo Real ante el SRI, inicia sesión o crea tu cuenta.');
+            this.showToast('Para emitir en Modo Real ante el SRI, inicia sesión o crea tu cuenta.');
             this.openRegister();
             return;
         }
 
         this.state.isDemoMode = isDemo;
         this.evaluateStateAndRender();
-        this.showToast(isDemo ? '🏪 Modo Demostración activado (Simulación legal sin riesgo)' : '🔴 Modo Real SRI activado (Emisión legal)');
+        this.showToast(isDemo ? 'Modo Demostración activado (Simulación legal sin riesgo)' : 'Modo Real SRI activado (Emisión legal)');
     }
 
     loadDemoSampleData(showToast = true) {
@@ -499,7 +499,7 @@ export class AppManager {
         this.recalculateTotals();
 
         if (showToast) {
-            this.showToast('✨ Datos de ejemplo cargados: Arroz, Aceite y Azúcar.');
+            this.showToast('Datos de ejemplo cargados: Arroz, Aceite y Azúcar.');
         }
     }
 
@@ -530,11 +530,11 @@ export class AppManager {
         const grandTotal = document.getElementById('grand-total-display');
         if (grandTotal) grandTotal.innerText = '$0.00';
 
-        this.showToast('🧹 Renglones del talonario limpiados.');
+        this.showToast('Renglones del talonario limpiados.');
     }
 
 
-    // GESTIÓN DE MODOS DE EXPERIENCIA (Tranquilo 👴 / Comerciante 🏪 / Pro ⚡)
+    // GESTIÓN DE MODOS DE EXPERIENCIA (Tranquilo  / Comerciante  / Pro )
     setExperienceMode(mode) {
         this.triggerHaptic(15);
         this.state.experienceMode = mode;
@@ -551,7 +551,7 @@ export class AppManager {
     toggleAudio() {
         const enabled = soundFx.toggleSound();
         this.state.audioEnabled = enabled;
-        this.showToast(enabled ? '🔊 Efectos sonoros activados' : '🔇 Efectos sonoros silenciados');
+        this.showToast(enabled ? 'Efectos sonoros activados' : 'Efectos sonoros silenciados');
         this.evaluateStateAndRender();
     }
 
@@ -570,7 +570,7 @@ export class AppManager {
         if (telInput) telInput.value = telefono;
         if (emailInput) emailInput.value = email;
         gravityScanner.applyGravityDropAnimation();
-        this.showToast(`👤 Cliente seleccionado: ${nombre}`);
+        this.showToast(`Cliente seleccionado: ${nombre}`);
     }
 
     // =========================================================================
@@ -661,15 +661,15 @@ export class AppManager {
     shareHistoricalFactura(num, cliente, total, claveAcceso = '') {
         this.triggerHaptic(15);
         const msg = `*COMPROBANTE ARCHIVADO — TALONARIO AMIGO SRI*\n\n`
-            + `📄 *Factura Electrónica:* N° ${num}\n`
-            + `👤 *Cliente:* ${cliente}\n`
-            + `💰 *Total Facturado:* ${total}\n`
+            + ` *Factura Electrónica:* N° ${num}\n`
+            + ` *Cliente:* ${cliente}\n`
+            + ` *Total Facturado:* ${total}\n`
             + `✓ *Estado SRI:* AUTORIZADO\n`
-            + (claveAcceso ? `🔑 *Clave de Acceso:* ${claveAcceso}\n` : '')
+            + (claveAcceso ? ` *Clave de Acceso:* ${claveAcceso}\n` : '')
             + `\n_Copia fiel archivada en tu talonario digital._`;
         const waUrl = `https://wa.me/?text=${encodeURIComponent(msg)}`;
         window.open(waUrl, '_blank');
-        this.showToast('📲 Compartiendo comprobante por WhatsApp...');
+        this.showToast('Compartiendo comprobante por WhatsApp...');
     }
 
     downloadXmlFactura(claveAcceso) {
@@ -679,7 +679,7 @@ export class AppManager {
             : '';
         const url = `${apiBase}/api/v1/facturacion/comprobantes/${encodeURIComponent(claveAcceso)}/xml`;
         window.open(url, '_blank');
-        this.showToast('⬇️ Descargando XML firmado SRI...');
+        this.showToast('️ Descargando XML firmado SRI...');
     }
 
     printHistoricalFactura(_num) {
@@ -690,7 +690,7 @@ export class AppManager {
     // TICKET TÉRMICO POS (Agente 22): imprime el comprobante en rollo continuo 58/80mm con QR SRI.
     async printThermalTicket() {
         this.triggerHaptic(15);
-        this.showToast(`🖨️ Preparando ticket térmico de ${getThermalWidth()}mm…`);
+        this.showToast(`️ Preparando ticket térmico de ${getThermalWidth()}mm…`);
         await printThermalTicket(this.state);
     }
 
@@ -698,7 +698,7 @@ export class AppManager {
         this.triggerHaptic(15);
         const width = setThermalWidth(mm);
         this.state.thermalWidth = width;
-        this.showToast(`🧾 Ticket configurado a ${width}mm.`);
+        this.showToast(`Ticket configurado a ${width}mm.`);
         this.evaluateStateAndRender();
     }
 
@@ -813,23 +813,23 @@ export class AppManager {
 
                     if (nomInput && parsed.cliente.nombre) {
                         nomInput.value = parsed.cliente.nombre;
-                        feedback.push(`👤 ${parsed.cliente.nombre}`);
+                        feedback.push(` ${parsed.cliente.nombre}`);
                     }
                     if (rucInput && parsed.cliente.identificacion) {
                         rucInput.value = parsed.cliente.identificacion;
-                        feedback.push(`🆔 ${parsed.cliente.identificacion}`);
+                        feedback.push(` ${parsed.cliente.identificacion}`);
                     }
                     if (telInput && parsed.cliente.telefono) {
                         telInput.value = parsed.cliente.telefono;
-                        feedback.push(`📞 ${parsed.cliente.telefono}`);
+                        feedback.push(` ${parsed.cliente.telefono}`);
                     }
                     if (emailInput && parsed.cliente.email) {
                         emailInput.value = parsed.cliente.email;
-                        feedback.push(`✉️ ${parsed.cliente.email}`);
+                        feedback.push(`️ ${parsed.cliente.email}`);
                     }
                     if (dirInput && parsed.cliente.direccion) {
                         dirInput.value = parsed.cliente.direccion;
-                        feedback.push(`📍 ${parsed.cliente.direccion}`);
+                        feedback.push(` ${parsed.cliente.direccion}`);
                     }
 
                     gravityScanner.applyGravityDropAnimation();
@@ -839,14 +839,14 @@ export class AppManager {
                 if (parsed.isProduct && parsed.items && parsed.items.length) {
                     parsed.items.forEach((item) => {
                         this.addQuickProduct(item.descripcion, item.precioUnitario, item.cantidad);
-                        feedback.push(`📦 ${item.cantidad}x ${item.descripcion} ($${item.precioUnitario.toFixed(2)})`);
+                        feedback.push(` ${item.cantidad}x ${item.descripcion} ($${item.precioUnitario.toFixed(2)})`);
                     });
                 }
 
                 if (feedback.length > 0) {
-                    this.showToast(`🎙️ Reconocido: ${feedback.join(' · ')}`);
+                    this.showToast(`️ Reconocido: ${feedback.join(' · ')}`);
                 } else {
-                    this.showToast(`🎙️ Audio capturado: "${raw}"`);
+                    this.showToast(`️ Audio capturado: "${raw}"`);
                 }
 
                 this.evaluateStateAndRender();
@@ -854,7 +854,7 @@ export class AppManager {
             onError: (_err) => {
                 this.state.isListeningVoice = false;
                 this.state.voiceLiveTranscript = '';
-                this.showToast('⚠️ No se detectó audio o el micrófono requiere permisos.');
+                this.showToast('️ No se detectó audio o el micrófono requiere permisos.');
                 this.evaluateStateAndRender();
             },
             onEnd: () => {
@@ -865,7 +865,7 @@ export class AppManager {
 
         if (!success) {
             this.state.isListeningVoice = false;
-            this.showToast('⚠️ Tu dispositivo o navegador no tiene habilitado el reconocimiento de voz.');
+            this.showToast('️ Tu dispositivo o navegador no tiene habilitado el reconocimiento de voz.');
             this.evaluateStateAndRender();
         }
     }
@@ -937,11 +937,11 @@ export class AppManager {
             soundFx.playPencil();
             gravityScanner.applyGravityDropAnimation();
             this.triggerHaptic([30, 20, 60]);
-            this.showToast(`📄 ¡Datos extraídos por gravedad! ID: ${data.cliente?.identificacion || 'Detectada'}`);
+            this.showToast(`¡Datos extraídos por gravedad! ID: ${data.cliente?.identificacion || 'Detectada'}`);
         } catch (err) {
             this.state.isScanningGravity = false;
             this.evaluateStateAndRender();
-            this.showToast('❌ Error en escaneo por gravedad: ' + (err.message || ''));
+            this.showToast('Error en escaneo por gravedad: ' + (err.message || ''));
         } finally {
             if (input) input.value = '';
         }
@@ -964,7 +964,7 @@ export class AppManager {
         `;
         tbody.appendChild(tr);
         this.recalculateTotals();
-        this.showToast(`🌽 Agregado: ${descripcion}`);
+        this.showToast(`Agregado: ${descripcion}`);
     }
 
     addEmptyRow() {
@@ -1080,7 +1080,7 @@ export class AppManager {
                 console.warn('LocalStorage quota limit', err);
             }
             this.state.businessLogo = dataUrl;
-            this.showToast('✅ Logotipo de tu negocio aplicado al talonario.');
+            this.showToast('Logotipo de tu negocio aplicado al talonario.');
             this.evaluateStateAndRender();
         };
         reader.readAsDataURL(file);
@@ -1096,22 +1096,22 @@ export class AppManager {
         const clave = rc?.claveAcceso || '';
 
         const msg = `*COMPROBANTE ELECTRÓNICO — TALONARIO AMIGO SRI*\n\n`
-            + `🏪 *Emisor:* ${emisorNombre}\n`
-            + `📄 *Documento:* Nota de Venta N° 001-001-${docNum}\n`
-            + `👤 *Cliente:* ${clienteNombre}\n`
-            + `💰 *Total a Pagar:* ${total}\n`
-            + `🔑 *Clave de Acceso SRI:*\n${clave}\n\n`
+            + ` *Emisor:* ${emisorNombre}\n`
+            + ` *Documento:* Nota de Venta N° 001-001-${docNum}\n`
+            + ` *Cliente:* ${clienteNombre}\n`
+            + ` *Total a Pagar:* ${total}\n`
+            + ` *Clave de Acceso SRI:*\n${clave}\n\n`
             + `_Comprobante emitido electrónicamente y autorizado por el SRI._\n`
             + `_¡Gracias por su preferencia!_`;
 
         const waUrl = `https://wa.me/?text=${encodeURIComponent(msg)}`;
         window.open(waUrl, '_blank');
-        this.showToast('📲 Abriendo WhatsApp para compartir comprobante...');
+        this.showToast('Abriendo WhatsApp para compartir comprobante...');
     }
 
     // SOPORTE VIBRACIÓN HÁPTICA MÓVIL
     triggerHaptic(pattern = 15) {
-        if ('vibrate' in navigator) {
+        if ('vibrate'in navigator) {
             navigator.vibrate(pattern);
         }
     }
@@ -1141,7 +1141,7 @@ export class AppManager {
     // SECUENCIA DE EMISIÓN REAL CON DESPRENDIMIENTO 3D Y REVELADO DE COPIA AZUL (PRINCIPIO 12 & COLA OFFLINE)
     async executeEmit3DSequence() {
         this.triggerHaptic([40, 30, 80]);
-        this.showToast('⏳ Firmando y procesando en el talonario…');
+        this.showToast('Firmando y procesando en el talonario…');
 
         let payload;
         try {
@@ -1164,7 +1164,7 @@ export class AppManager {
                     }
                 }
                 
-                this.showToast(`⚠️ ${preFlight.title}: ${preFlight.message}`);
+                this.showToast(`️ ${preFlight.title}: ${preFlight.message}`);
                 return;
             }
 
@@ -1210,7 +1210,7 @@ export class AppManager {
                         // Diagnóstico inteligente del error con Agente 20
                         const diag = invoiceValidator.diagnosticarError(netErr);
                         this.triggerHaptic([70, 40, 70]);
-                        this.showToast(`❌ ${diag.titulo}: ${diag.mensaje}`);
+                        this.showToast(` ${diag.titulo}: ${diag.mensaje}`);
                         if (diag.isSignatureError) {
                             this.openOnboardingModal();
                         }
@@ -1251,11 +1251,11 @@ export class AppManager {
             };
 
             if (res.isDemo) {
-                this.showToast(`🎉 ¡HOJA DESPRENDIDA! Factura N° 001-001-${secuencial} autorizada (Demo). Mostrando Copia Azul.`);
+                this.showToast(`¡HOJA DESPRENDIDA! Factura N° 001-001-${secuencial} autorizada (Demo). Mostrando Copia Azul.`);
             } else if (res.estado === 'OFFLINE_LOCAL') {
-                this.showToast(`📡 Sin conexión: Comprobante N° 001-001-${secuencial} guardado en tu talonario local.`);
+                this.showToast(`Sin conexión: Comprobante N° 001-001-${secuencial} guardado en tu talonario local.`);
             } else {
-                this.showToast(`🎉 Comprobante N° 001-001-${secuencial} ${res.estado === 'AUTORIZADO' ? 'AUTORIZADO' : 'ENVIADO'} por el SRI.`);
+                this.showToast(`Comprobante N° 001-001-${secuencial} ${res.estado === 'AUTORIZADO' ? 'AUTORIZADO' : 'ENVIADO'} por el SRI.`);
             }
 
             // Tras la animación física del desprendimiento, revelar la copia azul tradicional
@@ -1281,7 +1281,7 @@ export class AppManager {
                     : (e.status === 401)
                         ? 'Tu sesión expiró. Vuelve a iniciar sesión.'
                         : (e.message || 'No se pudo emitir el comprobante.');
-            this.showToast('❌ ' + msg);
+            this.showToast(' ' + msg);
         }
     }
 
@@ -1339,7 +1339,7 @@ export class AppManager {
             this.showToast('Ingresa tu correo y contraseña.');
             return;
         }
-        this.showToast('⏳ Iniciando sesión…');
+        this.showToast('Iniciando sesión…');
         try {
             const res = await api.login(email, password);
             localStorage.setItem('ta_auth_token', res.token);
@@ -1354,7 +1354,7 @@ export class AppManager {
             this.evaluateStateAndRender();
         } catch (e) {
             this.triggerHaptic(50);
-            this.showToast('❌ ' + (e.message || 'No se pudo iniciar sesión.'));
+            this.showToast(' ' + (e.message || 'No se pudo iniciar sesión.'));
         }
     }
 
@@ -1411,10 +1411,10 @@ export class AppManager {
                 errEl.innerText = msg;
                 errEl.style.display = 'block';
             }
-            this.showToast('⚠️ ' + msg);
+            this.showToast('️ ' + msg);
             if (submitBtn) {
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = '<span>🚀 CREAR MI FACTURADOR + PAGAR</span>';
+                submitBtn.innerHTML = '<span>CREAR MI FACTURADOR + PAGAR</span>';
                 submitBtn.style.opacity = '1';
             }
         };
@@ -1445,11 +1445,11 @@ export class AppManager {
 
         if (submitBtn) {
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span>⏳ Creando y activando facturador...</span>';
+            submitBtn.innerHTML = '<span>Creando y activando facturador...</span>';
             submitBtn.style.opacity = '0.75';
         }
 
-        this.showToast('⏳ Creando tu facturador…');
+        this.showToast('Creando tu facturador…');
 
         const registerPayload = {
             name,
@@ -1504,7 +1504,7 @@ export class AppManager {
         // Subida de firma si fue seleccionada
         if (p12 && clave) {
             try {
-                this.showToast('🔐 Vinculando tu firma electrónica...');
+                this.showToast('Vinculando tu firma electrónica...');
                 await api.uploadFirma(p12, clave);
                 this.state.hasSignature = true;
             } catch (_firmaErr) {
@@ -1524,7 +1524,7 @@ export class AppManager {
         this.state.isDemoGuest = false;
 
         soundFx.playStamp();
-        this.showToast('✅ ¡Tu facturador está listo y activado! Bienvenido.');
+        this.showToast('¡Tu facturador está listo y activado! Bienvenido.');
         this.evaluateStateAndRender();
     }
 
@@ -1533,7 +1533,7 @@ export class AppManager {
         const file = input.files && input.files[0];
         const statusEl = document.getElementById('reg-ruc-status');
         if (!file) return;
-        if (statusEl) { statusEl.textContent = '⏳ Analizando certificado…'; statusEl.style.color = '#1D4ED8'; }
+        if (statusEl) { statusEl.textContent = 'Analizando certificado…'; statusEl.style.color = '#1D4ED8'; }
         try {
             const data = await extractDataFromSriPdf(file);
             const set = (id, val) => { const el = document.getElementById(id); if (el && val && !el.value) el.value = val; };
@@ -1546,7 +1546,7 @@ export class AppManager {
             if (statusEl) { statusEl.textContent = `✓ Datos detectados (${data.regimen})`; statusEl.style.color = '#16A34A'; }
             this.showToast('✓ Certificado procesado: datos autocompletados.');
         } catch (e) {
-            if (statusEl) { statusEl.textContent = '❌ ' + (e.message || 'Error'); statusEl.style.color = '#D90429'; }
+            if (statusEl) { statusEl.textContent = ' ' + (e.message || 'Error'); statusEl.style.color = '#D90429'; }
         }
     }
 
@@ -1565,7 +1565,7 @@ export class AppManager {
         const file = input.files && input.files[0];
         const statusEl = document.getElementById('client-ruc-status');
         if (!file) return;
-        if (statusEl) { statusEl.textContent = '⏳ Analizando certificado…'; statusEl.style.color = '#1D4ED8'; }
+        if (statusEl) { statusEl.textContent = 'Analizando certificado…'; statusEl.style.color = '#1D4ED8'; }
         try {
             const data = await extractDataFromSriPdf(file);
             const set = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
@@ -1578,7 +1578,7 @@ export class AppManager {
             if (statusEl) { statusEl.textContent = `✓ Cliente detectado (${data.regimen})`; statusEl.style.color = '#16A34A'; }
             this.showToast('✓ Datos del cliente autocompletados.');
         } catch (e) {
-            if (statusEl) { statusEl.textContent = '❌ ' + (e.message || 'Error'); statusEl.style.color = '#D90429'; }
+            if (statusEl) { statusEl.textContent = ' ' + (e.message || 'Error'); statusEl.style.color = '#D90429'; }
         }
     }
 
@@ -1602,7 +1602,7 @@ export class AppManager {
         const file = input.files && input.files[0];
         const statusEl = document.getElementById('onb-ruc-status');
         if (!file) return;
-        if (statusEl) { statusEl.textContent = '⏳ Analizando certificado…'; statusEl.style.color = '#1D4ED8'; }
+        if (statusEl) { statusEl.textContent = 'Analizando certificado…'; statusEl.style.color = '#1D4ED8'; }
         try {
             const data = await extractDataFromSriPdf(file);
             const set = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
@@ -1615,7 +1615,7 @@ export class AppManager {
             if (statusEl) { statusEl.textContent = `✓ Datos del certificado detectados (${data.regimen})`; statusEl.style.color = '#16A34A'; }
             this.showToast('✓ Certificado de RUC procesado: datos autocompletados.');
         } catch (e) {
-            if (statusEl) { statusEl.textContent = '❌ ' + (e.message || 'No se pudo leer el PDF'); statusEl.style.color = '#D90429'; }
+            if (statusEl) { statusEl.textContent = ' ' + (e.message || 'No se pudo leer el PDF'); statusEl.style.color = '#D90429'; }
         }
     }
 
@@ -1626,7 +1626,7 @@ export class AppManager {
         const clave = document.getElementById('onb-clave')?.value;
         const statusEl = document.getElementById('onb-firma-status');
         if (!p12 || !clave) { this.showToast('Selecciona tu .p12 y escribe su contraseña.'); return; }
-        if (statusEl) { statusEl.textContent = '⏳ Validando firma…'; statusEl.style.color = '#1D4ED8'; }
+        if (statusEl) { statusEl.textContent = 'Validando firma…'; statusEl.style.color = '#1D4ED8'; }
         try {
             const data = this._collectEmisorData();
             if (data.ruc && data.razon_social && data.direccion_matriz) {
@@ -1641,8 +1641,8 @@ export class AppManager {
             }
             this.showToast('✓ Firma electrónica válida y guardada.');
         } catch (e) {
-            if (statusEl) { statusEl.textContent = '❌ ' + (e.message || 'Firma inválida'); statusEl.style.color = '#D90429'; }
-            this.showToast('❌ ' + (e.message || 'No se pudo validar la firma.'));
+            if (statusEl) { statusEl.textContent = ' ' + (e.message || 'Firma inválida'); statusEl.style.color = '#D90429'; }
+            this.showToast(' ' + (e.message || 'No se pudo validar la firma.'));
         }
     }
 
@@ -1655,17 +1655,17 @@ export class AppManager {
         if (!data.ruc || !data.razon_social || !data.direccion_matriz) { this.showToast('Completa RUC, razón social y dirección.'); return; }
         if (!p12 || !clave) { this.showToast('Selecciona tu firma .p12 y su contraseña.'); return; }
 
-        this.showToast('⏳ Guardando configuración del facturador…');
+        this.showToast('Guardando configuración del facturador…');
         try {
             await api.setupEmisor(data);
             await api.uploadFirma(p12, clave);
             this.state.isConfigured = true;
             this.state.hasSignature = true;
-            this.showToast('✅ ¡Tu facturador está listo!');
+            this.showToast('¡Tu facturador está listo!');
             this.evaluateStateAndRender();
         } catch (e) {
             this.triggerHaptic(50);
-            this.showToast('❌ ' + (e.message || 'No se pudo guardar la configuración.'));
+            this.showToast(' ' + (e.message || 'No se pudo guardar la configuración.'));
         }
     }
 
@@ -1683,11 +1683,11 @@ export class AppManager {
         }
         try {
             const res = await api.createReseller({ name, email, password, phone: '', whatsapp_support, initial_package_size });
-            this.showToast('✅ ' + (res.message || 'Imprenta registrada.'));
+            this.showToast(' ' + (res.message || 'Imprenta registrada.'));
             await this.evaluateStateAndRender();
         } catch (e) {
             this.triggerHaptic(50);
-            this.showToast('❌ ' + (e.message || 'No se pudo dar de alta la imprenta.'));
+            this.showToast(' ' + (e.message || 'No se pudo dar de alta la imprenta.'));
         }
     }
 
@@ -1696,11 +1696,11 @@ export class AppManager {
         const newActive = !(currentActive === true || currentActive === 'true' || currentActive === 1);
         try {
             const res = await api.toggleUserStatus(resellerId, newActive);
-            this.showToast('✅ ' + (res.message || 'Estado actualizado.'));
+            this.showToast(' ' + (res.message || 'Estado actualizado.'));
             await this.evaluateStateAndRender();
         } catch (e) {
             this.triggerHaptic(50);
-            this.showToast('❌ ' + (e.message || 'No se pudo cambiar el estado.'));
+            this.showToast(' ' + (e.message || 'No se pudo cambiar el estado.'));
         }
     }
 
@@ -1715,11 +1715,11 @@ export class AppManager {
                 package_name: `Lote Adicional ${allocated_accounts} Licencias`,
                 allocated_accounts,
             });
-            this.showToast('✅ ' + (res.message || 'Lote asignado.'));
+            this.showToast(' ' + (res.message || 'Lote asignado.'));
             await this.evaluateStateAndRender();
         } catch (e) {
             this.triggerHaptic(50);
-            this.showToast('❌ ' + (e.message || 'No se pudo asignar el lote.'));
+            this.showToast(' ' + (e.message || 'No se pudo asignar el lote.'));
         }
     }
 
@@ -1747,11 +1747,11 @@ export class AppManager {
         }
         try {
             const res = await api.createClient(payload);
-            this.showToast('✅ ' + (res.message || 'Cliente registrado.'));
+            this.showToast(' ' + (res.message || 'Cliente registrado.'));
             await this.evaluateStateAndRender();
         } catch (e) {
             this.triggerHaptic(50);
-            this.showToast('❌ ' + (e.message || 'No se pudo registrar el cliente.'));
+            this.showToast(' ' + (e.message || 'No se pudo registrar el cliente.'));
         }
     }
 
@@ -1760,11 +1760,11 @@ export class AppManager {
         const newActive = !(currentActive === true || currentActive === 'true' || currentActive === 1);
         try {
             const res = await api.toggleClientStatus(clientId, newActive);
-            this.showToast('✅ ' + (res.message || 'Estado actualizado.'));
+            this.showToast(' ' + (res.message || 'Estado actualizado.'));
             await this.evaluateStateAndRender();
         } catch (e) {
             this.triggerHaptic(50);
-            this.showToast('❌ ' + (e.message || 'No se pudo cambiar el estado.'));
+            this.showToast(' ' + (e.message || 'No se pudo cambiar el estado.'));
         }
     }
 
@@ -1775,11 +1775,11 @@ export class AppManager {
         try {
             const res = await api.updateWhatsappSupport({ whatsapp_support: num });
             this.state.supportWhatsapp = res.whatsapp_support || num;
-            this.showToast('✅ ' + (res.message || 'Número actualizado.'));
+            this.showToast(' ' + (res.message || 'Número actualizado.'));
             await this.evaluateStateAndRender();
         } catch (e) {
             this.triggerHaptic(50);
-            this.showToast('❌ ' + (e.message || 'No se pudo actualizar.'));
+            this.showToast(' ' + (e.message || 'No se pudo actualizar.'));
         }
     }
 

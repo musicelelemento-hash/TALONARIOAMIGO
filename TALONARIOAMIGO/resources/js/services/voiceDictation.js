@@ -205,7 +205,7 @@ class VoiceDictationService {
         if (foundId) {
             result.cliente.identificacion = foundId;
             result.isClient = true;
-            result.detectedTags.push(`🆔 ID: ${foundId}`);
+            result.detectedTags.push(`ID: ${foundId}`);
         }
 
         // 2. Detección de Teléfono / Celular (Ecuador: 09xxxxxxxx o 7-9 dígitos)
@@ -216,14 +216,14 @@ class VoiceDictationService {
                 const formattedTel = telDigits.startsWith('593') ? '0' + telDigits.slice(3) : telDigits;
                 result.cliente.telefono = formattedTel.slice(0, 10);
                 result.isClient = true;
-                result.detectedTags.push(`📞 Tel: ${result.cliente.telefono}`);
+                result.detectedTags.push(`Tel: ${result.cliente.telefono}`);
             }
         } else {
             const standaloneTel = raw.match(/\b(09\d{8}|\+593\s*9\d{8})\b/);
             if (standaloneTel) {
                 result.cliente.telefono = standaloneTel[0].replace(/\s+/g, '');
                 result.isClient = true;
-                result.detectedTags.push(`📞 Tel: ${result.cliente.telefono}`);
+                result.detectedTags.push(`Tel: ${result.cliente.telefono}`);
             }
         }
 
@@ -239,7 +239,7 @@ class VoiceDictationService {
         if (normalizedEmail) {
             result.cliente.email = normalizedEmail;
             result.isClient = true;
-            result.detectedTags.push(`✉️ Email: ${normalizedEmail}`);
+            result.detectedTags.push(`️ Email: ${normalizedEmail}`);
         }
 
         // 4. Detección de Dirección
@@ -250,7 +250,7 @@ class VoiceDictationService {
             dir = dir.charAt(0).toUpperCase() + dir.slice(1);
             result.cliente.direccion = dir;
             result.isClient = true;
-            result.detectedTags.push(`📍 Dir: ${dir}`);
+            result.detectedTags.push(`Dir: ${dir}`);
         }
 
         // 5. Detección de Nombre / Razón Social
@@ -261,7 +261,7 @@ class VoiceDictationService {
             nombre = nombre.split(/\s+/).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
             result.cliente.nombre = nombre;
             result.isClient = true;
-            result.detectedTags.push(`👤 Cliente: ${nombre}`);
+            result.detectedTags.push(`Cliente: ${nombre}`);
         }
 
         // 6. Detección de Producto si contiene precio o estructura de ítem
@@ -270,20 +270,20 @@ class VoiceDictationService {
         if (productParsed && productParsed.precioUnitario > 0 && !result.isClient) {
             result.isProduct = true;
             result.items.push(productParsed);
-            result.detectedTags.push(`📦 ${productParsed.cantidad}x ${productParsed.descripcion} ($${productParsed.precioUnitario.toFixed(2)})`);
+            result.detectedTags.push(` ${productParsed.cantidad}x ${productParsed.descripcion} ($${productParsed.precioUnitario.toFixed(2)})`);
         } else if (result.isClient && productParsed && productParsed.precioUnitario > 0) {
             // Caso híbrido: dictó cliente y además un producto al final
             result.isProduct = true;
             result.items.push(productParsed);
-            result.detectedTags.push(`📦 ${productParsed.cantidad}x ${productParsed.descripcion} ($${productParsed.precioUnitario.toFixed(2)})`);
+            result.detectedTags.push(` ${productParsed.cantidad}x ${productParsed.descripcion} ($${productParsed.precioUnitario.toFixed(2)})`);
         } else if (!result.isClient && !result.isProduct) {
             // Si no tiene prefijos pero no se reconoció nada formal:
             // Si parece un nombre propio simple (2 a 4 palabras sin números)
-            if (/^[a-záéíóúñ\s]{4,40}$/i.test(raw) && raw.split(/\s+/).length >= 2 && !raw.includes(' a ')) {
+            if (/^[a-záéíóúñ\s]{4,40}$/i.test(raw) && raw.split(/\s+/).length >= 2 && !raw.includes('a ')) {
                 const words = raw.split(/\s+/).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
                 result.cliente.nombre = words;
                 result.isClient = true;
-                result.detectedTags.push(`👤 Nombre: ${words}`);
+                result.detectedTags.push(`Nombre: ${words}`);
             } else {
                 // Asumir producto genérico
                 result.isProduct = true;

@@ -8,7 +8,7 @@ export function renderSupportLockScreen(reasonMessage, whatsappNumber) {
 
     return `
         <div class="lock-screen-container" style="max-width: 440px; margin: 20px auto;">
-            <div class="lock-badge">⚠️</div>
+            <div class="lock-badge">️</div>
             
             <h2 style="font-family: var(--font-serif-header); font-size: 22px; font-weight: 800; color: #0F172A; margin-bottom: 8px;">
                 Talonario Pausado
@@ -19,9 +19,9 @@ export function renderSupportLockScreen(reasonMessage, whatsappNumber) {
             </p>
 
             <div style="background: #FFF8F8; border: 1.5px dashed #D90429; padding: 12px 14px; border-radius: 10px; font-size: 11px; font-family: var(--font-mono-num); text-align: left; margin-bottom: 18px;">
-                📌 <strong>Estado:</strong> CUENTA_BLOQUEADA_SOPORTE<br>
-                🏭 <strong>Imprenta Asignada:</strong> Imprenta Gráficas Amazonas<br>
-                💬 <strong>Soporte Técnico:</strong> Respuesta inmediata en horario laboral
+                 <strong>Estado:</strong>CUENTA_BLOQUEADA_SOPORTE<br>
+                 <strong>Imprenta Asignada:</strong>Imprenta Gráficas Amazonas<br>
+                 <strong>Soporte Técnico:</strong>Respuesta inmediata en horario laboral
             </div>
 
             <a href="${waLink}" target="_blank" class="whatsapp-btn">

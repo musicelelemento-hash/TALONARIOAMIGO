@@ -19,7 +19,7 @@ export function renderOnboardingScreen() {
                      style="border: 2px dashed #CBD5E1; border-radius: 14px; padding: 22px; text-align: center; cursor: pointer; background: #F8FAFC; margin-bottom: 18px; transition: all .15s ease;"
                      onmouseover="this.style.borderColor='#1D4ED8'; this.style.background='#FFFFFF'"
                      onmouseout="this.style.borderColor='#CBD5E1'; this.style.background='#F8FAFC'">
-                    <div style="font-size: 30px;">📄</div>
+                    <div style="font-size: 30px;"></div>
                     <div style="font-weight: 800; font-size: 13px; color: #0F172A; margin-top: 4px;">Subir Certificado de RUC (PDF)</div>
                     <div style="font-size: 11px; color: #64748B; margin-top: 2px;">Toca para seleccionar el PDF oficial del SRI</div>
                     <input type="file" id="onb-ruc-file" accept=".pdf,application/pdf" style="display:none" onchange="window.appState.handleRucPdf(this)">
@@ -79,7 +79,7 @@ export function renderOnboardingScreen() {
                     </div>
 
                     <button type="submit" style="margin-top: 14px; padding: 15px; background: #0F172A; color: white; border: none; border-radius: 12px; font-weight: 800; font-size: 14px; cursor: pointer; box-shadow: 0 8px 20px rgba(15,23,42,0.26);">
-                        ✅ COMPLETAR CONFIGURACIÓN Y ACTIVAR
+                         COMPLETAR CONFIGURACIÓN Y ACTIVAR
                     </button>
                 </form>
             </div>
@@ -98,7 +98,7 @@ export function renderOnboardingModal() {
                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #CBD5E1; padding-bottom: 12px; margin-bottom: 16px;">
                     <div>
                         <span style="font-family: var(--font-mono-num); font-size: 10px; font-weight: 800; color: #DC2626; text-transform: uppercase;">
-                            🔴 MODO REAL SRI · CONFIGURACIÓN RÁPIDA
+                             MODO REAL SRI · CONFIGURACIÓN RÁPIDA
                         </span>
                         <h2 style="font-family: var(--font-serif-header); font-size: 18px; font-weight: 800; color: #0F172A; margin: 4px 0 0 0;">
                             Vincular Firma Electrónica (.p12) y RUC
@@ -110,13 +110,13 @@ export function renderOnboardingModal() {
                 </div>
                 
                 <p style="font-size: 12px; color: #64748B; margin-bottom: 14px;">
-                    Sube tu certificado digital <strong>.p12</strong> y tu RUC del SRI para emitir comprobantes legales. O sube tu Certificado de RUC (PDF) para autocompletar todo en segundos.
+                    Sube tu certificado digital <strong>.p12</strong>y tu RUC del SRI para emitir comprobantes legales. O sube tu Certificado de RUC (PDF) para autocompletar todo en segundos.
                 </p>
 
                 <!-- Zona de carga del Certificado RUC PDF -->
                 <div onclick="document.getElementById('onb-modal-ruc-file').click()"
                      style="border: 2px dashed #93C5FD; border-radius: 12px; padding: 14px; text-align: center; cursor: pointer; background: #EFF6FF; margin-bottom: 14px; transition: all .15s ease;">
-                    <div style="font-size: 24px;">📄</div>
+                    <div style="font-size: 24px;"></div>
                     <div style="font-weight: 800; font-size: 12px; color: #1E40AF; margin-top: 2px;">Subir Certificado de RUC (PDF del SRI)</div>
                     <div style="font-size: 10px; color: #3B82F6;">Autocompleta RUC, razón social y dirección al instante</div>
                     <input type="file" id="onb-modal-ruc-file" accept=".pdf,application/pdf" style="display:none" onchange="window.appState.handleRucPdf(this)">
@@ -168,7 +168,7 @@ export function renderOnboardingModal() {
                             Cancelar
                         </button>
                         <button type="submit" style="flex: 2; padding: 12px; background: #0F172A; color: white; border: none; border-radius: 12px; font-weight: 800; font-size: 13px; cursor: pointer; box-shadow: 0 4px 14px rgba(15,23,42,0.25);">
-                            ✅ GUARDAR Y ACTIVAR
+                             GUARDAR Y ACTIVAR
                         </button>
                     </div>
                 </form>

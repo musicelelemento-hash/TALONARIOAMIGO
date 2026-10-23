@@ -95,7 +95,7 @@ export const invoiceValidator = {
                 code: 'NO_ITEMS',
                 title: 'Factura Sin Productos',
                 message: 'Agrega al menos un renglón con producto, cantidad y precio unitario.',
-                solution: 'Toca uno de los iconos rápidos (🌽 Maíz, ☕ Café, etc.) o escribe un producto.'
+                solution: 'Toca uno de los iconos rápidos ( Maíz,  Café, etc.) o escribe un producto.'
             };
         }
 
@@ -121,7 +121,7 @@ export const invoiceValidator = {
                     valid: false,
                     code: 'ITEM_CANT_INVALID',
                     title: `Cantidad Inválida en Renglón #${i + 1}`,
-                    message: `La cantidad de '${desc}' debe ser un número mayor a cero.`,
+                    message: `La cantidad de '${desc}'debe ser un número mayor a cero.`,
                     solution: 'Ingresa una cantidad válida (ej: 1, 5, 2.5).'
                 };
             }
@@ -131,7 +131,7 @@ export const invoiceValidator = {
                     valid: false,
                     code: 'ITEM_PRECIO_INVALID',
                     title: `Precio Inválido en Renglón #${i + 1}`,
-                    message: `El precio unitario de '${desc}' no puede ser negativo ni estar vacío.`,
+                    message: `El precio unitario de '${desc}'no puede ser negativo ni estar vacío.`,
                     solution: 'Ingresa el precio de venta en dólares.'
                 };
             }

@@ -39,23 +39,23 @@ export function renderLoginScreen() {
 
                 <!-- Enlaces de Navegación Suave (Desktop) -->
                 <nav style="display: none; align-items: center; gap: 20px; font-size: 13px; font-weight: 700; color: #CBD5E1;" class="landing-desktop-nav">
-                    <a href="#seccion-comerciante" style="color: inherit; text-decoration: none; transition: color 0.15s ease;" onmouseover="this.style.color='#38BDF8'" onmouseout="this.style.color='#CBD5E1'">🏪 Comerciantes</a>
-                    <a href="#seccion-imprenta" style="color: inherit; text-decoration: none; transition: color 0.15s ease;" onmouseover="this.style.color='#38BDF8'" onmouseout="this.style.color='#CBD5E1'">🏭 Imprentas</a>
-                    <a href="#seccion-admin" style="color: inherit; text-decoration: none; transition: color 0.15s ease;" onmouseover="this.style.color='#38BDF8'" onmouseout="this.style.color='#CBD5E1'">🏛️ Administrador</a>
-                    <a href="#seccion-comparativa" style="color: inherit; text-decoration: none; transition: color 0.15s ease;" onmouseover="this.style.color='#38BDF8'" onmouseout="this.style.color='#CBD5E1'">⚖️ Comparativa</a>
-                    <a href="#seccion-precios" style="color: inherit; text-decoration: none; transition: color 0.15s ease;" onmouseover="this.style.color='#38BDF8'" onmouseout="this.style.color='#CBD5E1'">💰 Precios</a>
-                    <a href="#seccion-faq" style="color: inherit; text-decoration: none; transition: color 0.15s ease;" onmouseover="this.style.color='#38BDF8'" onmouseout="this.style.color='#CBD5E1'">❓ FAQ</a>
+                    <a href="#seccion-comerciante" style="color: inherit; text-decoration: none; transition: color 0.15s ease;" onmouseover="this.style.color='#38BDF8'" onmouseout="this.style.color='#CBD5E1'">Comerciantes</a>
+                    <a href="#seccion-imprenta" style="color: inherit; text-decoration: none; transition: color 0.15s ease;" onmouseover="this.style.color='#38BDF8'" onmouseout="this.style.color='#CBD5E1'">Imprentas</a>
+                    <a href="#seccion-admin" style="color: inherit; text-decoration: none; transition: color 0.15s ease;" onmouseover="this.style.color='#38BDF8'" onmouseout="this.style.color='#CBD5E1'">️ Administrador</a>
+                    <a href="#seccion-comparativa" style="color: inherit; text-decoration: none; transition: color 0.15s ease;" onmouseover="this.style.color='#38BDF8'" onmouseout="this.style.color='#CBD5E1'">️ Comparativa</a>
+                    <a href="#seccion-precios" style="color: inherit; text-decoration: none; transition: color 0.15s ease;" onmouseover="this.style.color='#38BDF8'" onmouseout="this.style.color='#CBD5E1'">Precios</a>
+                    <a href="#seccion-faq" style="color: inherit; text-decoration: none; transition: color 0.15s ease;" onmouseover="this.style.color='#38BDF8'" onmouseout="this.style.color='#CBD5E1'">FAQ</a>
                 </nav>
 
                 <!-- Botones CTA de Acción -->
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <button type="button" onclick="window.appState.enterDemoMode()" class="btn-demo-live-nav" title="Prueba el talonario táctil de inmediato sin registrarte">
                         <span class="live-dot-pulse"></span>
-                        <span>🏪 Probar en Vivo</span>
+                        <span>Probar en Vivo</span>
                         <span class="demo-tag-free">Gratis</span>
                     </button>
                     <a href="#login-box" style="padding: 8px 16px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18); border-radius: 10px; color: #FFFFFF; font-size: 12px; font-weight: 800; text-decoration: none; transition: all 0.15s ease;" onmouseover="this.style.background='rgba(255,255,255,0.15)'" onmouseout="this.style.background='rgba(255,255,255,0.08)'">
-                        🔑 Ingresar
+                         Ingresar
                     </a>
                 </div>
             </header>
@@ -120,7 +120,7 @@ export function renderLoginScreen() {
                     <div style="display: flex; flex-direction: column; gap: 22px;">
                         
                         <div style="display: inline-flex; align-items: center; gap: 10px; width: fit-content; background: rgba(56,189,248,0.12); border: 1px solid rgba(56,189,248,0.35); border-radius: 999px; padding: 6px 16px; font-size: 12px; font-weight: 800; color: #38BDF8;">
-                            <span>✨ CERO SOFTWARE COMPLICADO</span>
+                            <span>CERO SOFTWARE COMPLICADO</span>
                             <span style="opacity: 0.5;">•</span>
                             <span>SIEMPRE PAPEL MARFIL</span>
                             <span style="opacity: 0.5;">•</span>
@@ -132,23 +132,23 @@ export function renderLoginScreen() {
                         </h1>
 
                         <p style="font-size: 16px; color: #94A3B8; line-height: 1.65; margin: 0; max-width: 580px;">
-                            Ecuador eliminó las notas físicas, pero nadie te dijo que tenías que sufrir con un sistema contable gris de 45 menús. Con <strong>Talonario Amigo</strong> tienes tu mismo bloc de papel en tu tablet o celular. Emite en 5 segundos con voz o foto, sin tocar un teclado.
+                            Ecuador eliminó las notas físicas, pero nadie te dijo que tenías que sufrir con un sistema contable gris de 45 menús. Con <strong>Talonario Amigo</strong>tienes tu mismo bloc de papel en tu tablet o celular. Emite en 5 segundos con voz o foto, sin tocar un teclado.
                         </p>
 
                         <!-- Selector de Exploración Inmediata por Rol -->
                         <div style="background: rgba(15,23,42,0.6); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 14px 18px; margin-top: 4px;">
                             <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #94A3B8; margin-bottom: 10px;">
-                                🎭 EXPLORA LA PLATAFORMA EN VIVO POR SECCIONES:
+                                 EXPLORA LA PLATAFORMA EN VIVO POR SECCIONES:
                             </div>
                             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                                 <button type="button" onclick="window.appState.exploreRole('CLIENT')" class="role-pill-btn" title="Probar como comerciante pequeño">
-                                    <span>🏪</span> <span>Modo Comerciante</span>
+                                    <span></span> <span>Modo Comerciante</span>
                                 </button>
                                 <button type="button" onclick="window.appState.exploreRole('RESELLER')" class="role-pill-btn" title="Probar panel de imprenta aliada">
-                                    <span>🏭</span> <span>Modo Imprenta Aliada</span>
+                                    <span></span> <span>Modo Imprenta Aliada</span>
                                 </button>
                                 <button type="button" onclick="window.appState.exploreRole('SUPER_ADMIN')" class="role-pill-btn" title="Probar panel de control total">
-                                    <span>🏛️</span> <span>Modo Administrador</span>
+                                    <span>️</span> <span>Modo Administrador</span>
                                 </button>
                             </div>
                         </div>
@@ -156,7 +156,7 @@ export function renderLoginScreen() {
                         <!-- CTA Estelar Demostración Abierta -->
                         <div>
                             <button type="button" onclick="window.appState.enterDemoMode()" class="btn-hero-demo-glow" style="width: 100%;">
-                                <span style="font-size: 28px;">🏪</span>
+                                <span style="font-size: 28px;"></span>
                                 <div style="text-align: left;">
                                     <div style="font-size: 16px; font-weight: 900; letter-spacing: -0.01em;">PROBAR TALONARIO TÁCTIL EN VIVO ➔</div>
                                     <div style="font-size: 11px; opacity: 0.95; font-weight: 700; color: #ECFDF5; margin-top: 3px;">
@@ -192,7 +192,7 @@ export function renderLoginScreen() {
                     <div id="login-box" style="background: #FFFFFF; border-radius: 24px; padding: 36px 30px; box-shadow: 0 30px 80px rgba(0,0,0,0.65); color: #0F172A; border: 1px solid rgba(255,255,255,0.1);">
                         <div style="text-align: center; margin-bottom: 24px;">
                             <div style="display: inline-block; width: 44px; height: 44px; background: #EEF2F6; border-radius: 50%; line-height: 44px; font-size: 22px; margin-bottom: 8px;">
-                                🔐
+                                
                             </div>
                             <h2 style="font-family: var(--font-serif-header, Georgia, serif); font-size: 24px; font-weight: 900; color: #0F172A; margin: 0;">
                                 Ingreso a tu Mostrador
@@ -224,7 +224,7 @@ export function renderLoginScreen() {
                             </div>
 
                             <button type="submit" style="margin-top: 6px; padding: 15px; background: #0F172A; color: #FFFFFF; border: none; border-radius: 12px; font-weight: 800; font-size: 14px; letter-spacing: 0.4px; cursor: pointer; box-shadow: 0 8px 24px rgba(15,23,42,0.35); transition: all .18s cubic-bezier(.16,1,.3,1);">
-                                🔑 INGRESAR AL TALONARIO
+                                 INGRESAR AL TALONARIO
                             </button>
 
                             <div style="display: flex; align-items: center; gap: 10px; margin: 4px 0;">
@@ -234,7 +234,7 @@ export function renderLoginScreen() {
                             </div>
 
                             <button type="button" onclick="window.appState.enterDemoMode()" style="padding: 13px; background: #F0FDF4; border: 1.5px solid #86EFAC; color: #15803D; border-radius: 12px; font-weight: 800; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all .15s ease;">
-                                🏪 Abrir Mostrador Tablet (Demostración Directa)
+                                 Abrir Mostrador Tablet (Demostración Directa)
                             </button>
 
                             <button type="button" onclick="window.appState.openRegister()" style="padding: 6px; background: transparent; color: #1D4ED8; border: none; font-weight: 800; font-size: 12px; cursor: pointer;">
@@ -254,7 +254,7 @@ export function renderLoginScreen() {
                     
                     <div style="text-align: center; max-width: 780px; margin: 0 auto 52px auto;">
                         <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(56,189,248,0.12); border: 1px solid rgba(56,189,248,0.3); border-radius: 999px; padding: 5px 16px; font-size: 12px; font-weight: 800; color: #38BDF8; margin-bottom: 14px;">
-                            🏪 SECCIÓN COMERCIANTE · EL PAPEL PROTAGONISTA
+                             SECCIÓN COMERCIANTE · EL PAPEL PROTAGONISTA
                         </div>
                         <h2 style="font-size: clamp(26px, 3.8vw, 40px); font-weight: 900; color: #FFFFFF; line-height: 1.2; margin: 0;">
                             Diseñado para quienes atienden su mostrador con sus propias manos
@@ -270,7 +270,7 @@ export function renderLoginScreen() {
                         <!-- Tarjeta 1: Papel Marfil Real -->
                         <div class="hover-scale" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 26px; display: flex; flex-direction: column; gap: 12px;">
                             <div style="width: 50px; height: 50px; background: rgba(253,230,138,0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 26px;">
-                                📜
+                                
                             </div>
                             <div style="font-size: 17px; font-weight: 800; color: #FFFFFF;">
                                 Papel Marfil Real al 95% de Pantalla
@@ -283,7 +283,7 @@ export function renderLoginScreen() {
                         <!-- Tarjeta 2: Dictado por Voz Completo -->
                         <div class="hover-scale" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 26px; display: flex; flex-direction: column; gap: 12px;">
                             <div style="width: 50px; height: 50px; background: rgba(56,189,248,0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 26px;">
-                                🎙️
+                                ️
                             </div>
                             <div style="font-size: 17px; font-weight: 800; color: #FFFFFF;">
                                 Dictado por Voz Inteligente con IA Local
@@ -296,7 +296,7 @@ export function renderLoginScreen() {
                         <!-- Tarjeta 3: Escáner OCR por Gravedad -->
                         <div class="hover-scale" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 26px; display: flex; flex-direction: column; gap: 12px;">
                             <div style="width: 50px; height: 50px; background: rgba(52,211,153,0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 26px;">
-                                📷
+                                
                             </div>
                             <div style="font-size: 17px; font-weight: 800; color: #FFFFFF;">
                                 Escáner OCR por Gravedad
@@ -309,20 +309,20 @@ export function renderLoginScreen() {
                         <!-- Tarjeta 4: Copia Azul Autocopiativa -->
                         <div class="hover-scale" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 26px; display: flex; flex-direction: column; gap: 12px;">
                             <div style="width: 50px; height: 50px; background: rgba(96,165,250,0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 26px;">
-                                📄💙
+                                
                             </div>
                             <div style="font-size: 17px; font-weight: 800; color: #FFFFFF;">
                                 Duplicado Azul Autocopiativo Tradicional
                             </div>
                             <div style="font-size: 13px; color: #94A3B8; line-height: 1.6;">
-                                Al autorizarse en el SRI, la hoja blanca se desprende en 3D con sonido <em>rrrrrip</em>, revelando la clásica <strong>copia azul autocopiativa</strong> con el sello oficial del SRI para tu tranquilidad contable.
+                                Al autorizarse en el SRI, la hoja blanca se desprende en 3D con sonido <em>rrrrrip</em>, revelando la clásica <strong>copia azul autocopiativa</strong>con el sello oficial del SRI para tu tranquilidad contable.
                             </div>
                         </div>
 
                         <!-- Tarjeta 5: 100% Offline Rural -->
                         <div class="hover-scale" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 26px; display: flex; flex-direction: column; gap: 12px;">
                             <div style="width: 50px; height: 50px; background: rgba(244,114,182,0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 26px;">
-                                📴
+                                
                             </div>
                             <div style="font-size: 17px; font-weight: 800; color: #FFFFFF;">
                                 100% Offline Rural sin Conexión
@@ -335,13 +335,13 @@ export function renderLoginScreen() {
                         <!-- Tarjeta 6: Archivo por Tomos Físicos -->
                         <div class="hover-scale" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 26px; display: flex; flex-direction: column; gap: 12px;">
                             <div style="width: 50px; height: 50px; background: rgba(251,191,36,0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 26px;">
-                                📒
+                                
                             </div>
                             <div style="font-size: 17px; font-weight: 800; color: #FFFFFF;">
                                 Archivo por Tomos Encuadernados
                             </div>
                             <div style="font-size: 13px; color: #94A3B8; line-height: 1.6;">
-                                Cero tablas de Excel aburridas. Tus facturas se organizan como libros encuadernados: <em>JULIO 📒 150 Hojas</em>, <em>AGOSTO 📒 83 Hojas</em>, con buscador en vivo por cliente y descarga de XML.
+                                Cero tablas de Excel aburridas. Tus facturas se organizan como libros encuadernados: <em>JULIO  150 Hojas</em>, <em>AGOSTO  83 Hojas</em>, con buscador en vivo por cliente y descarga de XML.
                             </div>
                         </div>
 
@@ -358,7 +358,7 @@ export function renderLoginScreen() {
                             </div>
                         </div>
                         <button type="button" onclick="window.appState.exploreRole('CLIENT')" style="padding: 14px 28px; background: #10B981; color: #FFFFFF; border: none; border-radius: 12px; font-size: 14px; font-weight: 900; cursor: pointer; box-shadow: 0 4px 18px rgba(16,185,129,0.4); display: flex; align-items: center; gap: 8px;">
-                            <span>🏪 Abrir Mostrador Comerciante</span>
+                            <span>Abrir Mostrador Comerciante</span>
                             <span>➔</span>
                         </button>
                     </div>
@@ -374,7 +374,7 @@ export function renderLoginScreen() {
                     
                     <div style="text-align: center; max-width: 800px; margin: 0 auto 52px auto;">
                         <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.4); border-radius: 999px; padding: 5px 16px; font-size: 12px; font-weight: 800; color: #FBBF24; margin-bottom: 14px;">
-                            🏭 SECCIÓN IMPRENTA ALIADA · RED DE DISTRIBUIDORES B2B
+                             SECCIÓN IMPRENTA ALIADA · RED DE DISTRIBUIDORES B2B
                         </div>
                         <h2 style="font-size: clamp(26px, 3.8vw, 40px); font-weight: 900; color: #FFFFFF; line-height: 1.2; margin: 0;">
                             Recupera el negocio de los talonarios con un <span class="gold-text">52% de margen neto</span>
@@ -409,7 +409,7 @@ export function renderLoginScreen() {
                             </div>
 
                             <div style="font-size: 12px; color: #94A3B8; line-height: 1.6; background: rgba(0,0,0,0.25); border-radius: 10px; padding: 12px 14px;">
-                                💡 <strong>Ejemplo Cantonal:</strong> Si vendes 50 talonarios a los comerciantes de tu barrio o parroquia = <strong>$650 USD de ganancia neta anual</strong> recurrente, sin gastar un solo centavo en papel bond, químicos, planchas ni tinta.
+                                 <strong>Ejemplo Cantonal:</strong>Si vendes 50 talonarios a los comerciantes de tu barrio o parroquia = <strong>$650 USD de ganancia neta anual</strong>recurrente, sin gastar un solo centavo en papel bond, químicos, planchas ni tinta.
                             </div>
                         </div>
 
@@ -417,7 +417,7 @@ export function renderLoginScreen() {
                         <div style="display: flex; flex-direction: column; gap: 16px;">
                             
                             <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 16px 20px; display: flex; gap: 16px; align-items: flex-start;">
-                                <div style="font-size: 24px;">🏷️</div>
+                                <div style="font-size: 24px;">️</div>
                                 <div>
                                     <div style="font-size: 15px; font-weight: 800; color: #FFFFFF;">Marca Blanca con el Logo de tu Imprenta</div>
                                     <div style="font-size: 12px; color: #94A3B8; margin-top: 3px;">La tapa del talonario digital de tus clientes lleva el logo y nombre de tu imprenta gráfica.</div>
@@ -425,7 +425,7 @@ export function renderLoginScreen() {
                             </div>
 
                             <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 16px 20px; display: flex; gap: 16px; align-items: flex-start;">
-                                <div style="font-size: 24px;">💬</div>
+                                <div style="font-size: 24px;"></div>
                                 <div>
                                     <div style="font-size: 15px; font-weight: 800; color: #FFFFFF;">Soporte Directo a tu WhatsApp</div>
                                     <div style="font-size: 12px; color: #94A3B8; margin-top: 3px;">El botón de soporte dentro del talonario abre un chat directo con tu propio número de WhatsApp.</div>
@@ -433,7 +433,7 @@ export function renderLoginScreen() {
                             </div>
 
                             <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 16px 20px; display: flex; gap: 16px; align-items: flex-start;">
-                                <div style="font-size: 24px;">⚡</div>
+                                <div style="font-size: 24px;"></div>
                                 <div>
                                     <div style="font-size: 15px; font-weight: 800; color: #FFFFFF;">Alta de Cliente en 60 Segundos</div>
                                     <div style="font-size: 12px; color: #94A3B8; margin-top: 3px;">Cargas el RUC y la firma .p12 de tu cliente y le entregas su facturador listo para emitir.</div>
@@ -441,7 +441,7 @@ export function renderLoginScreen() {
                             </div>
 
                             <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 16px 20px; display: flex; gap: 16px; align-items: flex-start;">
-                                <div style="font-size: 24px;">📊</div>
+                                <div style="font-size: 24px;"></div>
                                 <div>
                                     <div style="font-size: 15px; font-weight: 800; color: #FFFFFF;">Panel de Control Mayorista Privado</div>
                                     <div style="font-size: 12px; color: #94A3B8; margin-top: 3px;">Monitorea clientes activos, estados de firma y recarga lotes con un solo clic.</div>
@@ -449,7 +449,7 @@ export function renderLoginScreen() {
                             </div>
 
                             <button type="button" onclick="window.appState.exploreRole('RESELLER')" style="margin-top: 6px; padding: 14px; background: #F59E0B; color: #0F172A; border: none; border-radius: 12px; font-weight: 900; font-size: 14px; cursor: pointer; box-shadow: 0 4px 18px rgba(245,158,11,0.4); display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                <span>🏭 Explorar Panel de Imprenta en Vivo</span>
+                                <span>Explorar Panel de Imprenta en Vivo</span>
                                 <span>➔</span>
                             </button>
 
@@ -468,7 +468,7 @@ export function renderLoginScreen() {
                     
                     <div style="text-align: center; max-width: 800px; margin: 0 auto 52px auto;">
                         <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(147,51,234,0.15); border: 1px solid rgba(147,51,234,0.4); border-radius: 999px; padding: 5px 16px; font-size: 12px; font-weight: 800; color: #C084FC; margin-bottom: 14px;">
-                            🏛️ SECCIÓN ADMINISTRADOR · GOBERNANZA & 20 AGENTES DE ÉLITE
+                            ️ SECCIÓN ADMINISTRADOR · GOBERNANZA & 20 AGENTES DE ÉLITE
                         </div>
                         <h2 style="font-size: clamp(26px, 3.8vw, 40px); font-weight: 900; color: #FFFFFF; line-height: 1.2; margin: 0;">
                             Centro de Mando Global, Criptografía Zero-Trust y Supabase Postgres 17
@@ -482,7 +482,7 @@ export function renderLoginScreen() {
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 36px;">
                         
                         <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 22px;">
-                            <div style="font-size: 26px; margin-bottom: 10px;">🤖</div>
+                            <div style="font-size: 26px; margin-bottom: 10px;"></div>
                             <div style="font-size: 16px; font-weight: 800; color: #FFFFFF;">20 Agentes Autónomos</div>
                             <div style="font-size: 12px; color: #94A3B8; margin-top: 6px; line-height: 1.5;">
                                 Divididos en 4 niveles de mando: Orquestación, Escuadrón SRI, Bóvedas Criptográficas y B2B.
@@ -490,7 +490,7 @@ export function renderLoginScreen() {
                         </div>
 
                         <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 22px;">
-                            <div style="font-size: 26px; margin-bottom: 10px;">🔐</div>
+                            <div style="font-size: 26px; margin-bottom: 10px;"></div>
                             <div style="font-size: 16px; font-weight: 800; color: #FFFFFF;">Criptografía Zero-Trust</div>
                             <div style="font-size: 12px; color: #94A3B8; margin-top: 6px; line-height: 1.5;">
                                 Firma local XAdES-BES en el cliente. La clave privada .p12 nunca se expone en servidores públicos.
@@ -498,7 +498,7 @@ export function renderLoginScreen() {
                         </div>
 
                         <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 22px;">
-                            <div style="font-size: 26px; margin-bottom: 10px;">🐘</div>
+                            <div style="font-size: 26px; margin-bottom: 10px;"></div>
                             <div style="font-size: 16px; font-weight: 800; color: #FFFFFF;">Supabase Postgres 17</div>
                             <div style="font-size: 12px; color: #94A3B8; margin-top: 6px; line-height: 1.5;">
                                 Políticas RLS (Row Level Security) estrictas para garantizar aislamiento total por emisor.
@@ -506,7 +506,7 @@ export function renderLoginScreen() {
                         </div>
 
                         <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 22px;">
-                            <div style="font-size: 26px; margin-bottom: 10px;">⚡</div>
+                            <div style="font-size: 26px; margin-bottom: 10px;"></div>
                             <div style="font-size: 16px; font-weight: 800; color: #FFFFFF;">Cloudflare Edge & Resend</div>
                             <div style="font-size: 12px; color: #94A3B8; margin-top: 6px; line-height: 1.5;">
                                 Entrega de RIDE PDF y XML al cliente en menos de 2 segundos mediante la API de Resend.com.
@@ -527,7 +527,7 @@ export function renderLoginScreen() {
                             </div>
                         </div>
                         <button type="button" onclick="window.appState.exploreRole('SUPER_ADMIN')" style="padding: 12px 24px; background: #6366F1; color: #FFFFFF; border: none; border-radius: 10px; font-size: 13px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 14px rgba(99,102,241,0.4);">
-                            🏛️ Abrir Centro de Mando Admin ➔
+                            ️ Abrir Centro de Mando Admin ➔
                         </button>
                     </div>
 
@@ -542,7 +542,7 @@ export function renderLoginScreen() {
                     
                     <div style="text-align: center; max-width: 780px; margin: 0 auto 48px auto;">
                         <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.3); border-radius: 999px; padding: 5px 16px; font-size: 12px; font-weight: 800; color: #F87171; margin-bottom: 14px;">
-                            ⚖️ TABLA COMPARATIVA · LA VERDADERA DIFERENCIA
+                            ️ TABLA COMPARATIVA · LA VERDADERA DIFERENCIA
                         </div>
                         <h2 style="font-size: clamp(26px, 3.8vw, 38px); font-weight: 900; color: #FFFFFF; line-height: 1.2; margin: 0;">
                             ¿Por qué pagar $40 al mes por un ERP gris de 45 menús que nadie sabe usar?
@@ -559,7 +559,7 @@ export function renderLoginScreen() {
                                 <tr style="background: rgba(15,23,42,0.9); border-bottom: 1px solid rgba(255,255,255,0.1);">
                                     <th style="padding: 18px 20px; color: #94A3B8; font-weight: 800; text-transform: uppercase; font-size: 11px; width: 34%;">CARACTERÍSTICA</th>
                                     <th style="padding: 18px 20px; color: #EF4444; font-weight: 800; text-transform: uppercase; font-size: 11px; width: 33%;">ERP GRIS TRADICIONAL</th>
-                                    <th style="padding: 18px 20px; color: #10B981; font-weight: 900; text-transform: uppercase; font-size: 12px; width: 33%; background: rgba(16,185,129,0.08);">TALONARIO AMIGO ⭐</th>
+                                    <th style="padding: 18px 20px; color: #10B981; font-weight: 900; text-transform: uppercase; font-size: 12px; width: 33%; background: rgba(16,185,129,0.08);">TALONARIO AMIGO </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -580,8 +580,8 @@ export function renderLoginScreen() {
                                 </tr>
                                 <tr style="border-bottom: 1px solid rgba(255,255,255,0.04);">
                                     <td style="padding: 16px 20px; font-weight: 700; color: #FFFFFF;">Modo sin Internet</td>
-                                    <td style="padding: 16px 20px; color: #EF4444;">❌ Se bloquea. No puedes cobrar</td>
-                                    <td style="padding: 16px 20px; color: #34D399; font-weight: 800; background: rgba(16,185,129,0.04);">✅ 100% Offline con auto-sincronización</td>
+                                    <td style="padding: 16px 20px; color: #EF4444;">Se bloquea. No puedes cobrar</td>
+                                    <td style="padding: 16px 20px; color: #34D399; font-weight: 800; background: rgba(16,185,129,0.04);"> 100% Offline con auto-sincronización</td>
                                 </tr>
                                 <tr style="border-bottom: 1px solid rgba(255,255,255,0.04);">
                                     <td style="padding: 16px 20px; font-weight: 700; color: #FFFFFF;">Copia para el Emisor</td>
@@ -590,8 +590,8 @@ export function renderLoginScreen() {
                                 </tr>
                                 <tr style="border-bottom: 1px solid rgba(255,255,255,0.04);">
                                     <td style="padding: 16px 20px; font-weight: 700; color: #FFFFFF;">Voz y Escáner de Foto</td>
-                                    <td style="padding: 16px 20px; color: #EF4444;">❌ No disponible o muy costoso</td>
-                                    <td style="padding: 16px 20px; color: #34D399; font-weight: 800; background: rgba(16,185,129,0.04);">✅ Reconoce cédula, RUC y productos</td>
+                                    <td style="padding: 16px 20px; color: #EF4444;">No disponible o muy costoso</td>
+                                    <td style="padding: 16px 20px; color: #34D399; font-weight: 800; background: rgba(16,185,129,0.04);">Reconoce cédula, RUC y productos</td>
                                 </tr>
                                 <tr style="border-bottom: 1px solid rgba(255,255,255,0.04);">
                                     <td style="padding: 16px 20px; font-weight: 700; color: #FFFFFF;">Dispositivos</td>
@@ -618,7 +618,7 @@ export function renderLoginScreen() {
                     
                     <div style="text-align: center; max-width: 760px; margin: 0 auto 52px auto;">
                         <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.4); border-radius: 999px; padding: 5px 16px; font-size: 12px; font-weight: 800; color: #34D399; margin-bottom: 14px;">
-                            💰 PRECIOS TRANSPARENTES · SIN COBROS MENSUALES
+                             PRECIOS TRANSPARENTES · SIN COBROS MENSUALES
                         </div>
                         <h2 style="font-size: clamp(26px, 3.8vw, 40px); font-weight: 900; color: #FFFFFF; line-height: 1.2; margin: 0;">
                             El precio más justo de todo el Ecuador
@@ -647,18 +647,18 @@ export function renderLoginScreen() {
                                 </div>
 
                                 <div style="display: flex; flex-direction: column; gap: 12px; font-size: 13px; color: #E2E8F0;">
-                                    <div style="display: flex; gap: 10px; align-items: center;">✓ <strong>Facturas ilimitadas</strong> autorizadas por el SRI</div>
-                                    <div style="display: flex; gap: 10px; align-items: center;">✓ <strong>Dictado por voz</strong> inteligente (Cédula, RUC, Productos)</div>
-                                    <div style="display: flex; gap: 10px; align-items: center;">✓ <strong>Escáner OCR</strong> por foto con física de gravedad</div>
-                                    <div style="display: flex; gap: 10px; align-items: center;">✓ <strong>Copia Azul Autocopiativa</strong> tradicional para tu archivo</div>
+                                    <div style="display: flex; gap: 10px; align-items: center;">✓ <strong>Facturas ilimitadas</strong>autorizadas por el SRI</div>
+                                    <div style="display: flex; gap: 10px; align-items: center;">✓ <strong>Dictado por voz</strong>inteligente (Cédula, RUC, Productos)</div>
+                                    <div style="display: flex; gap: 10px; align-items: center;">✓ <strong>Escáner OCR</strong>por foto con física de gravedad</div>
+                                    <div style="display: flex; gap: 10px; align-items: center;">✓ <strong>Copia Azul Autocopiativa</strong>tradicional para tu archivo</div>
                                     <div style="display: flex; gap: 10px; align-items: center;">✓ <strong>100% Offline</strong> (factura en carretera o campo)</div>
-                                    <div style="display: flex; gap: 10px; align-items: center;">✓ <strong>Envío directo por WhatsApp</strong> y correo al cliente</div>
-                                    <div style="display: flex; gap: 10px; align-items: center;">✓ <strong>Archivo por Tomos</strong> encuadernados con descarga XML</div>
+                                    <div style="display: flex; gap: 10px; align-items: center;">✓ <strong>Envío directo por WhatsApp</strong>y correo al cliente</div>
+                                    <div style="display: flex; gap: 10px; align-items: center;">✓ <strong>Archivo por Tomos</strong>encuadernados con descarga XML</div>
                                 </div>
                             </div>
 
                             <button type="button" onclick="window.appState.openRegister()" style="margin-top: 28px; width: 100%; padding: 15px; background: #1D4ED8; color: #FFFFFF; border: none; border-radius: 12px; font-weight: 900; font-size: 14px; cursor: pointer; box-shadow: 0 4px 18px rgba(29,78,216,0.4);">
-                                🚀 CREAR MI TALONARIO ($25/año)
+                                 CREAR MI TALONARIO ($25/año)
                             </button>
                         </div>
 
@@ -679,16 +679,16 @@ export function renderLoginScreen() {
 
                                 <div style="display: flex; flex-direction: column; gap: 12px; font-size: 13px; color: #E2E8F0;">
                                     <div style="display: flex; gap: 10px; align-items: center;">✓ <strong>52% de ganancia neta</strong> ($13 USD limpios por talonario)</div>
-                                    <div style="display: flex; gap: 10px; align-items: center;">✓ <strong>Marca Blanca</strong> con el logo de tu imprenta en la tapa</div>
-                                    <div style="display: flex; gap: 10px; align-items: center;">✓ <strong>Tu WhatsApp</strong> como canal oficial de soporte del cliente</div>
-                                    <div style="display: flex; gap: 10px; align-items: center;">✓ <strong>Panel B2B Mayorista</strong> para dar de alta en 60 segundos</div>
-                                    <div style="display: flex; gap: 10px; align-items: center;">✓ <strong>Lotes desde 10 licencias</strong> sin caducidad de activación</div>
-                                    <div style="display: flex; gap: 10px; align-items: center;">✓ <strong>Soporte prioritario</strong> de ingeniería para tu imprenta</div>
+                                    <div style="display: flex; gap: 10px; align-items: center;">✓ <strong>Marca Blanca</strong>con el logo de tu imprenta en la tapa</div>
+                                    <div style="display: flex; gap: 10px; align-items: center;">✓ <strong>Tu WhatsApp</strong>como canal oficial de soporte del cliente</div>
+                                    <div style="display: flex; gap: 10px; align-items: center;">✓ <strong>Panel B2B Mayorista</strong>para dar de alta en 60 segundos</div>
+                                    <div style="display: flex; gap: 10px; align-items: center;">✓ <strong>Lotes desde 10 licencias</strong>sin caducidad de activación</div>
+                                    <div style="display: flex; gap: 10px; align-items: center;">✓ <strong>Soporte prioritario</strong>de ingeniería para tu imprenta</div>
                                 </div>
                             </div>
 
                             <a href="https://wa.me/593993050689?text=Hola,%20tengo%20una%20imprenta%20y%20quiero%20ser%20distribuidor%20de%20Talonario%20Amigo" target="_blank" rel="noopener noreferrer" style="margin-top: 28px; width: 100%; padding: 15px; background: #F59E0B; color: #0F172A; text-decoration: none; text-align: center; border-radius: 12px; font-weight: 900; font-size: 14px; box-sizing: border-box; display: block; box-shadow: 0 4px 18px rgba(245,158,11,0.4);">
-                                🏭 REGISTRAR MI IMPRENTA VÍA WHATSAPP
+                                 REGISTRAR MI IMPRENTA VÍA WHATSAPP
                             </a>
                         </div>
 
@@ -705,7 +705,7 @@ export function renderLoginScreen() {
                     
                     <div style="text-align: center; max-width: 760px; margin: 0 auto 52px auto;">
                         <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(56,189,248,0.12); border: 1px solid rgba(56,189,248,0.3); border-radius: 999px; padding: 5px 16px; font-size: 12px; font-weight: 800; color: #38BDF8; margin-bottom: 14px;">
-                            ⚖️ RESPALDO LEGAL & SATISFACCIÓN COMPLETA
+                            ️ RESPALDO LEGAL & SATISFACCIÓN COMPLETA
                         </div>
                         <h2 style="font-size: clamp(26px, 3.8vw, 38px); font-weight: 900; color: #FFFFFF; line-height: 1.2; margin: 0;">
                             Certificado bajo normativas oficiales del SRI Ecuador
@@ -746,7 +746,7 @@ export function renderLoginScreen() {
 
                     <!-- Citas Legales Oficiales del SRI -->
                     <div style="background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 20px 24px; text-align: center; font-size: 12px; color: #94A3B8; line-height: 1.6;">
-                        ⚖️ <strong>Sustento Legal SRI:</strong> Cumplimiento estricto del esquema XML Factura v1.1.0 según la <strong>Resolución SRI NAC-DGERCGC18-00000431</strong> y la <strong>Resolución NAC-DGERCGC22-00000024</strong> (Obligatoriedad Régimen RIMPE y General). Firma digital con algoritmo <strong>XAdES-BES</strong> y verificación matemática Módulo 11 en clave de acceso de 49 dígitos.
+                        ️ <strong>Sustento Legal SRI:</strong>Cumplimiento estricto del esquema XML Factura v1.1.0 según la <strong>Resolución SRI NAC-DGERCGC18-00000431</strong>y la <strong>Resolución NAC-DGERCGC22-00000024</strong> (Obligatoriedad Régimen RIMPE y General). Firma digital con algoritmo <strong>XAdES-BES</strong>y verificación matemática Módulo 11 en clave de acceso de 49 dígitos.
                     </div>
 
                 </div>
@@ -760,7 +760,7 @@ export function renderLoginScreen() {
                     
                     <div style="text-align: center; margin-bottom: 48px;">
                         <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(56,189,248,0.12); border: 1px solid rgba(56,189,248,0.3); border-radius: 999px; padding: 5px 16px; font-size: 12px; font-weight: 800; color: #38BDF8; margin-bottom: 14px;">
-                            ❓ PREGUNTAS FRECUENTES
+                             PREGUNTAS FRECUENTES
                         </div>
                         <h2 style="font-size: clamp(26px, 3.8vw, 38px); font-weight: 900; color: #FFFFFF; line-height: 1.2; margin: 0;">
                             Resolvemos todas tus dudas en segundos
@@ -786,28 +786,28 @@ export function renderLoginScreen() {
                         <details class="faq-details" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; overflow: hidden;">
                             <summary>¿Mi firma electrónica .p12 está segura? <span>▾</span></summary>
                             <div style="padding: 18px 20px; font-size: 14px; color: #94A3B8; line-height: 1.6;">
-                                Absolutamente. Aplicamos una arquitectura <strong>Zero-Trust</strong> con cifrado AES-256. La firma de tus comprobantes se realiza en el entorno seguro de tu propio dispositivo. Tu clave privada nunca viaja desprotegida a servidores externos ni se comparte con nadie.
+                                Absolutamente. Aplicamos una arquitectura <strong>Zero-Trust</strong>con cifrado AES-256. La firma de tus comprobantes se realiza en el entorno seguro de tu propio dispositivo. Tu clave privada nunca viaja desprotegida a servidores externos ni se comparte con nadie.
                             </div>
                         </details>
 
                         <details class="faq-details" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; overflow: hidden;">
                             <summary>¿Sirve para el régimen RIMPE Negocio Popular y Emprendedor? <span>▾</span></summary>
                             <div style="padding: 18px 20px; font-size: 14px; color: #94A3B8; line-height: 1.6;">
-                                Sí. Talonario Amigo se adapta automáticamente según tu régimen tributario: si eres <strong>RIMPE Negocio Popular</strong> emite Notas de Venta con la leyenda obligatoria del SRI y tarifa 0%; si eres <strong>RIMPE Emprendedor</strong> o <strong>Régimen General</strong> calcula el 15% de IVA con desglose oficial.
+                                Sí. Talonario Amigo se adapta automáticamente según tu régimen tributario: si eres <strong>RIMPE Negocio Popular</strong>emite Notas de Venta con la leyenda obligatoria del SRI y tarifa 0%; si eres <strong>RIMPE Emprendedor</strong>o <strong>Régimen General</strong>calcula el 15% de IVA con desglose oficial.
                             </div>
                         </details>
 
                         <details class="faq-details" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; overflow: hidden;">
                             <summary>¿Cómo se entrega la factura al cliente si no tengo impresora? <span>▾</span></summary>
                             <div style="padding: 18px 20px; font-size: 14px; color: #94A3B8; line-height: 1.6;">
-                                Al emitir la factura, el sistema envía automáticamente el <strong>RIDE PDF y el XML autorizado</strong> al correo de tu cliente mediante la plataforma Resend. Además, tienes un botón de <strong>WhatsApp Directo</strong> para compartirle el comprobante al instante a su celular sin imprimir una sola hoja.
+                                Al emitir la factura, el sistema envía automáticamente el <strong>RIDE PDF y el XML autorizado</strong>al correo de tu cliente mediante la plataforma Resend. Además, tienes un botón de <strong>WhatsApp Directo</strong>para compartirle el comprobante al instante a su celular sin imprimir una sola hoja.
                             </div>
                         </details>
 
                         <details class="faq-details" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; overflow: hidden;">
                             <summary>¿Soy imprenta gráfica, cómo empiezo a vender talonarios en mi cantón? <span>▾</span></summary>
                             <div style="padding: 18px 20px; font-size: 14px; color: #94A3B8; line-height: 1.6;">
-                                Puedes escribirnos directamente por WhatsApp al <a href="https://wa.me/593993050689" target="_blank" style="color: #38BDF8; font-weight: 800;">0993050689</a> para dar de alta tu panel de distribuidor mayorista en 5 minutos. Te asignamos un lote inicial con costo de $12 por cliente para que generes una ganancia neta del 52% vendiéndolos a $25.
+                                Puedes escribirnos directamente por WhatsApp al <a href="https://wa.me/593993050689" target="_blank" style="color: #38BDF8; font-weight: 800;">0993050689</a>para dar de alta tu panel de distribuidor mayorista en 5 minutos. Te asignamos un lote inicial con costo de $12 por cliente para que generes una ganancia neta del 52% vendiéndolos a $25.
                             </div>
                         </details>
 
@@ -832,22 +832,22 @@ export function renderLoginScreen() {
 
                     <div style="display: flex; gap: 20px; align-items: center;">
                         <a href="https://wa.me/593993050689" target="_blank" rel="noopener noreferrer" style="color: #34D399; font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 6px;">
-                            <span>💬 Soporte WhatsApp: 0993050689</span>
+                            <span>Soporte WhatsApp: 0993050689</span>
                         </a>
                         <button type="button" onclick="window.appState.exploreRole('CLIENT')" style="background: none; border: none; color: #94A3B8; cursor: pointer; font-size: 12px;">
-                            🏪 Comerciantes
+                             Comerciantes
                         </button>
                         <button type="button" onclick="window.appState.exploreRole('RESELLER')" style="background: none; border: none; color: #94A3B8; cursor: pointer; font-size: 12px;">
-                            🏭 Imprentas
+                             Imprentas
                         </button>
                         <button type="button" onclick="window.appState.exploreRole('SUPER_ADMIN')" style="background: none; border: none; color: #94A3B8; cursor: pointer; font-size: 12px;">
-                            🏛️ Admin
+                            ️ Admin
                         </button>
                     </div>
                 </div>
 
                 <div style="max-width: 1140px; margin: 20px auto 0 auto; border-top: 1px solid rgba(255,255,255,0.04); padding-top: 16px; text-align: center; font-size: 11px; color: #475569;">
-                    © 2026 Talonario Amigo. Todos los derechos reservados. Cumplimiento técnico XAdES-BES, SOAP SRI, y Ley Orgánica para el Desarrollo Económico y Sostenibilidad Fiscal.
+                     2026 Talonario Amigo. Todos los derechos reservados. Cumplimiento técnico XAdES-BES, SOAP SRI, y Ley Orgánica para el Desarrollo Económico y Sostenibilidad Fiscal.
                 </div>
             </footer>
 

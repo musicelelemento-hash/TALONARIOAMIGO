@@ -33,10 +33,10 @@ export function renderResellerPanel(resellerData) {
                 <td><span class="badge-pill ${active ? 'badge-active' : 'badge-warning'}">${active ? 'ACTIVO' : 'SUSPENDIDO'}</span></td>
                 <td style="text-align: right; white-space: nowrap;">
                     <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="btn-whatsapp-direct" title="Enviar accesos y bienvenida por WhatsApp">
-                        💬 WhatsApp
+                         WhatsApp
                     </a>
                     <button class="sim-btn" style="background:${active ? '#DC2626' : '#16A34A'}; color:white; border:none; margin-left:6px;" onclick="window.appState.toggleClientByReseller(this, '${esc(c.id)}', ${active})">
-                        ${active ? '🔴 Pausar' : '🟢 Activar'}
+                        ${active ? 'Pausar' : 'Activar'}
                     </button>
                 </td>
             </tr>`;
@@ -50,7 +50,7 @@ export function renderResellerPanel(resellerData) {
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <div class="receipt-number">PANEL IMPRENTA RESELLER</div>
                     <button type="button" class="mode-chip-btn" style="background:#1E293B; color:#FFF; font-size:11px;" onclick="window.appState.setRole('CLIENT')">
-                        ✒️ Ir al Talonario
+                        ️ Ir al Talonario
                     </button>
                 </div>
                 <div class="emisor-title">${esc(info.name)}</div>
@@ -72,14 +72,14 @@ export function renderResellerPanel(resellerData) {
 
             <!-- Configuración Número WhatsApp de Soporte Propio -->
             <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 16px; margin-bottom: 20px;">
-                <h4 style="font-size: 13px; font-weight: 800; margin-bottom: 6px; color: #0F172A;">📱 Tu WhatsApp de Soporte para tus Clientes</h4>
+                <h4 style="font-size: 13px; font-weight: 800; margin-bottom: 6px; color: #0F172A;">Tu WhatsApp de Soporte para tus Clientes</h4>
                 <p style="font-size: 11px; color: #64748B; margin-bottom: 10px;">
                     Cuando la cuenta de alguno de tus clientes se bloquee o no tenga firma, el botón de soporte los enviará directamente a este número.
                 </p>
                 <form onsubmit="event.preventDefault(); window.appState.updateResellerWhatsapp();" style="display: flex; gap: 8px;">
                     <input type="text" id="reseller-whatsapp-input" class="form-input" value="${esc(info.whatsapp_support || '')}" placeholder="Ej. 0993050689" style="flex: 1;">
                     <button type="submit" class="btn-stamp" style="width: auto; padding: 8px 18px; font-size: 12px; background: #0F172A;">
-                        💾 GUARDAR
+                         GUARDAR
                     </button>
                 </form>
             </div>
@@ -87,13 +87,13 @@ export function renderResellerPanel(resellerData) {
             <!-- Formulario Registrar Nuevo Cliente en tu Lote -->
             <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; padding: 20px; margin-bottom: 22px; box-shadow: 0 1px 6px rgba(15,23,42,0.03);">
                 <h4 style="font-family: var(--font-serif-header); font-size: 17px; font-weight: 800; margin-bottom: 12px; color: #0F172A;">
-                    👤 Registrar Nuevo Cliente en tu Lote (${esc(quota.available_slots)} cupos restantes)
+                     Registrar Nuevo Cliente en tu Lote (${esc(quota.available_slots)} cupos restantes)
                 </h4>
                 <form onsubmit="event.preventDefault(); window.appState.createClientByReseller();" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                     <div style="grid-column: span 2;">
                         <div style="border: 1.5px dashed #CBD5E1; border-radius: 12px; padding: 14px; text-align:center; cursor:pointer; background:#F8FAFC; transition: background 0.15s ease;"
                              onclick="document.getElementById('client-ruc-file').click()">
-                            <div style="font-weight:800; font-size:13px; color:#0F172A;">📄 Subir Certificado de RUC (PDF) para autocompletar</div>
+                            <div style="font-weight:800; font-size:13px; color:#0F172A;">Subir Certificado de RUC (PDF) para autocompletar</div>
                             <div style="font-size:11px; color:#64748B; margin-top:2px;">El sistema extrae los datos fiscales y deja listo el facturador del cliente</div>
                             <input type="file" id="client-ruc-file" accept=".pdf,application/pdf" style="display:none" onchange="window.appState.handleClientRucPdf(this)">
                             <div id="client-ruc-status" style="font-size:11px; font-weight:800; color:#1D4ED8; margin-top:6px;">&nbsp;</div>
@@ -133,7 +133,7 @@ export function renderResellerPanel(resellerData) {
                     </div>
                     <div style="grid-column: span 2; margin-top: 4px;">
                         <button type="submit" class="btn-stamp" style="font-size: 13px; padding: 12px; background: #0F172A;">
-                            ➕ DAR DE ALTA CLIENTE CON FACTURADOR LISTO
+                             DAR DE ALTA CLIENTE CON FACTURADOR LISTO
                         </button>
                     </div>
                 </form>

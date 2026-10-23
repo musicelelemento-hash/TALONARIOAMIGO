@@ -66,7 +66,7 @@ class OfflineQueueService {
     initAutoSync() {
         if (typeof window === 'undefined') return;
         window.addEventListener('online', () => {
-            console.log('📡 Red detectada: Intentando sincronizar cola offline de Talonario Amigo...');
+            console.log('Red detectada: Intentando sincronizar cola offline de Talonario Amigo...');
             this.syncQueue();
         });
     }

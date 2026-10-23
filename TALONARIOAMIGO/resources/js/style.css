@@ -2,30 +2,99 @@
         details > summary::-webkit-details-marker { display: none; }
 
         :root {
-            --paper-bg: #0F172A; /* Fondo Escritorio Sobrio */
-            --paper-card: #FCFBF6; /* Papel Marfil Crema Elegante (#FCFBF6) */
-            --paper-border: #1B2D4F; /* Tinta Azul Offset Real */
-            --paper-line: #1B2D4F;
-            
-            --ink-black: #1B2D4F;
-            --ink-dark-navy: #0F172A; /* Azul Profundo Navy Minimalista */
-            --stamp-red: #D62828; /* NumeraciÃ³n Roja Prensa Offset */
-            --stamp-green: #16A34A; /* Verde Esmeralda Unificado Apple/Linear (#16A34A) */
-            --stamp-blue: #1D4ED8;
-            
-            --font-sans: 'Outfit', -apple-system, sans-serif;
-            --font-hand: 'Caveat', cursive, var(--font-sans); /* Tinta de bolÃ­grafo a mano */
-            --font-serif-header: 'Playfair Display', Georgia, serif;
-            --font-mono-num: 'JetBrains Mono', monospace;
-            --font-stamp: 'Special Elite', cursive, monospace;
-            
-            --shadow-paper: 0 20px 48px -12px rgba(0, 0, 0, 0.45), 0 8px 20px -4px rgba(0, 0, 0, 0.2);
+            /* ==================================================================
+               DESIGN SYSTEM v2 — MINIMALISTA PROFESIONAL
+               Fuente única de verdad. Paleta reducida, una familia tipográfica
+               principal + una monoespaciada, escala de espaciado y elevación.
+               ================================================================== */
 
-            /* JerarquÃ­a de Bordes (Border-Radius Hierarchy Apple) */
-            --radius-container: 18px;
-            --radius-card: 14px;
-            --radius-btn: 12px;
-            --radius-input: 10px;
+            /* --- Color: superficie --- */
+            --ds-bg: #0B1220;            /* fondo app (navy profundo) */
+            --ds-surface: #131C2E;       /* paneles sobre fondo */
+            --ds-surface-2: #1B2540;     /* elevada */
+            --ds-paper: #FFFFFF;         /* papel/documento */
+            --ds-paper-soft: #F8FAFC;    /* fondo de renglones */
+
+            /* --- Color: tinta/texto --- */
+            --ds-text: #0B1220;          /* texto sobre papel */
+            --ds-text-muted: #64748B;    /* secundario */
+            --ds-text-onDark: #F1F5F9;   /* texto sobre fondo oscuro */
+            --ds-text-onDark-muted: #94A3B8;
+
+            /* --- Color: borde --- */
+            --ds-border: #E2E8F0;
+            --ds-border-strong: #CBD5E1;
+            --ds-border-onDark: #26314D;
+
+            /* --- Color: acento y estado (jerarquía única) --- */
+            --ds-accent: #2563EB;        /* acción primaria */
+            --ds-accent-hover: #1D4ED8;
+            --ds-success: #16A34A;
+            --ds-danger: #DC2626;
+            --ds-warning: #D97706;
+
+            /* --- Tipografía: 2 familias --- */
+            --ds-font: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --ds-font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+
+            /* --- Escala tipográfica --- */
+            --ds-fs-xs: 11px;
+            --ds-fs-sm: 13px;
+            --ds-fs-md: 15px;
+            --ds-fs-lg: 18px;
+            --ds-fs-xl: 24px;
+            --ds-fs-2xl: 32px;
+            --ds-fs-3xl: 44px;
+
+            /* --- Espaciado (base 4px) --- */
+            --ds-sp-1: 4px;
+            --ds-sp-2: 8px;
+            --ds-sp-3: 12px;
+            --ds-sp-4: 16px;
+            --ds-sp-5: 24px;
+            --ds-sp-6: 32px;
+            --ds-sp-7: 48px;
+            --ds-sp-8: 64px;
+
+            /* --- Radios --- */
+            --ds-radius-sm: 6px;
+            --ds-radius: 10px;
+            --ds-radius-lg: 16px;
+            --ds-radius-full: 999px;
+
+            /* --- Elevación: 3 niveles, sutiles --- */
+            --ds-shadow-sm: 0 1px 2px rgba(11, 18, 32, 0.06);
+            --ds-shadow: 0 4px 16px rgba(11, 18, 32, 0.08);
+            --ds-shadow-lg: 0 12px 32px rgba(11, 18, 32, 0.12);
+
+            /* --- Movimiento --- */
+            --ds-ease: cubic-bezier(0.4, 0, 0.2, 1);
+            --ds-dur: 180ms;
+
+            /* --- Compatibilidad con tokens legacy --- */
+            --paper-bg: var(--ds-bg);
+            --paper-card: var(--ds-paper);
+            --paper-border: var(--ds-border);
+            --paper-line: var(--ds-border);
+
+            --ink-black: var(--ds-text);
+            --ink-dark-navy: var(--ds-bg);
+            --stamp-red: var(--ds-danger);
+            --stamp-green: var(--ds-success);
+            --stamp-blue: var(--ds-accent);
+
+            --font-sans: var(--ds-font);
+            --font-hand: var(--ds-font);
+            --font-serif-header: var(--ds-font);
+            --font-mono-num: var(--ds-font-mono);
+            --font-stamp: var(--ds-font-mono);
+
+            --shadow-paper: var(--ds-shadow-lg);
+
+            --radius-container: var(--ds-radius-lg);
+            --radius-card: var(--ds-radius);
+            --radius-btn: var(--ds-radius);
+            --radius-input: var(--ds-radius-sm);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -3840,6 +3909,239 @@
     border-bottom: 2px solid #15803D !important;
     background: rgba(240, 253, 244, 0.4) !important;
 }
+
+/* ==========================================================================
+   DESIGN SYSTEM v2 — CAPA MINIMALISTA PROFESIONAL
+   Neutraliza el ruido visual heredado (texturas, sellos, sombras en capas,
+   gradientes, oro "premium", emojis decorativos) y aplica una estética
+   sobria, plana y consistente en toda la aplicación.
+   ========================================================================== */
+
+/* --- Base --- */
+html, body {
+    font-family: var(--ds-font);
+    color: var(--ds-text);
+    background: var(--ds-bg);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+#app-root {
+    font-family: var(--ds-font);
+}
+
+/* --- Superficies: eliminar texturas, lomos, perforaciones y profundidad 3D ---
+   Se conserva el documento de factura (papel) pero plano y limpio. */
+.factura-talonario-container::before,
+.factura-talonario-container::after,
+.stacked-bloc-depth::before,
+.stacked-bloc-depth::after,
+.notched-edge::before,
+.notched-edge::after,
+.leaf-corner-curl,
+.tear-perforation-strip,
+.sheet-ripping-3d,
+.tearing-away,
+.paper-glide-in::after,
+.rip-fold-3d {
+    display: none !important;
+    content: none !important;
+    animation: none !important;
+}
+
+.factura-talonario-container,
+.stacked-bloc-depth,
+.notched-edge {
+    box-shadow: var(--ds-shadow) !important;
+    border-radius: var(--ds-radius-lg) !important;
+    background-image: none !important;
+    transform: none !important;
+}
+
+/* Copia azul: plana, sin watermark ni sellos apilados */
+.copia-azul-container {
+    background-image: none !important;
+}
+.copia-azul-watermark,
+.copia-azul-stamp {
+    display: none !important;
+}
+
+/* Sellos físicos: se vuelven etiquetas planas discretas */
+.stamp-sri-impact,
+.rubber-stamp-sri,
+[class*="stamp-"] {
+    animation: none !important;
+    transform: none !important;
+    mix-blend-mode: normal !important;
+    box-shadow: none !important;
+    background-image: none !important;
+}
+
+/* Componentes "premium"/holográficos/CLI: fuera de la estética sobria */
+.holographic-card,
+.holographic-btn,
+.gold-glow,
+.aura-glow,
+.aura-ring,
+.dubai-invoice-card,
+.dubai-mic-button,
+.dubai-gold-bar {
+    background-image: none !important;
+    box-shadow: var(--ds-shadow-sm) !important;
+    filter: none !important;
+    animation: none !important;
+}
+
+/* Fuera iconografía decorativa tipo emoji pegada por pseudo-elementos */
+.factura-talonario-container::marker,
+.btn-stamp-action::before {
+    display: none !important;
+    content: none !important;
+}
+
+/* --- Botones: un solo lenguaje --- */
+.btn-stamp,
+.btn-stamp-action,
+.mode-chip-btn,
+.mostrador-action-chip,
+.cta-emitir-giant,
+button:not([class]),
+.app-header button {
+    font-family: var(--ds-font) !important;
+    font-weight: 600 !important;
+    border-radius: var(--ds-radius) !important;
+    border: 1px solid transparent !important;
+    box-shadow: none !important;
+    background-image: none !important;
+    transition: background-color var(--ds-dur) var(--ds-ease),
+                border-color var(--ds-dur) var(--ds-ease),
+                transform var(--ds-dur) var(--ds-ease) !important;
+    letter-spacing: 0.01em;
+}
+
+.btn-stamp:hover,
+.btn-stamp-action:hover,
+.mode-chip-btn:hover,
+.cta-emitir-giant:hover {
+    transform: translateY(-1px);
+}
+
+.btn-stamp:active,
+.btn-stamp-action:active,
+.mode-chip-btn:active,
+.cta-emitir-giant:active {
+    transform: translateY(0);
+}
+
+/* --- Inputs: planos, borde inferior sutil, focus de acento --- */
+input[type="text"],
+input[type="number"],
+input[type="email"],
+input[type="tel"],
+input[type="password"],
+select,
+textarea,
+.form-input,
+.cliente-line-input,
+.table-input {
+    font-family: var(--ds-font) !important;
+    border-radius: var(--ds-radius-sm) !important;
+    border: 1px solid var(--ds-border) !important;
+    background: var(--ds-paper) !important;
+    box-shadow: none !important;
+    transition: border-color var(--ds-dur) var(--ds-ease),
+                box-shadow var(--ds-dur) var(--ds-ease) !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+.form-input:focus,
+.cliente-line-input:focus {
+    outline: none !important;
+    border-color: var(--ds-accent) !important;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12) !important;
+    background: var(--ds-paper) !important;
+}
+
+/* --- Tarjetas y métricas --- */
+.stat-card-apple,
+.apple-pay-total-card,
+.dash-hero-card,
+.wizard-card,
+.talonario-tomo-card {
+    border-radius: var(--ds-radius-lg) !important;
+    border: 1px solid var(--ds-border) !important;
+    background-image: none !important;
+    box-shadow: var(--ds-shadow-sm) !important;
+}
+
+/* --- Badges/chips: píldoras planas uniformes --- */
+.badge-pill,
+.badge-active,
+.rimpe-badge,
+.offline-queue-badge,
+.quick-chip,
+.quick-product-chip,
+.mode-chip-btn,
+.frequent-client-chip,
+.network-mode-badge,
+.id-type-badge {
+    border-radius: var(--ds-radius-full) !important;
+    box-shadow: none !important;
+    background-image: none !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.01em;
+}
+
+/* --- Tipografía: eliminar familias decorativas; todo sans + mono para datos --- */
+.emisor-nombre,
+.emisor-actividad,
+.document-type-banner,
+h1, h2, h3, h4, h5,
+.hero-title,
+.dash-hero-card h1,
+.dash-hero-card h2 {
+    font-family: var(--ds-font) !important;
+    letter-spacing: -0.01em !important;
+}
+
+.numeralia-roja,
+.aut-sri-row,
+.serie-row,
+.ruc-title-row,
+.ruc-box-container,
+[class*="mono"],
+.clave-acceso,
+.secuencial {
+    font-family: var(--ds-font-mono) !important;
+}
+
+/* --- Movimiento: respetar preferencias y eliminar animaciones ambientales --- */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+    }
+}
+
+.shimmer,
+.gold-glow,
+.aura-glow,
+.stamp-sri-impact,
+.pulse-glow,
+[class*="particle"] {
+    animation: none !important;
+}
+
+/* --- Fondo de escritorio sobrio y plano --- */
+body {
+    background-image: none !important;
+    background-color: var(--ds-bg) !important;
+}
+
 
 
 

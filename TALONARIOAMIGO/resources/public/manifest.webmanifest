@@ -1,0 +1,26 @@
+{
+  "name": "Talonario Amigo — Facturador SRI",
+  "short_name": "Talonario",
+  "description": "Emite notas de venta y facturas electrónicas del SRI desde tu talonario de siempre.",
+  "lang": "es-EC",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0B1220",
+  "theme_color": "#0B1220",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
