@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Talonario Amigo — La tranquilidad de tu talonario de siempre</title>
+<meta name="description" content="Facturación electrónica del SRI Ecuador que se siente como tu talonario de papel: familiar, táctil y sin complicaciones." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Caveat:wght@500;700&family=JetBrains+Mono:wght@400;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg-1: #0f172a;
+    --bg-2: #16213e;
+    --paper: #fcfbf6;
+    --blue: #1d4ed8;
+    --blue-soft: #ebf3ff;
+    --ink: #1b2d4f;
+    --success: #16a34a;
+    --red: #d62828;
+    --cta: #1e293b;
+    --border: rgba(252, 251, 246, 0.10);
+    --muted: #94a3b8;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Outfit', -apple-system, sans-serif;
+    background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(29, 78, 216, 0.18), transparent 60%),
+      linear-gradient(160deg, var(--bg-1), var(--bg-2));
+    color: var(--paper);
+    min-height: 100vh;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  .container { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+  /* NAV */
+  nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 0; border-bottom: 1px solid var(--border);
+  }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: -0.02em; font-size: 1.05rem; }
+  .brand-mark {
+    width: 34px; height: 34px; border-radius: 10px;
+    background: linear-gradient(160deg, #fcfbf6, #e8e3d4);
+    color: var(--ink); display: grid; place-items: center;
+    font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 0.8rem;
+    box-shadow: inset 0 -2px 0 rgba(74, 46, 27, 0.2);
+  }
+  .nav-links { display: flex; gap: 26px; font-size: 0.92rem; color: var(--muted); }
+  .nav-links a:hover { color: var(--paper); }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 11px 20px; border-radius: 12px; font-weight: 600; font-size: 0.92rem;
+    border: 1px solid transparent; cursor: pointer; transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-primary { background: var(--paper); color: var(--ink); }
+  .btn-primary:hover { box-shadow: 0 8px 24px rgba(252, 251, 246, 0.18); }
+  .btn-ghost { border-color: var(--border); color: var(--paper); }
+  .btn-ghost:hover { background: rgba(252, 251, 246, 0.06); }
+  .btn-accent { background: var(--blue); color: #fff; }
+  .btn-accent:hover { box-shadow: 0 8px 24px rgba(29, 78, 216, 0.4); }
+
+  /* HERO */
+  .hero { padding: 84px 0 64px; display: grid; grid-template-columns: 1.15fr 1fr; gap: 48px; align-items: center; }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 4.4vw, 3.5rem);
+    line-height: 1.08; letter-spacing: -0.02em; font-weight: 700;
+  }
+  .hero h1 em { font-style: normal; color: #9db7ff; }
+  .hero p.lead { color: var(--muted); font-size: 1.12rem; margin: 22px 0 30px; max-width: 34ch; }
+  .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+  .hero-note { margin-top: 18px; font-size: 0.85rem; color: var(--muted); display: flex; gap: 16px; flex-wrap: wrap; }
+  .hero-note span { display: inline-flex; align-items: center; gap: 6px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); }
+
+  /* TALONARIO MOCK */
+  .talonario {
+    position: relative; justify-self: end;
+    width: min(340px, 100%); aspect-ratio: 3 / 4;
+    background: linear-gradient(160deg, #fcfbf6, #efe9db);
+    border-radius: 14px 14px 20px 20px;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.45), inset 0 0 0 1px rgba(0,0,0,0.06);
+    transform: rotate(3deg); padding: 26px 22px;
+    color: var(--ink);
+  }
+  .talonario::before {
+    content: ''; position: absolute; left: 22px; right: 22px; top: 18px;
+    height: 10px; border-radius: 6px;
+    background: repeating-linear-gradient(90deg, #4a2e1b 0 6px, transparent 6px 12px);
+    opacity: 0.7;
+  }
+  .talonario .label { font-family: 'Caveat', cursive; font-size: 1.5rem; color: var(--ink); margin-top: 26px; }
+  .talonario .folio { font-family: 'JetBrains Mono', monospace; color: var(--red); font-weight: 600; font-size: 0.85rem; margin-top: 4px; }
+  .talonario .line { height: 1px; background: linear-gradient(90deg, transparent, rgba(27,45,79,0.35), transparent); margin: 18px 0; }
+  .talonario .row { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; margin: 9px 0; color: #2a3b5e; }
+  .talonario .row.total { font-weight: 700; color: var(--ink); }
+  .talonario .stamp {
+    position: absolute; right: 16px; bottom: 18px;
+    border: 2px solid var(--success); color: var(--success);
+    font-family: 'Special Elite', monospace; font-size: 0.7rem;
+    padding: 5px 10px; border-radius: 6px; transform: rotate(-8deg); opacity: 0.9;
+  }
+
+  /* SECTIONS */
+  section { padding: 72px 0; }
+  .kicker { text-transform: uppercase; letter-spacing: 0.16em; font-size: 0.74rem; color: #9db7ff; font-weight: 600; }
+  h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.6rem, 2.8vw, 2.3rem); margin: 12px 0 16px; letter-spacing: -0.01em; }
+  .sub { color: var(--muted); max-width: 62ch; }
+
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 36px; }
+  .card {
+    background: rgba(252, 251, 246, 0.035);
+    border: 1px solid var(--border); border-radius: 16px; padding: 26px 22px;
+    transition: transform .18s ease, border-color .18s ease;
+  }
+  .card:hover { transform: translateY(-3px); border-color: rgba(157, 183, 255, 0.35); }
+  .card .num { font-family: 'JetBrains Mono', monospace; color: #9db7ff; font-size: 0.85rem; }
+  .card h3 { margin: 12px 0 8px; font-size: 1.12rem; }
+  .card p { color: var(--muted); font-size: 0.94rem; }
+
+  .modes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 36px; }
+  .mode { border: 1px solid var(--border); border-radius: 16px; padding: 24px 22px; background: rgba(252,251,246,0.035); }
+  .mode .emoji { font-size: 1.7rem; }
+  .mode h3 { margin: 10px 0 6px; }
+  .mode p { color: var(--muted); font-size: 0.92rem; }
+  .mode .who { display: inline-block; margin-top: 12px; font-size: 0.76rem; color: #9db7ff; border: 1px solid rgba(157,183,255,0.3); padding: 3px 10px; border-radius: 999px; }
+
+  .b2b {
+    margin-top: 28px; border: 1px solid var(--border); border-radius: 18px;
+    background: linear-gradient(135deg, rgba(29,78,216,0.12), rgba(252,251,246,0.02));
+    padding: 40px; display: grid; grid-template-columns: 1.3fr 1fr; gap: 32px; align-items: center;
+  }
+  .b2b h3 { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 10px; }
+  .b2b p { color: var(--muted); }
+  .packs { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 18px; }
+  .pack { border: 1px solid var(--border); border-radius: 12px; padding: 12px 16px; text-align: center; min-width: 90px; }
+  .pack strong { display: block; font-size: 1.2rem; }
+  .pack span { font-size: 0.72rem; color: var(--muted); }
+
+  .legal { margin-top: 18px; font-size: 0.82rem; color: var(--muted); border-left: 2px solid var(--red); padding-left: 14px; }
+
+  .shots { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 36px; }
+  .shots figure { margin: 0; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; background: rgba(252,251,246,0.03); }
+  .shots img { display: block; width: 100%; height: auto; }
+  .shots figcaption { padding: 12px 16px; font-size: 0.84rem; color: var(--muted); border-top: 1px solid var(--border); }
+  @media (max-width: 900px) { .shots { grid-template-columns: 1fr; } }
+
+  .price-band { display: grid; grid-template-columns: 1.1fr 1fr; gap: 24px; align-items: center; margin-top: 36px; border: 1px solid var(--border); border-radius: 18px; padding: 34px; background: linear-gradient(135deg, rgba(29,78,216,0.10), rgba(252,251,246,0.02)); }
+  .price-band .price { font-family: 'Playfair Display', serif; font-size: 3rem; line-height: 1; font-weight: 700; }
+  .price-band .price small { font-size: 1rem; color: var(--muted); font-family: 'Outfit', sans-serif; font-weight: 400; }
+  .price-band ul { list-style: none; margin: 16px 0 0; color: var(--muted); font-size: 0.94rem; }
+  .price-band li { display: flex; gap: 8px; margin: 8px 0; }
+  .price-band li::before { content: '\2713'; color: var(--success); font-weight: 700; }
+  @media (max-width: 900px) { .price-band { grid-template-columns: 1fr; } }
+
+  .faq { max-width: 780px; margin: 36px auto 0; }
+  .faq details { border: 1px solid var(--border); border-radius: 12px; margin-bottom: 12px; background: rgba(252,251,246,0.03); }
+  .faq summary { cursor: pointer; padding: 16px 20px; font-weight: 600; list-style: none; display: flex; justify-content: space-between; }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after { content: '+'; color: #9db7ff; font-size: 1.2rem; }
+  .faq details[open] summary::after { content: '\2212'; }
+  .faq p { padding: 0 20px 18px; color: var(--muted); font-size: 0.94rem; margin: 0; }
+
+  footer { border-top: 1px solid var(--border); padding: 36px 0; color: var(--muted); font-size: 0.86rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 14px; }
+
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; padding-top: 56px; }
+    .talonario { justify-self: center; transform: rotate(0deg); }
+    .grid-3, .modes { grid-template-columns: 1fr; }
+    .b2b { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <nav>
+    <a class="brand" href="#"><span class="brand-mark">TA</span> Talonario Amigo</a>
+    <div class="nav-links">
+      <a href="#como">Cómo funciona</a>
+      <a href="#modos">Modos</a>
+      <a href="#precios">Precio</a>
+      <a href="#imprentas">Para imprentas</a>
+      <a href="#faq">Preguntas</a>
+    </div>
+    <a class="btn btn-primary" href="#demo">Probar gratis</a>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div>
+      <p class="kicker">Facturación electrónica · SRI Ecuador</p>
+      <h1>La tranquilidad de seguir usando tu <em>talonario de toda la vida</em>.</h1>
+      <p class="lead">No tienes que aprender nada. Emites una factura en segundos, sin errores, y el SRI ya quedó. Tan simple que parece papel.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#demo">Empezar ahora</a>
+        <a class="btn btn-ghost" href="#como">Ver cómo funciona</a>
+      </div>
+      <div class="hero-note">
+        <span><span class="dot"></span> Listo para el SRI</span>
+        <span><span class="dot"></span> Sin instalar nada</span>
+        <span><span class="dot"></span> Funciona en el celular</span>
+      </div>
+    </div>
+
+    <div class="talonario" aria-hidden="true">
+      <div class="label">Factura</div>
+      <div class="folio">001-001-000000126</div>
+      <div class="line"></div>
+      <div class="row"><span>Cliente</span><span>Distribuidora El Sol</span></div>
+      <div class="row"><span>RUC</span><span>1790012345001</span></div>
+      <div class="row"><span>Subtotal</span><span>$ 87.65</span></div>
+      <div class="row"><span>IVA 15%</span><span>$ 13.15</span></div>
+      <div class="row total"><span>TOTAL</span><span>$ 100.80</span></div>
+      <div class="stamp">AUTORIZADO SRI</div>
+    </div>
+  </header>
+
+  <!-- PROBLEMA / SOLUCIÓN -->
+  <section>
+    <p class="kicker">El problema</p>
+    <h2>Facturar ya no debería ser un trámite frío.</h2>
+    <p class="sub">El comerciante y el adulto mayor no quieren un "ERP". Quieren seguir con su costumbre de siempre — pero validada por el SRI, sin papeles físicos y en segundos.</p>
+    <div class="grid-3">
+      <div class="card"><div class="num">01</div><h3>Táctil</h3><p>El talonario de papel Marfil con copia azul y lomo engomado. Se siente como el de toda la vida.</p></div>
+      <div class="card"><div class="num">02</div><h3>Automático</h3><p>Autocompletado de clientes, dictado por voz y clave de acceso generada por ti.</p></div>
+      <div class="card"><div class="num">03</div><h3>Cumplido</h3><p>XML v1.1.0, firma electrónica y envío directo al SRI en un abrir y cerrar de ojos.</p></div>
+    </div>
+  </section>
+
+  <!-- CÓMO FUNCIONA -->
+  <section id="como">
+    <p class="kicker">Cómo funciona</p>
+    <h2>Tres pasos, cero complicaciones.</h2>
+    <div class="grid-3">
+      <div class="card"><div class="num">1</div><h3>Elige a tu cliente</h3><p>Consumidor final o cliente frecuente. La app lee el RUC desde el certificado y autocompleta.</p></div>
+      <div class="card"><div class="num">2</div><h3>Marca los productos</h3><p>Los renglones se suman solos. IVA, subtotal y total, al instante.</p></div>
+      <div class="card"><div class="num">3</div><h3>Emitir</h3><p>Firma electrónica + envío al SRI. La factura queda autorizada y lista para imprimir o enviar.</p></div>
+    </div>
+  </section>
+
+  <!-- MODOS -->
+  <section id="modos">
+    <p class="kicker">Un sistema de modos</p>
+    <h2>Cada persona ve la app a su medida.</h2>
+    <p class="sub">Porque nadie debería abandonar por sentirse abrumado. Un mismo producto, tres caras.</p>
+    <div class="modes">
+      <div class="mode"><div class="emoji">👴</div><h3>Tranquilo</h3><p>Pantalla gigante, un solo botón, letra grande y saludo personal.</p><span class="who">Adulto mayor</span></div>
+      <div class="mode"><div class="emoji">🏪</div><h3>Comerciante</h3><p>Flujo rápido, autocompletar, dictado por voz y resumen del día.</p><span class="who">Bodega / tienda</span></div>
+      <div class="mode"><div class="emoji">⚡</div><h3>Pro</h3><p>Emisión masiva, series, reportes y SRI avanzado.</p><span class="who">Contador / multipunto</span></div>
+    </div>
+  </section>
+
+  <!-- IMPRENTAS -->
+  <section id="imprentas">
+    <p class="kicker">Para imprentas</p>
+    <h2>Vende cuentas y crece con tu red.</h2>
+    <div class="b2b">
+      <div>
+        <h3>Tu imprenta, como distribuidora oficial</h3>
+        <p>Activa cuentas con una clave, vende packs y administra tu lote desde el panel. La imprenta gana; el comerciante factura sin fricción.</p>
+        <div class="packs">
+          <div class="pack"><strong>30</strong><span>cuentas</span></div>
+          <div class="pack"><strong>60</strong><span>cuentas</span></div>
+          <div class="pack"><strong>120</strong><span>cuentas</span></div>
+        </div>
+      </div>
+      <div style="text-align:center">
+        <a class="btn btn-accent" href="#demo">Quiero ser imprenta aliada</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRECIOS -->
+  <section id="precios">
+    <p class="kicker">Precio</p>
+    <h2>Un precio, todo incluido.</h2>
+    <p class="sub">Sin sorpresas ni permanencia. Facturá y cumplí con el SRI desde tu talonario.</p>
+    <div class="price-band">
+      <div>
+        <div class="price">$25<small>/mes</small></div>
+        <p class="sub" style="margin:10px 0 0">por cuenta, todo incluido.</p>
+        <ul>
+          <li>Facturación electrónica SRI ilimitada</li>
+          <li>RIDE/PDF y ticket térmico con QR</li>
+          <li>Funciona en el celular (APK)</li>
+          <li>Soporte por WhatsApp</li>
+        </ul>
+      </div>
+      <div style="text-align:center">
+        <a class="btn btn-primary" href="#demo">Empezar por $25</a>
+        <p class="sub" style="margin-top:14px; font-size:0.85rem">¿Sos imprenta? Precios por pack de 30/60/120 cuentas.</p>
+        <a class="btn btn-ghost" href="#imprentas" style="margin-top:10px">Ver packs de imprenta</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="demo">
+    <div style="text-align:center; padding: 24px 0">
+      <p class="kicker">Empieza hoy</p>
+      <h2 style="margin-top:10px">Tu talonario, ahora inteligente.</h2>
+      <p class="sub" style="margin: 14px auto 26px">Prueba la demo con datos de ejemplo. Emite tu primera factura en menos de un minuto.</p>
+      <a class="btn btn-primary" href="#demo">Probar la demo</a>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq">
+    <p class="kicker">Preguntas</p>
+    <h2>Lo que suelen preguntar.</h2>
+    <div class="faq">
+      <details><summary>¿Funciona sin internet?</summary><p>Sí. El talonario está pensado para offline: emití y dejá los comprobantes en cola; al volver la conexión se sincroniza con el SRI.</p></details>
+      <details><summary>¿Es compatible con el SRI?</summary><p>Genera XML v1.1.0, firma electrónica y envía al SRI. Es una herramienta de apoyo: la responsabilidad tributaria del comprobante es del emisor.</p></details>
+      <details><summary>¿Mis datos están seguros?</summary><p>Cada comercio ve solo lo suyo. Las firmas .p12 se guardan cifradas y la bóveda de archivos vive en Cloudflare R2.</p></details>
+      <details><summary>¿Cómo pago?</summary><p>Por cuenta o por pack de imprenta. Sin permanencia, cancelás cuando quieras.</p></details>
+    </div>
+  </section>
+
+  <!-- LEGAL -->
+  <section id="legal">
+    <p class="kicker">Aviso</p>
+    <h2>Una herramienta de apoyo, no un certificador.</h2>
+    <p class="legal">Talonario Amigo es una herramienta de apoyo a la facturación electrónica. No corrige RUC/CUR/CIM, RIMPE ni tasas del IVA. La responsabilidad tributaria del comprobante es siempre del emisor. Revisa los términos y condiciones antes de emitir.</p>
+  </section>
+
+  <!-- CAPTURAS -->
+  <section id="capturas">
+    <p class="kicker">Capturas</p>
+    <h2>Así se ve tu mostrador.</h2>
+    <p class="sub">Del landing al talonario: la misma calidez, en cualquier pantalla.</p>
+    <div class="shots">
+      <figure><img src="./capturas/app-login.png" alt="Pantalla de ingreso al talonario" loading="lazy" /><figcaption>Ingreso al mostrador</figcaption></figure>
+      <figure><img src="./capturas/landing.png" alt="Landing comercial de Talonario Amigo" loading="lazy" /><figcaption>Landing comercial</figcaption></figure>
+    </div>
+  </section>
+
+  <footer>
+    <span>© 2026 Talonario Amigo — Ecuador</span>
+    <span>Hecho con papel, tinta y mucha paciencia.</span>
+  </footer>
+</div>
+</body>
+</html>

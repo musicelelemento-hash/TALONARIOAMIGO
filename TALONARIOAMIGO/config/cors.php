@@ -17,9 +17,17 @@ return [
 
     'paths' => ['api/*', 'sanctum/csrf-cookie'],
 
-    'allowed_methods' => ['*'],
+    'allowed_methods' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
 
-    'allowed_origins' => ['*'],
+    // Orígenes permitidos. Usa CORS_ALLOWED_ORIGINS (lista separada por comas) para
+    // restringir a tu dominio en producción. Nunca dejes '*' en producción.
+    'allowed_origins' => array_values(array_filter(array_map(
+        'trim',
+        explode(',', (string) env(
+            'CORS_ALLOWED_ORIGINS',
+            'https://talonarioamigo.com,http://localhost:8000,http://localhost:5173,http://127.0.0.1:5173'
+        ))
+    ))),
 
     'allowed_origins_patterns' => [],
 
