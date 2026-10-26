@@ -58,9 +58,12 @@ class DemoSeeder extends Seeder
                 'tipo_regimen'        => 'RIMPE_EMPRENDEDOR',
                 'ambiente'            => '1',
                 'tipo_emision'        => '1',
-                'firma_p12_path'      => null,
+                // Firma placeholder SOLO para la demo (cuenta de Pruebas): permite
+                // navegar historial/UI sin una .p12 real. La emisión real requiere
+                // el .p12 del cliente.
+                'firma_p12_path'      => 'demo/firma-demo.p12',
                 'firma_password_encrypted' => null,
-                'firma_expires_at'    => null,
+                'firma_expires_at'    => now()->addYear(),
                 'logo_path'           => null,
                 'updated_at'          => now(),
                 'created_at'          => now(),
@@ -246,9 +249,9 @@ class DemoSeeder extends Seeder
      */
     private function generarClaveAcceso(string $ruc, string $ambiente, string $serie, int $secuencial): string
     {
-        $fecha = now()->format('dmY');               // 8 dígitos
+        $fecha = '01012026';                         // fecha fija -> clave determinista (idempotente)
         $tipo  = '01';                                // 2 (Factura)
-        $codigo = str_pad((string) random_int(1, 99999999), 8, '0', STR_PAD_LEFT); // 8
+        $codigo = str_pad((string) $secuencial, 8, '0', STR_PAD_LEFT); // 8
         $sec = str_pad((string) $secuencial, 9, '0', STR_PAD_LEFT); // 9
 
         $base = $fecha . $tipo . $ruc . $ambiente . $serie . $sec . $codigo; // 47

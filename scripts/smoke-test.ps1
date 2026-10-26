@@ -58,7 +58,11 @@ try {
 if ($token) {
     try {
         $c = Invoke-RestMethod -Uri "$ApiBase/api/v1/facturacion/comprobantes" -Headers @{ 'Accept' = 'application/json'; 'Authorization' = "Bearer $token" } -TimeoutSec 60
-        $count = if ($c.data) { $c.data.Count } elseif ($c -is [array]) { $c.Count } else { 0 }
+        $count = 0
+        if ($null -ne $c.total) { $count = [int]$c.total }
+        elseif ($c.comprobantes) { $count = @($c.comprobantes).Count }
+        elseif ($c.data) { $count = @($c.data).Count }
+        elseif ($c -is [array]) { $count = $c.Count }
         Report "facturacion/comprobantes" $true ("items=" + $count)
     } catch {
         Report "facturacion/comprobantes" $false $_.Exception.Message
