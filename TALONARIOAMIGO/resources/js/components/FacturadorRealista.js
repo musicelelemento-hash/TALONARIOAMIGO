@@ -381,7 +381,7 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                             <div class="voice-wave-bar"></div>
                         </div>
                         <div>
-                            <strong style="font-size: 12px; color: #4ADE80;"> Escuchando... Di en voz alta:</strong>
+                            <strong style="font-size: 12px; color: #4ADE80;">Escuchando... Di en voz alta:</strong>
                             <div style="font-size: 11px; color: #E2E8F0; margin-top: 2px;">
                                 ${emisorData?.voiceLiveTranscript ? `"${esc(emisorData.voiceLiveTranscript)}"` : 'Ej: "Cliente Juan Pérez cédula 0928374651 teléfono 0993050689 correo juan@gmail.com" o "2 quintales de café a 45"'}
                             </div>
@@ -406,7 +406,7 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                     <button type="button" class="quick-product-chip" onclick="window.appState.addQuickProduct('Quintal de Café', 45.00)">Café ($45.00)</button>
                     <button type="button" class="quick-product-chip" onclick="window.appState.addQuickProduct('Quintal de Cacao Fino', 60.00)">Cacao ($60.00)</button>
                     <button type="button" class="quick-product-chip" onclick="window.appState.addQuickProduct('Caja de Banano', 6.50)">Banano ($6.50)</button>
-                    <button type="button" class="quick-product-chip" onclick="window.appState.addEmptyRow()">Fila</button>
+                    <button type="button" class="quick-product-chip" onclick="window.appState.addEmptyRow()">+ Fila</button>
                 </div>
             ` : ''}
 
@@ -594,7 +594,7 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                         </button>
                         <div style="display: flex; gap: 8px;">
                             <button type="button" onclick="window.appState.trigger3DTearAnimation()" style="background: #16A34A; border: none; color: #FFFFFF; padding: 8px 18px; border-radius: 10px; font-size: 12px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 14px rgba(22,163,74,0.35);">
-                                <span> Desprender Hoja (Física 3D)</span>
+                                <span>Desprender Hoja (Física 3D)</span>
                             </button>
                             <button type="button" onclick="window.appState.close3DExperienceModal()" style="background: #1E293B; border: 1px solid #475569; color: #F8FAFC; padding: 8px 14px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer;">
                                 Listo

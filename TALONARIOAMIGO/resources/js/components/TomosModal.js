@@ -195,7 +195,7 @@ export function renderTomosModal(activeTomoMonth = 'AGOSTO 2026', tomosData = nu
                         <span>Girar Bloc en 3D</span>
                     </button>
                     <button type="button" class="btn-stamp" style="background: #0F172A; width: auto; padding: 11px 28px; font-size: 13px; display: inline-flex; align-items: center; gap: 8px;" onclick="window.appState.closeTomosModal()">
-                        <span> Volver a Emitir al Talonario</span>
+                        <span>Volver a Emitir al Talonario</span>
                     </button>
                 </div>
             </div>
