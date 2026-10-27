@@ -52,6 +52,20 @@ services:
         value: "30"
       - key: FACTURACION_CA_FILE
         value: ""
+      # Almacenamiento Cloudflare R2 (bóveda de XML/RIDE) — secretos se definen en el panel
+      - key: R2_ACCESS_KEY_ID
+        sync: false
+      - key: R2_SECRET_ACCESS_KEY
+        sync: false
+      - key: R2_ENDPOINT
+        sync: false
+      - key: R2_BUCKET
+        value: talonario-amigo-vault
+      # Email (Resend)
+      - key: RESEND_API_KEY
+        sync: false
+      - key: MAIL_FROM_ADDRESS
+        sync: false
       - key: DEFAULT_SUPPORT_WHATSAPP
         value: "593993050689"
 

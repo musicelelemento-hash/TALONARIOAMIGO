@@ -5,31 +5,22 @@ namespace App\Services;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
+/**
+ * Bóveda de comprobantes (XML firmado y PDF/RIDE).
+ *
+ * Escribe en Cloudflare R2 (S3-compatible) cuando las credenciales R2_* están
+ * configuradas; si no, o si R2 no está disponible, cae al disco local sin
+ * interrumpir la emisión. Requiere `league/flysystem-aws-s3-v3` instalado
+ * (declarado en composer.json) para que el driver S3 de R2 funcione.
+ */
 class R2StorageService
 {
-    private $accountId;
-    private $accessKey;
-    private $secretKey;
-    private $endpoint;
-    private $bucket;
-
-    public function __construct()
-    {
-        $this->accountId = env('CLOUDFLARE_ACCOUNT_ID', env('R2_ACCOUNT_ID'));
-        $this->accessKey = env('R2_ACCESS_KEY_ID');
-        $this->secretKey = env('R2_SECRET_ACCESS_KEY');
-        $this->endpoint  = env('R2_ENDPOINT');
-        $this->bucket    = env('R2_BUCKET', env('R2_BUCKET_NAME', 'talonario-amigo-vault'));
-    }
-
     /**
-     * Guardar XML firmado en almacenamiento local / R2
+     * Guardar XML firmado
      */
     public function guardarXml($claveAcceso, $xmlContent)
     {
-        $path = "comprobantes/xml/{$claveAcceso}.xml";
-        Storage::disk('local')->put($path, $xmlContent);
-        return $path;
+        return $this->guardar("comprobantes/xml/{$claveAcceso}.xml", $xmlContent);
     }
 
     /**
@@ -37,11 +28,7 @@ class R2StorageService
      */
     public function obtenerXml($claveAcceso)
     {
-        $path = "comprobantes/xml/{$claveAcceso}.xml";
-        if (Storage::disk('local')->exists($path)) {
-            return Storage::disk('local')->get($path);
-        }
-        return null;
+        return $this->leer("comprobantes/xml/{$claveAcceso}.xml");
     }
 
     /**
@@ -49,9 +36,7 @@ class R2StorageService
      */
     public function guardarPdf($claveAcceso, $pdfContent)
     {
-        $path = "comprobantes/pdf/{$claveAcceso}.pdf";
-        Storage::disk('local')->put($path, $pdfContent);
-        return $path;
+        return $this->guardar("comprobantes/pdf/{$claveAcceso}.pdf", $pdfContent);
     }
 
     /**
@@ -59,10 +44,55 @@ class R2StorageService
      */
     public function obtenerPdf($claveAcceso)
     {
-        $path = "comprobantes/pdf/{$claveAcceso}.pdf";
-        if (Storage::disk('local')->exists($path)) {
-            return Storage::disk('local')->get($path);
+        return $this->leer("comprobantes/pdf/{$claveAcceso}.pdf");
+    }
+
+    /**
+     * ¿Están presentes las credenciales mínimas para usar R2?
+     */
+    private function usarR2(): bool
+    {
+        return !empty(env('R2_ACCESS_KEY_ID'))
+            && !empty(env('R2_SECRET_ACCESS_KEY'))
+            && !empty(env('R2_ENDPOINT'));
+    }
+
+    /**
+     * Escribe en R2 si está configurado; si no (o si falla), en disco local.
+     */
+    private function guardar(string $path, $content)
+    {
+        if ($this->usarR2()) {
+            try {
+                Storage::disk('r2')->put($path, $content);
+                Log::info("[R2Storage] Guardado en R2: {$path}");
+                return $path;
+            } catch (\Throwable $e) {
+                Log::warning("[R2Storage] R2 no disponible ({$e->getMessage()}); usando disco local para {$path}.");
+            }
         }
-        return null;
+
+        Storage::disk('local')->put($path, $content);
+        return $path;
+    }
+
+    /**
+     * Lee desde R2 si está configurado; si no (o si falla), desde disco local.
+     */
+    private function leer(string $path)
+    {
+        if ($this->usarR2()) {
+            try {
+                $disk = Storage::disk('r2');
+                if ($disk->exists($path)) {
+                    return $disk->get($path);
+                }
+            } catch (\Throwable $e) {
+                Log::warning("[R2Storage] Error leyendo de R2: " . $e->getMessage());
+            }
+        }
+
+        $local = Storage::disk('local');
+        return $local->exists($path) ? $local->get($path) : null;
     }
 }
