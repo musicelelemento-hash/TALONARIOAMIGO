@@ -69,7 +69,7 @@ class SupabaseStorageService
             try {
                 $contentType = str_ends_with($path, '.pdf') ? 'application/pdf' : 'application/xml';
                 $res = Http::withToken($this->key)
-                    ->withHeaders(['x-upsert' => 'true'])
+                    ->withHeaders(['apikey' => $this->key, 'x-upsert' => 'true'])
                     ->withBody($content, $contentType)
                     ->post("{$this->url}/storage/v1/object/{$this->bucket}/{$path}");
 
@@ -92,6 +92,7 @@ class SupabaseStorageService
         if ($this->configurado()) {
             try {
                 $res = Http::withToken($this->key)
+                    ->withHeaders(['apikey' => $this->key])
                     ->get("{$this->url}/storage/v1/object/{$this->bucket}/{$path}");
 
                 if ($res->successful()) {
