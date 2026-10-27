@@ -57,7 +57,7 @@ Route::get('/health/db', function () {
         ],
         'integrations' => [
             'resend_email' => !empty(env('RESEND_API_KEY')),
-            'r2_vault' => !empty(env('R2_ACCESS_KEY_ID')),
+            'supabase_storage' => !empty(env('SUPABASE_SERVICE_ROLE_KEY')),
             'keep_alive' => true
         ],
         'timestamp' => now()->toIso8601String()

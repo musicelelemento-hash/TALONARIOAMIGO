@@ -326,8 +326,8 @@ export class AppManager {
                 msg: 'API Resend verificada en talonarioamigo.com. Plantilla HTML en papel marfil y WhatsApp fallback listos.'
             },
             '16_cloud_vault': {
-                name: 'Agente 16: CLOUD_VAULT_R2_ARCHITECT',
-                msg: 'Bóveda Cloudflare R2 sin costo de egreso enlazada para archivo legal de comprobantes por 7 años.'
+                name: 'Agente 16: VAULT_ARCHITECT',
+                msg: 'Bóveda Supabase Storage enlazada para archivo legal de comprobantes por 7 años.'
             },
             '17_supabase_data': {
                 name: 'Agente 17: SUPABASE_DATA_GOVERNOR',

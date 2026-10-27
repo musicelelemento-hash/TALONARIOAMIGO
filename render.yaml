@@ -52,14 +52,12 @@ services:
         value: "30"
       - key: FACTURACION_CA_FILE
         value: ""
-      # Almacenamiento Cloudflare R2 (bóveda de XML/RIDE) — secretos se definen en el panel
-      - key: R2_ACCESS_KEY_ID
+      # Almacenamiento Supabase Storage (bóveda de XML/RIDE)
+      - key: SUPABASE_URL
         sync: false
-      - key: R2_SECRET_ACCESS_KEY
+      - key: SUPABASE_SERVICE_ROLE_KEY
         sync: false
-      - key: R2_ENDPOINT
-        sync: false
-      - key: R2_BUCKET
+      - key: SUPABASE_STORAGE_BUCKET
         value: talonario-amigo-vault
       # Email (Resend)
       - key: RESEND_API_KEY

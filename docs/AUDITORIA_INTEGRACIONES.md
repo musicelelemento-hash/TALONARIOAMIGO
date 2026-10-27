@@ -12,7 +12,7 @@
 | **SRI (SOAP)** | ✅ Código correcto | Prueba real con `.p12` en ambiente Pruebas (1) |
 | **Base de datos** | ⚠️ Config mixta | Decidir: Supabase **o** Postgres de Render (hoy `render.yaml` usa Render) |
 | **Resend (email)** | ⚠️ Código listo, sin credenciales | `RESEND_API_KEY` + dominio verificado + adjuntar PDF/XML |
-| **R2 (almacenamiento)** | ⚠️ Solo disco local | Cableado ahora; falta `composer install` + credenciales R2 |
+| **Supabase Storage** | ✅ Conectado (REST API, sin tarjeta) | Falta `SUPABASE_SERVICE_ROLE_KEY` + crear el bucket |
 | **CORS** | ✅ Restringido | — |
 | **WhatsApp soporte** | ✅ Configurado | — |
 
@@ -59,18 +59,19 @@ Hay **dos configuraciones que se contradicen**:
 
 ---
 
-## 5. R2 (almacenamiento) — ⚠️ CABLEADO, FALTA INSTALAR + CREDENCIALES
+## 5. Supabase Storage (almacenamiento) — ✅ CONECTADO (REST API)
 
-**Antes:** `R2StorageService` leía las variables R2 pero **solo escribía en disco local** (R2 era un stub).
+**Elección:** Supabase Storage en lugar de Cloudflare R2 (sin tarjeta, gratis 1 GB, mismo stack de Supabase).
 
-**Ahora (esta auditoría):**
-- ✅ Añadido disco `r2` en `config/filesystems.php` (S3-compatible, `region=auto`, `use_path_style_endpoint=true`).
-- ✅ `R2StorageService` escribe en R2 cuando `R2_ACCESS_KEY_ID`/`R2_SECRET_ACCESS_KEY`/`R2_ENDPOINT` están presentes; si no, o si R2 falla, cae al disco local sin romper la emisión.
-- ✅ Añadidas `R2_*` a `render.yaml` (`sync: false` para secretos).
+**Cómo funciona ahora:**
+- ✅ Nuevo `app/Services/SupabaseStorageService.php` sube/lee XML y PDF por la **REST API** de Supabase Storage (no requiere `league/flysystem-aws-s3-v3`).
+- ✅ Cuando `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` están configuradas → escribe en Supabase; si no, o si falla → cae al disco local sin romper la emisión.
+- ✅ El controlador de facturación ya usa `SupabaseStorageService` (se eliminó `R2StorageService`).
+- ✅ `.env`, `.env.example` y `render.yaml` usan `SUPABASE_*`.
 
 **Falta (tú):**
-1. `composer require league/flysystem-aws-s3-v3:^1.0` para instalar el driver S3 (actualiza `composer.json` **y** `composer.lock` a la vez; no se commiteó el `composer.json` para no desincronizar el lock).
-2. Crear el bucket en Cloudflare R2 y pegar `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_ENDPOINT` (ej. `https://<accountid>.r2.cloudflarestorage.com`) en el panel de Render.
+1. Obtener la **`SUPABASE_SERVICE_ROLE_KEY`** (Supabase → Settings → API → `service_role`). Va en `.env` (local) y en el panel de Render. NUNCA en el navegador.
+2. Crear el bucket `talonario-amigo-vault` en Supabase → Storage → New bucket (privado).
 
 ---
 
@@ -84,7 +85,6 @@ Hay **dos configuraciones que se contradicen**:
 
 ```bash
 cd TALONARIOAMIGO
-composer install                # instala el driver S3 de R2
 php artisan test                # 17 tests (incluye emisión end-to-end)
 php artisan migrate --force     # en la BD elegida (Supabase o Render)
 GET /api/health                 # → {"database":"active"}

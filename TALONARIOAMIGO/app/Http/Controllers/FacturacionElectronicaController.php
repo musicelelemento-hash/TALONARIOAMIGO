@@ -8,7 +8,7 @@ use App\Models\ComprobanteItem;
 use App\Models\ClienteFrecuente;
 use App\Services\FacturacionElectronicaLibrary;
 use App\Services\InvoiceValidationService;
-use App\Services\R2StorageService;
+use App\Services\SupabaseStorageService;
 use App\Services\ResendService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -177,11 +177,11 @@ class FacturacionElectronicaController extends Controller
         // 3. Diagnóstico Inteligente de la Respuesta SRI
         $diagnostico = $this->validator->diagnosticarRespuestaSri($resultado['autorizacion']);
 
-        // Guardar XML firmado en almacenamiento local / R2 Vault
+        // Guardar XML firmado en Supabase Storage (con respaldo en disco local)
         $xmlPath = null;
         try {
-            $r2 = app(R2StorageService::class);
-            $xmlPath = $r2->guardarXml($resultado['claveAcceso'], $resultado['xmlFirmado'] ?? '');
+            $storage = app(SupabaseStorageService::class);
+            $xmlPath = $storage->guardarXml($resultado['claveAcceso'], $resultado['xmlFirmado'] ?? '');
         } catch (\Throwable $xmlEx) {
             \Log::warning("[FacturacionController] Advertencia al persistir XML: " . $xmlEx->getMessage());
         }
@@ -738,8 +738,8 @@ class FacturacionElectronicaController extends Controller
             return response()->json(['error' => 'Comprobante no encontrado'], 404);
         }
 
-        $r2 = app(R2StorageService::class);
-        $xmlContent = $r2->obtenerXml($claveAcceso);
+        $storage = app(SupabaseStorageService::class);
+        $xmlContent = $storage->obtenerXml($claveAcceso);
 
         if (!$xmlContent) {
             return response()->json(['error' => 'XML no encontrado en almacenamiento'], 404);

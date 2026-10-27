@@ -258,7 +258,7 @@ export function renderSuperAdminPanel(dashboardData, activeTab = 'resellers') {
                             <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
                                 <div>
                                     <strong style="font-size: 13px; color: #0F172A;">Agente 11: EDGE_INFRA_ENGINEER</strong><br>
-                                    <small style="color: #64748B;">Cloudflare Pages, Cloudflare R2 y base de datos Supabase Postgres.</small>
+                                    <small style="color: #64748B;">Cloudflare Pages, Supabase Storage y base de datos Supabase Postgres.</small>
                                 </div>
                                 <button type="button" class="sim-btn" style="background: #0F172A; color: white; padding: 5px 12px; font-size: 11px;" onclick="window.appState.runAgentDiagnostic('11_edge')">
                                      Ping Infraestructura
