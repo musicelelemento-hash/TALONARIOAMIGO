@@ -13,5 +13,17 @@ export default defineConfig({
     outDir: '../public/dist',
     emptyOutDir: true,
     target: 'es2018',
+    rollupOptions: {
+      output: {
+        // Divide las librerías pesadas en chunks separados (P1-3): el núcleo de la
+        // app queda liviano y three/pdfjs/qrcode se cargan en paralelo y se cachean
+        // por separado. tesseract.js ya usa import() dinámico en gravityScanner.
+        manualChunks: {
+          three: ['three'],
+          ocr: ['pdfjs-dist'],
+          qrcode: ['qrcode'],
+        },
+      },
+    },
   },
 });

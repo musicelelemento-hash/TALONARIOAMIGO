@@ -272,24 +272,23 @@ export function renderLoginScreen() {
             <section class="landing-section landing-section--alt" id="seccion-admin">
                 <div class="landing-wrap">
                     <div class="landing-head">
-                        <span class="landing-eyebrow">Administrador · gobernanza</span>
-                        <h2 class="landing-title">Centro de mando global, criptografía zero-trust y Postgres</h2>
+                        <span class="landing-eyebrow">Administrador</span>
+                        <h2 class="landing-title">Un panel para gestionar tu red de imprentas</h2>
                         <p class="landing-lead">
-                            Agentes autónomos y computación serverless de bajo costo para procesar comprobantes con
-                            latencia inferior a 100 ms.
+                            Imprentas, lotes, clientes y márgenes en un solo lugar, con control total de tu operación.
                         </p>
                     </div>
 
                     <div class="card-grid" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr));">
                         <div class="card">
                             <div class="card-icon">${ICONS.layers}</div>
-                            <div class="card-title">20 agentes autónomos</div>
-                            <div class="card-text">Cuatro niveles de mando: orquestación, escuadrón SRI, bóvedas criptográficas y B2B.</div>
+                            <div class="card-title">Control total de tu operación</div>
+                            <div class="card-text">Imprentas, lotes y clientes organizados en un solo panel.</div>
                         </div>
                         <div class="card">
                             <div class="card-icon">${ICONS.shield}</div>
-                            <div class="card-title">Criptografía zero-trust</div>
-                            <div class="card-text">Firma local XAdES-BES en el cliente. La clave privada <strong>.p12</strong> nunca se expone en servidores públicos.</div>
+                            <div class="card-title">Tu firma, protegida</div>
+                            <div class="card-text">Tu firma electrónica se queda en tu dispositivo. La clave privada nunca se expone en servidores públicos.</div>
                         </div>
                         <div class="card">
                             <div class="card-icon">${ICONS.database}</div>
@@ -305,11 +304,11 @@ export function renderLoginScreen() {
 
                     <div class="landing-callout">
                         <div>
-                            <div class="landing-callout-title">Consola de gobernanza multi-agente</div>
-                            <div class="landing-callout-text">Ejecuta diagnósticos y revisa métricas desde el panel del dueño.</div>
+                            <div class="landing-callout-title">Panel del dueño</div>
+                            <div class="landing-callout-text">Gestiona imprentas, lotes y métricas desde un solo lugar.</div>
                         </div>
                         <button type="button" class="btn btn-primary" onclick="window.appState.exploreRole('SUPER_ADMIN')">
-                            Abrir centro de mando ${ICONS.arrow}
+                            Abrir panel del dueño ${ICONS.arrow}
                         </button>
                     </div>
                 </div>
@@ -456,7 +455,7 @@ export function renderLoginScreen() {
                         </details>
                         <details>
                             <summary>¿Mi firma electrónica .p12 está segura?</summary>
-                            <div class="faq-body">Sí. Aplicamos arquitectura <strong>zero-trust</strong> con cifrado AES-256. La firma se realiza en tu propio dispositivo y la clave privada nunca viaja desprotegida a servidores externos.</div>
+                            <div class="faq-body">Sí. Tu firma se realiza en tu propio dispositivo y la clave privada nunca viaja desprotegida a servidores externos. Esa firma queda cifrada y solo tú puedes usarla.</div>
                         </details>
                         <details>
                             <summary>¿Sirve para el régimen RIMPE Negocio Popular y Emprendedor?</summary>

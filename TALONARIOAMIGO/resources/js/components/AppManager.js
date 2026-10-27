@@ -47,7 +47,7 @@ export class AppManager {
             // Inicia sesión sólo si ya existe un token Sanctum guardado en este dispositivo.
             isLoggedIn: !!localStorage.getItem('ta_auth_token'),
             isDemoGuest: false,         // Invitado en Modo Demostración sin registrarse
-            isDemoMode: true,           // Modo Demostración activo por defecto
+            isDemoMode: true,           // Modo Práctica activo por defecto
             isOnboardingModalOpen: false, // Modal rápido de firma y RUC
             isConfigured: true,        // RUC y datos emisor
             hasSignature: true,         // Archivo .p12 subido
@@ -55,6 +55,7 @@ export class AppManager {
             currentDocNumber: 126,
             supportWhatsapp: "",
             experienceMode: 'comerciante', // 'tranquilo', 'comerciante', 'pro'
+            tranquiloStep: 1,               // Paso actual del wizard Tranquilo (A1)
             isShowingBlueCopy: false,
             businessLogo: localStorage.getItem('ta_business_logo') || '',
             thermalWidth: getThermalWidth(), // 58mm o 80mm para ticket térmico POS
@@ -359,7 +360,7 @@ export class AppManager {
                     <div style="display: flex; align-items: center; gap: 8px;">
                         <span class="demo-top-strip-badge">
                             <span class="live-dot-pulse"></span>
-                            DEMO EN VIVO
+                            MODO PRÁCTICA · no llega al SRI
                         </span>
                         <span style="font-size: 12px; color: #FFFFFF; font-weight: 700;">
                             Vista actual: <strong style="color: #FDE68A;">${activeRole === 'CLIENT' ? 'Comerciante' : activeRole === 'RESELLER' ? 'Imprenta Aliada' : 'Administrador'}</strong>
@@ -411,7 +412,7 @@ export class AppManager {
             this.showToast('¡Bienvenido al Panel de Imprenta Aliada! Explora clientes, lotes y márgenes B2B.');
         } else if (role === 'SUPER_ADMIN') {
             this.evaluateStateAndRender();
-            this.showToast('¡Centro de Mando Administrador activo! Explora los 20 Agentes y Métricas.');
+            this.showToast('¡Panel de Administrador activo! Gestiona imprentas, lotes y métricas.');
         }
     }
 
@@ -432,7 +433,7 @@ export class AppManager {
 
         setTimeout(() => {
             this.loadDemoSampleData(false);
-            this.showToast('¡Bienvenido al Modo Demostración! Toca el papel o dicta productos por voz ');
+            this.showToast('¡Bienvenido al Modo Práctica! Nada de aquí llega al SRI. Toca el papel o dicta productos por voz.');
         }, 150);
     }
 
@@ -458,7 +459,7 @@ export class AppManager {
 
         this.state.isDemoMode = isDemo;
         this.evaluateStateAndRender();
-        this.showToast(isDemo ? 'Modo Demostración activado (Simulación legal sin riesgo)' : 'Modo Real SRI activado (Emisión legal)');
+        this.showToast(isDemo ? 'Modo Práctica activado (nada llega al SRI)' : 'Modo Real activado (emisión al SRI)');
     }
 
     loadDemoSampleData(showToast = true) {
@@ -538,7 +539,67 @@ export class AppManager {
     setExperienceMode(mode) {
         this.triggerHaptic(15);
         this.state.experienceMode = mode;
+        if (mode === 'tranquilo') this.state.tranquiloStep = 1;
         this.evaluateStateAndRender();
+    }
+
+    // A1 · WIZARD MODO TRANQUILO — navegación por pasos sin perder lo ya escrito.
+    setTranquiloStep(n) {
+        this.triggerHaptic(20);
+        soundFx.playPaperSlide();
+        this.state.tranquiloStep = n;
+        document.querySelectorAll('.tranquilo-paso').forEach(el => { el.style.display = 'none'; });
+        const target = document.getElementById('tranquilo-paso-' + n);
+        if (target) {
+            target.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        const indicator = document.getElementById('tranquilo-step-indicator');
+        if (indicator) indicator.innerText = 'Paso ' + n + ' de 3';
+        if (n === 3) this.tranquiloActualizarResumen();
+    }
+
+    tranquiloConsumidorFinal() {
+        this.triggerHaptic(20);
+        soundFx.playPencil();
+        const nom = document.getElementById('cliente-nombre-input');
+        const ruc = document.getElementById('cliente-ruc-input');
+        const dir = document.getElementById('cliente-direccion-input');
+        if (nom) nom.value = 'CONSUMIDOR FINAL';
+        if (ruc) ruc.value = '9999999999999';
+        if (dir) dir.value = '';
+        this.setTranquiloStep(2);
+    }
+
+    tranquiloMostrarCliente() {
+        this.triggerHaptic(15);
+        const form = document.getElementById('tranquilo-cliente-form');
+        if (form) form.style.display = 'block';
+    }
+
+    tranquiloContinuar() {
+        this.triggerHaptic(20);
+        soundFx.playPaperSlide();
+        if (this.state.tranquiloStep === 1) {
+            const nom = (document.getElementById('cliente-nombre-input')?.value || '').trim();
+            const ruc = (document.getElementById('cliente-ruc-input')?.value || '').trim();
+            if (!nom) { this.showToast('Escribe el nombre del cliente o toca "Consumidor Final".'); return; }
+            if (!ruc) { this.showToast('Escribe la cédula o RUC del cliente.'); return; }
+        }
+        if (this.state.tranquiloStep === 2) {
+            const total = document.getElementById('grand-total-display')?.innerText || '$0.00';
+            if (total === '$0.00') { this.showToast('Agrega al menos un producto con precio.'); return; }
+        }
+        this.setTranquiloStep(this.state.tranquiloStep + 1);
+    }
+
+    tranquiloActualizarResumen() {
+        const nom = document.getElementById('cliente-nombre-input')?.value || 'Consumidor Final';
+        const total = document.getElementById('grand-total-display')?.innerText || '$0.00';
+        const clienteEl = document.getElementById('tranquilo-resumen-cliente');
+        const totalEl = document.getElementById('tranquilo-resumen-total');
+        if (clienteEl) clienteEl.innerText = nom;
+        if (totalEl) totalEl.innerText = total;
     }
 
     // EFECTOS DE ENFOQUE Y ESCRITURA ANALÓGICA
@@ -987,6 +1048,7 @@ export class AppManager {
         if (this.blueCopyTimer) clearTimeout(this.blueCopyTimer);
         this.state.isShowingBlueCopy = false;
         this.state.currentDocNumber += 1;
+        this.state.tranquiloStep = 1; // Nueva hoja: reinicia el wizard Tranquilo
         soundFx.playPaperSlide();
         this.evaluateStateAndRender();
 
@@ -1107,6 +1169,17 @@ export class AppManager {
         const waUrl = `https://wa.me/?text=${encodeURIComponent(msg)}`;
         window.open(waUrl, '_blank');
         this.showToast('Abriendo WhatsApp para compartir comprobante...');
+    }
+
+    // AYÚDAME — WhatsApp humano a un toque (A5). Usa el soporte de la imprenta si está
+    // configurado; si no, cae al número por defecto del dueño.
+    openHelpWhatsapp() {
+        this.triggerHaptic(20);
+        const soporte = this.state.supportWhatsapp || '593993050689';
+        const msg = 'Hola 🙏, necesito ayuda con mi Talonario Amigo.';
+        const waUrl = `https://wa.me/${soporte}?text=${encodeURIComponent(msg)}`;
+        window.open(waUrl, '_blank');
+        this.showToast('Abriendo WhatsApp de soporte...');
     }
 
     // SOPORTE VIBRACIÓN HÁPTICA MÓVIL

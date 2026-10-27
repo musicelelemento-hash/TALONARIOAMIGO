@@ -27,6 +27,111 @@ function renderMechanicalOdometer(numStr, isBlueCopy = false) {
     `;
 }
 
+// MODO TRANQUILO (A1): wizard de 3 pasos — un botón por pantalla, cero jerga.
+// Reutiliza los mismos IDs de inputs que el flujo normal para que la emisión
+// (collectEmitPayload / recalculateTotals) siga funcionando sin cambios.
+function renderTranquiloWizard(emisorData, docNumStr, isDemo) {
+    const step = emisorData?.tranquiloStep || 1;
+    const isDemoGuest = !!emisorData?.isDemoGuest;
+
+    return `
+        <header class="mostrador-console-header">
+            <div class="mostrador-console-left">
+                <div class="mostrador-brand-pill">
+                    <span class="mostrador-brand-icon">TA</span>
+                    <div class="mostrador-brand-texts">
+                        <span class="mostrador-brand-title">Talonario Amigo</span>
+                        <span class="mostrador-brand-sub">${isDemo ? 'Modo Práctica · no llega al SRI' : 'Emisión Real SRI'}</span>
+                    </div>
+                </div>
+                <div class="mostrador-mode-segmented">
+                    <button type="button" class="mostrador-seg-btn active" onclick="window.appState.setExperienceMode('tranquilo')">Tranquilo</button>
+                    <button type="button" class="mostrador-seg-btn" onclick="window.appState.setExperienceMode('comerciante')">Comerciante</button>
+                    <button type="button" class="mostrador-seg-btn" onclick="window.appState.setExperienceMode('pro')">Pro</button>
+                </div>
+            </div>
+            <div class="mostrador-console-right">
+                ${isDemoGuest ? `<button type="button" class="mostrador-action-chip mostrador-cta-register" onclick="window.appState.openRegister()">Activar Mi RUC</button>` : ''}
+            </div>
+        </header>
+
+        <div class="tranquilo-wizard">
+            <div class="tranquilo-progreso"><span id="tranquilo-step-indicator">Paso ${step} de 3</span></div>
+
+            <!-- PASO 1 · ¿A quién le facturas? -->
+            <section class="tranquilo-paso" id="tranquilo-paso-1" style="display:${step === 1 ? 'block' : 'none'};">
+                <h2 class="tranquilo-titulo">¿A quién le facturas?</h2>
+                <button type="button" class="tranquilo-boton-grande" onclick="window.appState.tranquiloConsumidorFinal()">
+                    <span class="tranquilo-boton-emoji">🛒</span>
+                    <span class="tranquilo-boton-texto">Consumidor Final</span>
+                    <span class="tranquilo-boton-sub">Sin datos · emite en segundos</span>
+                </button>
+                <button type="button" class="tranquilo-boton-grande tranquilo-boton-claro" onclick="window.appState.tranquiloMostrarCliente()">
+                    <span class="tranquilo-boton-emoji">👤</span>
+                    <span class="tranquilo-boton-texto">Otro cliente</span>
+                    <span class="tranquilo-boton-sub">Con nombre y cédula / RUC</span>
+                </button>
+
+                <div id="tranquilo-cliente-form" style="display:none; margin-top:16px;">
+                    <label class="tranquilo-label" for="cliente-nombre-input">Nombre del cliente</label>
+                    <input type="text" id="cliente-nombre-input" class="tranquilo-input" placeholder="Nombre completo" onfocus="window.appState.onInputFocus()">
+                    <label class="tranquilo-label" for="cliente-ruc-input">Cédula o RUC</label>
+                    <input type="text" id="cliente-ruc-input" class="tranquilo-input" placeholder="10 o 13 dígitos" onfocus="window.appState.onInputFocus()">
+                    <button type="button" class="tranquilo-continuar" onclick="window.appState.tranquiloContinuar()">Continuar ➔</button>
+                </div>
+
+                <!-- Inputs ocultos que el payload de emisión requiere -->
+                <input type="hidden" id="cliente-direccion-input" value="">
+                <input type="hidden" id="cliente-telefono-input" value="">
+                <input type="hidden" id="cliente-email-input" value="">
+            </section>
+
+            <!-- PASO 2 · ¿Qué vendiste? -->
+            <section class="tranquilo-paso" id="tranquilo-paso-2" style="display:${step === 2 ? 'block' : 'none'};">
+                <h2 class="tranquilo-titulo">¿Qué vendiste?</h2>
+                <div class="tabla-productos-wrapper">
+                    <table class="tabla-realista">
+                        <thead>
+                            <tr><th style="width:14%;">CANT.</th><th style="width:52%;">DESCRIPCIÓN</th><th style="width:18%;">PRECIO</th><th style="width:16%;">TOTAL</th></tr>
+                        </thead>
+                        <tbody id="realista-items-body">
+                            <tr>
+                                <td style="text-align: center;"><input type="number" class="table-input" value="1" oninput="window.appState.recalculateTotals()" onfocus="window.appState.onInputFocus()"></td>
+                                <td><input type="text" class="table-input" placeholder="¿Qué vendiste?" onfocus="window.appState.onInputFocus()"></td>
+                                <td style="text-align: right;"><input type="number" step="0.01" class="table-input" value="0.00" style="text-align:right;" oninput="window.appState.recalculateTotals()" onfocus="window.appState.onInputFocus()"></td>
+                                <td style="text-align: right;" class="row-total">$0.00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button type="button" class="tranquilo-agregar" onclick="window.appState.addEmptyRow()">+ Agregar producto</button>
+                <div class="tranquilo-total-box">
+                    <span>Total a cobrar</span>
+                    <span class="tranquilo-total-monto" id="grand-total-display">$0.00</span>
+                </div>
+                <button type="button" class="tranquilo-continuar" onclick="window.appState.tranquiloContinuar()">Continuar ➔</button>
+            </section>
+
+            <!-- PASO 3 · Revisa y emite -->
+            <section class="tranquilo-paso" id="tranquilo-paso-3" style="display:${step === 3 ? 'block' : 'none'};">
+                <h2 class="tranquilo-titulo">Revisa y emite</h2>
+                <div class="tranquilo-resumen">
+                    <div class="tranquilo-resumen-fila"><span>Cliente</span><strong id="tranquilo-resumen-cliente">—</strong></div>
+                    <div class="tranquilo-resumen-fila"><span>Total</span><strong id="tranquilo-resumen-total">$0.00</strong></div>
+                </div>
+                <button type="button" class="tranquilo-emitir" onclick="window.appState.executeEmit3DSequence()">✅ Emitir factura ahora</button>
+                <button type="button" class="tranquilo-volver" onclick="window.appState.setTranquiloStep(2)">← Volver</button>
+            </section>
+        </div>
+
+        <!-- Botón flotante "Ayúdame" -->
+        <button type="button" onclick="window.appState.openHelpWhatsapp()" title="¿Necesitas ayuda? Escríbenos por WhatsApp" aria-label="Ayuda por WhatsApp" style="position: fixed; bottom: 20px; right: 20px; z-index: 9998; display: flex; align-items: center; gap: 8px; background: #25D366; color: #FFFFFF; border: none; border-radius: 999px; padding: 13px 18px; font-size: 14px; font-weight: 800; box-shadow: 0 8px 24px rgba(37,211,102,0.4); cursor: pointer;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2z"/></svg>
+            Ayúdame
+        </button>
+    `;
+}
+
 export function renderFacturadorRealista(emisorData, currentDocNumber, experienceMode = 'comerciante', isShowingBlueCopy = false) {
     const isDemo = emisorData?.isDemoMode !== false;
     const hasSignature = !!emisorData?.hasSignature;
@@ -53,6 +158,11 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
     const telefonoEmisor = emisorData?.supportWhatsapp || '';
     const regimenEmisor = emisor.tipo_regimen === 'GENERAL' ? '"RÉGIMEN GENERAL"' : '"CONTRIBUYENTE NEGOCIO POPULAR - RÉGIMEN RIMPE"';
     const docTypeLabel = emisor.tipo_regimen === 'GENERAL' ? 'FACTURA ELECTRÓNICA' : 'NOTA DE VENTA';
+
+    // MODO TRANQUILO (A1): wizard de 3 pasos — un botón por pantalla, cero jerga.
+    if (mode === 'tranquilo' && !isShowingBlueCopy) {
+        return renderTranquiloWizard(emisorData, docNumStr, isDemo);
+    }
 
     // RENDERIZADO DE LA COPIA AZUL AUTOCOPIATIVA
     if (isShowingBlueCopy) {
@@ -130,7 +240,7 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                     <div class="mostrador-brand-texts">
                         <span class="mostrador-brand-title">Talonario Amigo</span>
                         <span class="mostrador-brand-sub">
-                            ${isDemo ? '<span class="live-dot-pulse"></span>Modo Demostración' : 'Emisión Real SRI'}
+                            ${isDemo ? 'Modo Práctica · no llega al SRI' : 'Emisión Real SRI'}
                         </span>
                     </div>
                 </div>
@@ -138,7 +248,7 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                 <!-- Selector de Modo de Experiencia -->
                 <div class="mostrador-mode-segmented">
                     <button type="button" class="mostrador-seg-btn ${isDemo ? 'active' : ''}" onclick="window.appState.setDemoMode(true)" title="Modo Prueba sin consecuencias fiscales">
-                         Demo
+                         Práctica
                     </button>
                     <button type="button" class="mostrador-seg-btn ${!isDemo ? 'active-sri' : ''}" onclick="window.appState.setDemoMode(false)" title="Modo Real con emisión al SRI Ecuador">
                          Real SRI
@@ -494,7 +604,7 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
             <!-- Botón Acción Enviar SRI con Animaciones AAA -->
             <div style="margin-top: 18px;">
                 <button class="btn-stamp-action" onclick="window.appState.executeEmit3DSequence()">
-                     FIRMAR Y EMITIR AL SRI (XAdES-BES)
+                     Emitir factura ahora
                 </button>
                 <div style="display: flex; gap: 8px; justify-content: center; margin-top: 10px; flex-wrap: wrap;">
                     <button type="button" class="mode-chip-btn" style="background: #10B981; border-color: #059669; color: #FFFFFF; font-weight: 700; font-size: 11px; padding: 6px 14px;" onclick="window.appState.shareFacturaWhatsapp()" title="Compartir comprobante actual directamente por WhatsApp">
@@ -508,16 +618,6 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                         <button type="button" onclick="window.appState.setThermalWidth(80)" style="border: none; border-radius: 999px; padding: 3px 9px; font-size: 10px; font-weight: 800; cursor: pointer; ${thermalWidth === '80' ? 'background:#1E293B; color:#F8FAFC;' : 'background:transparent; color:#475569;'}">80mm</button>
                     </span>
                 </div>
-            </div>
-
-            <!-- Acceso Rápido a Gobernanza y 20 Agentes de Élite (Modo Dueño/Imprenta) -->
-            <div style="margin-top: 16px; padding-top: 12px; border-top: 1px dashed #CBD5E1; text-align: center; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;">
-                <button type="button" class="mode-chip-btn" style="background: rgba(15, 23, 42, 0.05); border: 1px solid #CBD5E1; color: #475569; font-size: 10px; padding: 4px 10px;" onclick="window.appState.setRole('SUPER_ADMIN')">
-                     Centro de Mando (20 Agentes de Élite)
-                </button>
-                <button type="button" class="mode-chip-btn" style="background: rgba(15, 23, 42, 0.05); border: 1px solid #CBD5E1; color: #475569; font-size: 10px; padding: 4px 10px;" onclick="window.appState.setRole('RESELLER')">
-                     Panel Imprenta Aliada
-                </button>
             </div>
         </div>
 
@@ -605,5 +705,11 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                 </div>
             </div>
         ` : ''}
+
+        <!-- Botón flotante "Ayúdame" (A5): WhatsApp humano a un toque desde el mostrador -->
+        <button type="button" onclick="window.appState.openHelpWhatsapp()" title="¿Necesitas ayuda? Escríbenos por WhatsApp" aria-label="Ayuda por WhatsApp" style="position: fixed; bottom: 20px; right: 20px; z-index: 9998; display: flex; align-items: center; gap: 8px; background: #25D366; color: #FFFFFF; border: none; border-radius: 999px; padding: 13px 18px; font-size: 14px; font-weight: 800; box-shadow: 0 8px 24px rgba(37,211,102,0.4); cursor: pointer;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2zm0 18.11c-1.49 0-2.95-.4-4.22-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24 4.54 0 8.24 3.7 8.24 8.24 0 4.54-3.7 8.24-8.24 8.24z"/><path d="M17.5 13.87c-.27-.13-1.58-.78-1.83-.87-.25-.09-.42-.13-.6.13-.18.27-.69.87-.85 1.05-.15.18-.31.2-.58.07-.27-.13-1.12-.41-2.13-1.31-.79-.7-1.32-1.56-1.47-1.83-.15-.27-.02-.42.12-.55.12-.12.27-.31.4-.47.13-.16.18-.27.27-.45.09-.18.04-.34-.02-.47-.07-.13-.6-1.44-.82-1.97-.21-.52-.43-.45-.6-.45-.15-.01-.33-.01-.51-.01-.18 0-.47.07-.72.34-.25.27-.95.93-.95 2.26s.97 2.62 1.1 2.8c.13.18 1.9 2.9 4.6 4.07.64.28 1.14.44 1.53.57.64.2 1.23.17 1.69.1.52-.08 1.58-.65 1.8-1.27.22-.62.22-1.15.16-1.27-.07-.12-.25-.18-.52-.31z"/></svg>
+            Ayúdame
+        </button>
     `;
 }
