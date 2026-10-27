@@ -16,6 +16,7 @@
 /storage/framework/cache/*
 /storage/framework/sessions/*
 /storage/framework/views/*
+/storage/framework/testing/*
 /bootstrap/cache/*.php
 
 # Archivos construidos que no son fuente (se suben desde CI/Pages)
