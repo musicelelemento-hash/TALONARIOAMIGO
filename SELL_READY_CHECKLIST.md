@@ -1,7 +1,7 @@
 # ✅ Checklist "Listo para vender" — Talonario Amigo
 
 > Estado verificado contra el código real (migraciones, seeders, tests, build).
-> **Actualizado:** tests 15/15 ✅ · build ✅ · seed demo ✅ · README ✅ → 2 brechas P0 reales.
+> **Actualizado:** tests 17/17 ✅ · build ✅ · seed demo ✅ · README ✅ · "quitar el miedo" P0 aplicado → 2 brechas P0 reales restantes (no técnicas).
 > Prioridades: **P0** = bloquea la venta · **P1** = antes de salir · **P2** = mejora.
 
 ---
@@ -10,7 +10,7 @@
 
 - ✅ **Producto funcional**: facturación SRI (XML v1.1.0, clave 49 dígitos, firma `.p12`, SOAP `cel.sri.gob.ec`), Laravel + `liberias_sri`.
 - ✅ **Frontend SPA** (vanilla JS ES modules + Vite) — facturador, login/registro, onboarding, reseller, super admin, ticket térmico, OCR, voz, 3D.
-- ✅ **Tests**: **15 pasan** — auth (login ok, password mala, cuenta suspendida, registro crea emisor, validación, 401), clave SRI, validadores RUC/cédula, mapeo IVA, healthcheck.
+- ✅ **Tests**: **17 pasan** — auth (login ok, password mala, cuenta suspendida, registro crea emisor, validación, 401), clave SRI, validadores RUC/cédula, mapeo IVA, healthcheck, **y emisión end-to-end con SOAP simulado** (`tests/Feature/EmissionTest.php`: emisor real + `.p12` real + librería mockeada → clave 49, autorización AUTORIZADO y persistencia de comprobante/ítems/cliente frecuente; + caso de rechazo DEVUELTA).
 - ✅ **Build**: `npm run build` genera `public/dist` (vite, 149 módulos). `php artisan test` corre limpio.
 - ✅ **DemoSeeder**: emisor Pruebas + 3 comprobantes + clientes, totales verificados, clave 49.
 - ✅ **Documentación**: `README.md` (producto+quickstart+legal), `.env.example`, `GUIA_ARQUITECTURA_FREE.md`.
@@ -22,6 +22,9 @@
 - ✅ **Resumen comercial para imprentas**: `docs/README_IMPRENTAS.md` (one-pager + mensaje listo para WhatsApp).
 - ✅ **Guía Render paso a paso**: `docs/RENDER_SETUP.md` (servicio Docker, env vars, Supabase, seeds, verificación).
 - ✅ **Aislamiento de datos en la app**: los controladores filtran por `emisor_id` / rol (`SUPER_ADMIN`, `RESELLER`, `CLIENT`) → cada usuario ve solo lo suyo.
+- ✅ **"Quitar el miedo" (P0 de código aplicado)**: *Demo* renombrado a **Modo Práctica · no llega al SRI**; el botón principal ahora dice **"Emitir factura ahora"** (sin `XAdES-BES`); se eliminaron del flujo comerciante los botones "Centro de Mando (20 Agentes de Élite)" / "Panel Imprenta Aliada" y se suavizó la jerga de la landing (`zero-trust`, "agentes autónomos").
+- ✅ **Botón "Ayúdame" (A5)**: botón flotante de WhatsApp en el mostrador → abre el soporte de la imprenta (o el número por defecto) con mensaje prellenado.
+- ✅ **Code-split (P1-3)**: `three`/`pdfjs-dist`/`qrcode` en chunks separados; el núcleo de la app carga en ~244 KB.
 - ✅ **APK** Android empaquetado (`TalonarioAmigo_v1.1-offline.apk`).
 
 ---
@@ -42,9 +45,9 @@
 | # | Brecha | Solución |
 |---|---|---|
 | P1-1 | **RLS Postgres** (defensa en profundidad) si se expone Supabase REST. | Políticas + rol no-owner; opcional. |
-| P1-2 | **Tests de integración de la emisión** (mock SOAP de `cel.sri.gob.ec`). | `tests/Feature/EmissionTest` con HTTP fake. |
-| P1-3 | Bundle frontend >1.2 MB (three.js + tesseract). | Code-split (`manualChunks`). |
-| P1-4 | Verificar `composer install` completo (dev deps) y `composer audit`. | CI simple. |
+| ~~P1-2~~ | ~~Tests de integración de la emisión~~ | ✅ **Hecho** — `tests/Feature/EmissionTest` (SOAP simulado). |
+| ~~P1-3~~ | ~~Bundle frontend >1.2 MB~~ | ✅ **Hecho** — code-split (`manualChunks`): el chunk principal bajó de 1.25 MB → 244 KB (three/pdfjs/qrcode en chunks separados). |
+| ~~P1-4~~ | ~~CI~~ | ✅ **Hecho** — `.github/workflows/ci.yml` (lint + build + phpunit) ya existe; se añadió la extensión `openssl` para el test de emisión. Falta solo `composer audit` (opcional). |
 | P1-5 | Más capturas de la app (facturador, modo tranquilo, 3D, ticket). | Script de captura con Edge headless + login demo. |
 
 ---
