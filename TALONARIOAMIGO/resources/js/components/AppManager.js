@@ -117,6 +117,34 @@ export class AppManager {
             });
         }
 
+        // DEEP-LINK al demo (capturas, marketing y enlaces de soporte):
+        //   ?demo=client|reseller|admin  → entra al demo con ese rol
+        //   &mode=tranquilo|comerciante|pro → modo de experiencia
+        //   &view=3d                       → abre el bloc 3D tras el render
+        if (typeof window !== 'undefined') {
+            const deepParams = new URLSearchParams(window.location.search);
+            const demoRole = deepParams.get('demo');
+            if (demoRole) {
+                this.state.isDemoGuest = true;
+                this.state.isDemoMode = true;
+                this.state.isConfigured = true;
+                this.state.hasSignature = true;
+                if (demoRole === 'admin' || demoRole === 'super' || demoRole === 'dueno') this.state.currentRole = 'SUPER_ADMIN';
+                else if (demoRole === 'reseller' || demoRole === 'imprenta') this.state.currentRole = 'RESELLER';
+                else this.state.currentRole = 'CLIENT';
+
+                const deepMode = deepParams.get('mode');
+                this.state.experienceMode = (deepMode === 'tranquilo' || deepMode === 'pro') ? deepMode : 'comerciante';
+
+                if (this.state.currentRole === 'CLIENT') {
+                    setTimeout(() => this.loadDemoSampleData(false), 250);
+                }
+                if (deepParams.get('view') === '3d') {
+                    setTimeout(() => this.open3DExperienceModal(), 1000);
+                }
+            }
+        }
+
         window.appState = this;
     }
 

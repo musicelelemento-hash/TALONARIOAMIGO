@@ -25,6 +25,7 @@
 - ✅ **"Quitar el miedo" (P0 de código aplicado)**: *Demo* renombrado a **Modo Práctica · no llega al SRI**; el botón principal ahora dice **"Emitir factura ahora"** (sin `XAdES-BES`); se eliminaron del flujo comerciante los botones "Centro de Mando (20 Agentes de Élite)" / "Panel Imprenta Aliada" y se suavizó la jerga de la landing (`zero-trust`, "agentes autónomos").
 - ✅ **Botón "Ayúdame" (A5)**: botón flotante de WhatsApp en el mostrador → abre el soporte de la imprenta (o el número por defecto) con mensaje prellenado.
 - ✅ **Code-split (P1-3)**: `three`/`pdfjs-dist`/`qrcode` en chunks separados; el núcleo de la app carga en ~244 KB.
+- ✅ **Modo Tranquilo real (A1)**: wizard de 3 pasos (cliente → productos → revisar y emitir), un botón por pantalla y cero jerga. Deep-link `?demo=client&mode=tranquilo` para probarlo.
 - ✅ **APK** Android empaquetado (`TalonarioAmigo_v1.1-offline.apk`).
 
 ---
@@ -48,7 +49,7 @@
 | ~~P1-2~~ | ~~Tests de integración de la emisión~~ | ✅ **Hecho** — `tests/Feature/EmissionTest` (SOAP simulado). |
 | ~~P1-3~~ | ~~Bundle frontend >1.2 MB~~ | ✅ **Hecho** — code-split (`manualChunks`): el chunk principal bajó de 1.25 MB → 244 KB (three/pdfjs/qrcode en chunks separados). |
 | ~~P1-4~~ | ~~CI~~ | ✅ **Hecho** — `.github/workflows/ci.yml` (lint + build + phpunit) ya existe; se añadió la extensión `openssl` para el test de emisión. Falta solo `composer audit` (opcional). |
-| P1-5 | Más capturas de la app (facturador, modo tranquilo, 3D, ticket). | Script de captura con Edge headless + login demo. |
+| ~~P1-5~~ | ~~Más capturas de la app~~ | ✅ **Hecho** — `docs/capturas/app-landing.png`, `app-facturador.png`, `app-tranquilo.png`, `app-3d.png` (Edge headless + deep-link `?demo=&mode=&view=3d`). Falta solo el ticket térmico. |
 
 ---
 
