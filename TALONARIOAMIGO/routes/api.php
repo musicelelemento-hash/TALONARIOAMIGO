@@ -5,6 +5,7 @@ use App\Http\Controllers\OwnerController;
 use App\Http\Controllers\ResellerController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\OnboardingController;
+use App\Http\Controllers\WhatsAppController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -118,6 +119,16 @@ Route::middleware(['auth:sanctum', 'account.status'])->prefix('v1/facturacion')-
     Route::get('/tomos', [FacturacionElectronicaController::class, 'listarTomos']);
     Route::get('/clientes-frecuentes', [FacturacionElectronicaController::class, 'listarClientesFrecuentes']);
     Route::get('/comprobantes/{claveAcceso}/xml', [FacturacionElectronicaController::class, 'descargarXml']);
+});
+
+// Factura por WhatsApp. El webhook es público para Meta pero exige la firma HMAC
+// X-Hub-Signature-256 (WHATSAPP_APP_SECRET); el vínculo del número requiere sesión.
+Route::get('/v1/whatsapp/webhook', [WhatsAppController::class, 'verificar']);
+Route::post('/v1/whatsapp/webhook', [WhatsAppController::class, 'recibir'])->middleware('throttle:120,1');
+Route::middleware(['auth:sanctum'])->prefix('v1/whatsapp')->group(function () {
+    Route::get('/vinculo', [WhatsAppController::class, 'estado']);
+    Route::post('/vinculo', [WhatsAppController::class, 'generarCodigo'])->middleware('throttle:10,1');
+    Route::delete('/vinculo', [WhatsAppController::class, 'desvincular']);
 });
 
 // Rutas del Dueño (SUPER_ADMIN)

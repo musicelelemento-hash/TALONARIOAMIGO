@@ -171,6 +171,19 @@ class ApiClient {
     }
 
     /* --------------------------- Owner (SUPER_ADMIN) --------------------------- */
+    // --- Factura por WhatsApp ---
+    async whatsappVinculo() {
+        return this.request('/v1/whatsapp/vinculo');
+    }
+
+    async generarCodigoWhatsapp() {
+        return this.request('/v1/whatsapp/vinculo', { method: 'POST' });
+    }
+
+    async desvincularWhatsapp() {
+        return this.request('/v1/whatsapp/vinculo', { method: 'DELETE' });
+    }
+
     async getOwnerDashboard() {
         return this.request('/v1/owner/dashboard');
     }

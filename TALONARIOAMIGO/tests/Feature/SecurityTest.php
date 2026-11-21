@@ -73,6 +73,7 @@ class SecurityTest extends TestCase
             'api/health/migrate', // protegida por X-Migrate-Token
             'api/v1/auth/login',
             'api/v1/auth/register',
+            'api/v1/whatsapp/webhook', // protegido por firma HMAC de Meta (ver WhatsAppTest)
         ];
 
         foreach (Route::getRoutes() as $route) {

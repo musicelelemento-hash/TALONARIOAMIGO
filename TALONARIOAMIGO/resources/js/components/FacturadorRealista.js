@@ -309,6 +309,9 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                     <button type="button" class="mostrador-action-chip" onclick="window.appState.openTomosModal()" title="Historial de tomos encuadernados">
                          Mis Tomos
                     </button>
+                    <button type="button" class="mostrador-action-chip" onclick="window.appState.openWhatsappModal()" title="Facturar desde tu WhatsApp">
+                         WhatsApp
+                    </button>
                 `}
             </div>
         </header>

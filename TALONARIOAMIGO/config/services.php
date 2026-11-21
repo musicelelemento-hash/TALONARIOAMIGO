@@ -38,4 +38,15 @@ return [
         'soap_timeout' => env('FACTURACION_SOAP_TIMEOUT', 30),
     ],
 
+    // WhatsApp Cloud API (Meta) — canal "factura por WhatsApp".
+    'whatsapp' => [
+        'token' => env('WHATSAPP_TOKEN'),
+        'phone_number_id' => env('WHATSAPP_PHONE_NUMBER_ID'),
+        'verify_token' => env('WHATSAPP_VERIFY_TOKEN'),
+        'app_secret' => env('WHATSAPP_APP_SECRET'),
+        'graph_version' => env('WHATSAPP_GRAPH_VERSION', 'v21.0'),
+        // Número público del bot (solo dígitos) para mostrarlo en la app al vincular.
+        'bot_number' => env('WHATSAPP_BOT_NUMBER'),
+    ],
+
 ];

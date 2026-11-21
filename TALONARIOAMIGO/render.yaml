@@ -53,6 +53,17 @@ services:
         value: ""
       - key: DEFAULT_SUPPORT_WHATSAPP
         value: "593993050689"
+      # Factura por WhatsApp (WhatsApp Cloud API de Meta). Ver docs/WHATSAPP_SETUP.md
+      - key: WHATSAPP_TOKEN
+        sync: false
+      - key: WHATSAPP_PHONE_NUMBER_ID
+        sync: false
+      - key: WHATSAPP_VERIFY_TOKEN
+        sync: false
+      - key: WHATSAPP_APP_SECRET
+        sync: false
+      - key: WHATSAPP_BOT_NUMBER
+        sync: false
 
 databases:
   - name: talonario-amigo-db

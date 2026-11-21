@@ -9,6 +9,7 @@ import { renderFacturadorRealista } from './FacturadorRealista.js';
 import { renderSuperAdminPanel } from './SuperAdminPanel.js';
 import { renderResellerPanel } from './ResellerPanel.js';
 import { renderTomosModal } from './TomosModal.js';
+import { renderWhatsAppModal } from './WhatsAppModal.js';
 import { Talonario3DExperience } from './Talonario3DExperience.js';
 import { api } from '../api.js';
 import { extractDataFromSriPdf } from '../services/sriPdf.js';
@@ -61,6 +62,8 @@ export class AppManager {
             thermalWidth: getThermalWidth(), // 58mm o 80mm para ticket térmico POS
             lastReceipt: null,
             isTomosModalOpen: false,
+            isWhatsappModalOpen: false,
+            whatsappInfo: null,
             is3DModalOpen: false,
             activeTomoMonth: 'AGOSTO 2026',
             audioEnabled: soundFx.isSoundEnabled(),
@@ -238,6 +241,9 @@ export class AppManager {
                 this.state.comprobantesList,
                 this.state.tomosSearchQuery
             );
+        }
+        if (this.state.isWhatsappModalOpen) {
+            this.container.innerHTML += renderWhatsAppModal(this.state.whatsappInfo);
         }
         this.setupTactilePaperInteractions();
     }
@@ -717,6 +723,47 @@ export class AppManager {
             this.triggerHaptic([30, 20, 50]);
             this.active3DExperience.tearSheet();
         }
+    }
+
+    // FACTURA POR WHATSAPP: vincular el número del comerciante con el bot
+    async openWhatsappModal() {
+        this.triggerHaptic(15);
+        this.state.isWhatsappModalOpen = true;
+        this.state.whatsappInfo = { cargando: true };
+        this.evaluateStateAndRender();
+        try {
+            this.state.whatsappInfo = await api.whatsappVinculo();
+        } catch (err) {
+            this.state.whatsappInfo = { error: err.message || 'No pudimos revisar tu WhatsApp. Revisa tu internet.' };
+        }
+        if (this.state.isWhatsappModalOpen) this.evaluateStateAndRender();
+    }
+
+    closeWhatsappModal() {
+        this.triggerHaptic(10);
+        this.state.isWhatsappModalOpen = false;
+        this.state.whatsappInfo = null;
+        this.evaluateStateAndRender();
+    }
+
+    async generarCodigoWhatsapp() {
+        this.triggerHaptic(20);
+        this.state.whatsappInfo = { cargando: true };
+        this.evaluateStateAndRender();
+        try {
+            this.state.whatsappInfo = await api.generarCodigoWhatsapp();
+        } catch (err) {
+            this.state.whatsappInfo = { error: err.message || 'No pudimos generar tu código. Intenta de nuevo.' };
+        }
+        this.evaluateStateAndRender();
+    }
+
+    async desvincularWhatsapp() {
+        if (!window.confirm('¿Desconectar este WhatsApp? Ya no podrás facturar desde ese número.')) return;
+        try {
+            await api.desvincularWhatsapp();
+        } catch (_err) { /* se refresca el estado abajo */ }
+        await this.openWhatsappModal();
     }
 
     // GESTIÓN DE TOMOS FÍSICOS (PRINCIPIO 13)
