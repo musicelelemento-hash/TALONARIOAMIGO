@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\FirmaController;
 use App\Http\Controllers\FacturacionElectronicaController;
 use App\Http\Controllers\OwnerController;
 use App\Http\Controllers\ResellerController;
@@ -37,30 +36,21 @@ Route::get('/health', function () {
     ]);
 });
 
-// Diagnóstico de base de datos e integraciones (público: NO expone nombres de tabla ni errores crudos)
+// Diagnóstico mínimo de base de datos (público). No revela tablas, errores ni qué integraciones
+// o claves están configuradas: eso solo sirve a un atacante para elegir por dónde entrar.
 Route::get('/health/db', function () {
     $dbConnected = false;
-    $tablesCount = 0;
     try {
         DB::connection()->getPdo();
         $dbConnected = true;
-        $tablesCount = count(DB::select("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'"));
     } catch (\Throwable $e) {
         \Log::warning('health.db check failed: ' . $e->getMessage());
     }
 
     return response()->json([
         'status' => 'ok',
-        'database' => [
-            'connected' => $dbConnected,
-            'tables_count' => $tablesCount,
-        ],
-        'integrations' => [
-            'resend_email' => !empty(env('RESEND_API_KEY')),
-            'supabase_storage' => !empty(env('SUPABASE_SERVICE_ROLE_KEY')),
-            'keep_alive' => true
-        ],
-        'timestamp' => now()->toIso8601String()
+        'database' => ['connected' => $dbConnected],
+        'timestamp' => now()->toIso8601String(),
     ]);
 });
 
@@ -99,10 +89,8 @@ Route::post('/v1/auth/login', [AuthController::class, 'login'])->middleware('thr
 Route::post('/v1/auth/register', [AuthController::class, 'register'])->middleware('throttle:6,1');
 Route::middleware('auth:sanctum')->post('/v1/auth/logout', [AuthController::class, 'logout']);
 
-// Firma directa de XML suelto (usada por integraciones externas, no por el flujo normal del talonario)
-Route::group(['middleware' => 'app'], function () {
-    Route::post('/v1/sign/xml', [FirmaController::class,'ProcesarFirma']);
-});
+// Nota de seguridad: el antiguo endpoint público /v1/sign/xml se eliminó. Recibía la firma .p12
+// sin autenticación y la escribía en public/. Toda firma pasa ahora por /v1/facturacion/* con sesión.
 
 // Rutas de Onboarding (configurar RUC del emisor + subir firma .p12)
 Route::middleware(['auth:sanctum'])->prefix('v1/onboarding')->group(function () {

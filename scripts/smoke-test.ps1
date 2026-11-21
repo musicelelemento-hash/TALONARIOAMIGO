@@ -27,7 +27,7 @@ $headers = @{ 'Accept' = 'application/json' }
 try {
     $h = Invoke-RestMethod -Uri "$ApiBase/api/health/db" -Headers $headers -TimeoutSec 60
     $dbOk = $h.database.connected -eq $true
-    Report "health/db" $dbOk ("connected={0} tables={1}" -f $h.database.connected, $h.database.tables_count)
+    Report "health/db" $dbOk ("connected={0}" -f $h.database.connected)
 } catch {
     Report "health/db" $false $_.Exception.Message
 }

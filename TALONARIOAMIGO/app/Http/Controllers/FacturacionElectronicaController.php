@@ -7,6 +7,7 @@ use App\Models\Comprobante;
 use App\Models\ComprobanteItem;
 use App\Models\ClienteFrecuente;
 use App\Services\FacturacionElectronicaLibrary;
+use App\Services\EmisionService;
 use App\Services\InvoiceValidationService;
 use App\Services\SupabaseStorageService;
 use App\Services\ResendService;
@@ -30,277 +31,12 @@ class FacturacionElectronicaController extends Controller
     /**
      * Orquesta el pipeline real de emisión usando el servicio modular de validación y diagnóstico.
      */
-    public function emitirFactura(Request $request)
+    public function emitirFactura(Request $request, EmisionService $emision)
     {
-        $user = $request->user();
-        $emisor = $user->emisor;
+        $data = $request->validate(EmisionService::reglas());
+        $resultado = $emision->emitir($request->user(), $data);
 
-        // 1. Validación Pre-Flight de Emisor y Certificado .p12
-        $emisorVal = $this->validator->validarEmisorYFirma($emisor);
-        if (!$emisorVal['valido']) {
-            return response()->json([
-                'success' => false,
-                'code' => $emisorVal['codigo'],
-                'titulo' => $emisorVal['titulo'],
-                'message' => $emisorVal['mensaje'],
-                'solucion' => $emisorVal['solucion'] ?? null,
-            ], 422);
-        }
-
-        $puntoEmision = $emisorVal['puntoEmision'];
-        $certContent = $emisorVal['certContent'];
-        $clave = $emisorVal['clave'];
-
-        $data = $request->validate([
-            'cliente.nombre' => 'required|string|max:255',
-            'cliente.identificacion' => 'required|string',
-            'cliente.direccion' => 'nullable|string',
-            'cliente.telefono' => 'nullable|string',
-            'cliente.email' => 'nullable|string',
-            'items' => 'required|array|min:1',
-            'items.*.descripcion' => 'required|string',
-            'items.*.cantidad' => 'required|numeric|min:0.000001',
-            'items.*.precioUnitario' => 'required|numeric|min:0',
-            'items.*.exento' => 'nullable|boolean',
-        ]);
-
-        // 2. Validación Algorítmica de Cliente (Módulo 10/11), Regla $50 y Cuadre de Totales
-        $totalesVal = $this->validator->validarClienteYTotales($data['cliente'], $data['items']);
-        if (!$totalesVal['valido']) {
-            return response()->json([
-                'success' => false,
-                'code' => $totalesVal['codigo'],
-                'titulo' => $totalesVal['titulo'],
-                'message' => $totalesVal['mensaje'],
-                'solucion' => $totalesVal['solucion'] ?? null,
-            ], 422);
-        }
-
-        $detalle = $totalesVal['detalle'];
-        $subtotalGravado = $totalesVal['subtotalGravado'];
-        $subtotalExento = $totalesVal['subtotalExento'];
-        $totalSinImpuestos = $totalesVal['totalSinImpuestos'];
-        $ivaValor = $totalesVal['ivaValor'];
-        $importeTotal = $totalesVal['importeTotal'];
-        $tarifaCodigo = $totalesVal['tarifaCodigo'];
-        $tipoIdentificacion = $totalesVal['tipoIdentificacion'];
-        $identificacion = $totalesVal['identificacion'];
-
-        $codigoNumerico = str_pad((string) random_int(0, 99999999), 8, '0', STR_PAD_LEFT);
-        $fechaEmision = now()->setTimezone('America/Guayaquil');
-
-        try {
-            $resultado = DB::transaction(function () use (
-                $puntoEmision, $emisor, $fechaEmision, $codigoNumerico, $data, $detalle,
-                $totalSinImpuestos, $ivaValor, $importeTotal, $subtotalGravado, $tarifaCodigo,
-                $tipoIdentificacion, $identificacion, $certContent, $clave
-            ) {
-                $puntoEmisionLocked = PuntoEmision::where('id', $puntoEmision->id)->lockForUpdate()->first();
-                $secuencial = $puntoEmisionLocked->obtenerYIncrementarSecuencial('factura');
-
-                $claveAcceso = $this->facturacion->generarClaveAcceso(
-                    $fechaEmision->format('d/m/Y'),
-                    '01',
-                    $emisor->ruc,
-                    $emisor->ambiente,
-                    $puntoEmisionLocked->establecimiento . $puntoEmisionLocked->punto_emision,
-                    $secuencial,
-                    $codigoNumerico,
-                    $emisor->tipo_emision
-                );
-
-                $regimenCodigo = in_array($emisor->tipo_regimen, ['RIMPE_EMPRENDEDOR', 'RIMPE_POPULAR'], true) ? '3' : '';
-
-                $payload = (object) [
-                    'infoTributaria' => (object) [
-                        'ambiente' => $emisor->ambiente,
-                        'tipoEmision' => $emisor->tipo_emision,
-                        'razonSocial' => $emisor->razon_social,
-                        'nombreComercial' => $emisor->nombre_comercial ?: $emisor->razon_social,
-                        'ruc' => $emisor->ruc,
-                        'claveAcceso' => $claveAcceso,
-                        'codDoc' => '01',
-                        'estab' => $puntoEmisionLocked->establecimiento,
-                        'ptoEmi' => $puntoEmisionLocked->punto_emision,
-                        'secuencial' => $secuencial,
-                        'dirMatriz' => $emisor->direccion_matriz,
-                        'regimen' => $regimenCodigo,
-                    ],
-                    'infoFactura' => (object) [
-                        'fechaEmision' => $fechaEmision->format('Y-m-d'),
-                        'dirEstablecimiento' => $emisor->direccion_matriz,
-                        'contribuyenteEspecial' => $emisor->contribuyente_especial,
-                        'obligadoContabilidad' => $emisor->obligado_contabilidad ? 'SI' : 'NO',
-                        'tipoIdentificacionComprador' => $tipoIdentificacion,
-                        'razonSocialComprador' => $data['cliente']['nombre'],
-                        'identificacionComprador' => $identificacion,
-                        'totalSinImpuestos' => number_format($totalSinImpuestos, 2, '.', ''),
-                        'totalDescuento' => '0.00',
-                        'totalImpuesto' => [
-                            (object) [
-                                'codigo' => '2',
-                                'codigoPorcentaje' => $tarifaCodigo,
-                                'baseImponible' => number_format($subtotalGravado, 2, '.', ''),
-                                'valor' => number_format($ivaValor, 2, '.', ''),
-                            ],
-                        ],
-                        'propina' => '0.00',
-                        'importeTotal' => number_format($importeTotal, 2, '.', ''),
-                        'moneda' => 'DOLAR',
-                        'pagos' => (object) [
-                            'formaPago' => '01',
-                            'total' => number_format($importeTotal, 2, '.', ''),
-                        ],
-                    ],
-                    'detalle' => $detalle,
-                ];
-
-                $xmlFirmado = $this->facturacion->generarYFirmarXml('factura', $payload, $certContent, $clave);
-                $envio = $this->facturacion->enviarSri($xmlFirmado, $emisor->ambiente);
-                $autorizacion = $this->facturacion->autorizarSri($claveAcceso, $emisor->ambiente);
-
-                return [
-                    'claveAcceso' => $claveAcceso,
-                    'secuencial' => $secuencial,
-                    'xmlFirmado' => $xmlFirmado,
-                    'envio' => $envio,
-                    'autorizacion' => $autorizacion,
-                ];
-            });
-        } catch (\Throwable $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'No se pudo emitir el comprobante: ' . $e->getMessage(),
-            ], 500);
-        }
-
-        // 3. Diagnóstico Inteligente de la Respuesta SRI
-        $diagnostico = $this->validator->diagnosticarRespuestaSri($resultado['autorizacion']);
-
-        // Guardar XML firmado en Supabase Storage (con respaldo en disco local)
-        $xmlPath = null;
-        try {
-            $storage = app(SupabaseStorageService::class);
-            $xmlPath = $storage->guardarXml($resultado['claveAcceso'], $resultado['xmlFirmado'] ?? '');
-        } catch (\Throwable $xmlEx) {
-            \Log::warning("[FacturacionController] Advertencia al persistir XML: " . $xmlEx->getMessage());
-        }
-
-        // Despacho transaccional automático vía Resend si el cliente o comercio proveyó correo
-        $emailEnviado = false;
-        if ($diagnostico['esAutorizado'] && !empty($data['cliente']['email'])) {
-            try {
-                $resend = app(ResendService::class);
-                $emailEnviado = $resend->enviarComprobante(
-                    $data['cliente']['email'],
-                    $data['cliente']['nombre'],
-                    "001-001-" . $resultado['secuencial'],
-                    "Factura Electrónica",
-                    $importeTotal
-                );
-            } catch (\Throwable $mailEx) {
-                \Log::warning("[FacturacionController] Advertencia al despachar Resend: " . $mailEx->getMessage());
-            }
-        }
-
-        // 4. Persistencia en Base de Datos (Comprobantes, Ítems y Clientes Frecuentes)
-        try {
-            $fechaAut = null;
-            if (!empty($diagnostico['fechaAutorizacion'])) {
-                try {
-                    $fechaAut = \Carbon\Carbon::parse($diagnostico['fechaAutorizacion']);
-                } catch (\Throwable $t) {
-                    $fechaAut = now();
-                }
-            } elseif ($diagnostico['esAutorizado']) {
-                $fechaAut = now();
-            }
-
-            $comprobante = Comprobante::create([
-                'emisor_id' => $emisor->id,
-                'user_id' => $user->id,
-                'tipo_comprobante' => '01',
-                'establecimiento' => $puntoEmision->establecimiento,
-                'punto_emision' => $puntoEmision->punto_emision,
-                'secuencial' => $resultado['secuencial'],
-                'numero_comprobante' => sprintf('%03d-%03d-%09d', (int)$puntoEmision->establecimiento, (int)$puntoEmision->punto_emision, (int)$resultado['secuencial']),
-                'clave_acceso' => $resultado['claveAcceso'],
-                'fecha_emision' => $fechaEmision,
-                'fecha_autorizacion' => $fechaAut,
-                'numero_autorizacion' => $diagnostico['numeroAutorizacion'] ?: ($diagnostico['esAutorizado'] ? $resultado['claveAcceso'] : null),
-                'cliente_tipo_identificacion' => $tipoIdentificacion,
-                'cliente_identificacion' => $identificacion,
-                'cliente_nombre' => $data['cliente']['nombre'],
-                'cliente_direccion' => $data['cliente']['direccion'] ?? null,
-                'cliente_telefono' => $data['cliente']['telefono'] ?? null,
-                'cliente_email' => $data['cliente']['email'] ?? null,
-                'subtotal_gravado' => $subtotalGravado,
-                'subtotal_exento' => $subtotalExento,
-                'total_descuento' => 0.00,
-                'total_iva' => $ivaValor,
-                'importe_total' => $importeTotal,
-                'tarifa_iva_porcentaje' => 15,
-                'estado' => $diagnostico['estado'] ?? 'AUTORIZADO',
-                'ambiente' => $emisor->ambiente,
-                'tipo_emision' => $emisor->tipo_emision,
-                'xml_path' => $xmlPath,
-                'email_enviado' => $emailEnviado,
-                'email_enviado_at' => $emailEnviado ? now() : null,
-                'sri_mensaje' => $diagnostico['mensajeHumano'] ?? null,
-            ]);
-
-            foreach ($detalle as $item) {
-                $isExento = isset($item->impuestos) && is_array($item->impuestos) && count($item->impuestos) > 0 && ($item->impuestos[0]->codigoPorcentaje ?? '') === '0';
-                ComprobanteItem::create([
-                    'comprobante_id' => $comprobante->id,
-                    'codigo_principal' => $item->codigoPrincipal ?? null,
-                    'descripcion' => $item->descripcion,
-                    'cantidad' => $item->cantidad,
-                    'precio_unitario' => $item->precioUnitario,
-                    'descuento' => $item->descuento ?? 0.00,
-                    'precio_total_sin_impuesto' => $item->precioTotalSinImpuesto,
-                    'impuesto_codigo' => '2',
-                    'impuesto_porcentaje_codigo' => $isExento ? '0' : '4',
-                    'impuesto_tarifa' => $isExento ? 0.00 : 15.00,
-                    'impuesto_valor' => $isExento ? 0.00 : round($item->precioTotalSinImpuesto * 0.15, 2),
-                    'exento' => $isExento,
-                ]);
-            }
-
-            // Actualizar o crear Cliente Frecuente (Principio 14)
-            if (!in_array($identificacion, ['9999999999999', '9999999999'])) {
-                $clienteFrecuente = ClienteFrecuente::firstOrNew([
-                    'emisor_id' => $emisor->id,
-                    'identificacion' => $identificacion,
-                ]);
-                $clienteFrecuente->tipo_identificacion = $tipoIdentificacion;
-                $clienteFrecuente->nombre = $data['cliente']['nombre'];
-                if (!empty($data['cliente']['direccion'])) $clienteFrecuente->direccion = $data['cliente']['direccion'];
-                if (!empty($data['cliente']['telefono'])) $clienteFrecuente->telefono = $data['cliente']['telefono'];
-                if (!empty($data['cliente']['email'])) $clienteFrecuente->email = $data['cliente']['email'];
-                $clienteFrecuente->compras_count = ($clienteFrecuente->exists ? $clienteFrecuente->compras_count : 0) + 1;
-                $clienteFrecuente->ultima_compra_at = now();
-                $clienteFrecuente->save();
-            }
-        } catch (\Throwable $dbEx) {
-            \Log::error("[FacturacionController] Error guardando comprobante en Postgres: " . $dbEx->getMessage());
-        }
-
-        return response()->json([
-            'success' => true,
-            'estado' => $diagnostico['estado'],
-            'claveAcceso' => $resultado['claveAcceso'],
-            'secuencial' => $resultado['secuencial'],
-            'numeroAutorizacion' => $diagnostico['numeroAutorizacion'],
-            'fechaAutorizacion' => $diagnostico['fechaAutorizacion'],
-            'mensaje' => $diagnostico['mensajeHumano'],
-            'solucion' => $diagnostico['solucion'] ?? null,
-            'diagnostico' => $diagnostico,
-            'email_enviado' => $emailEnviado,
-            'xml_guardado' => !empty($xmlPath),
-            'envio_raw' => $resultado['envio'],
-            'autorizacion_raw' => $resultado['autorizacion'],
-        ], Response::HTTP_OK);
+        return response()->json($resultado['body'], $resultado['status']);
     }
 
     /**
@@ -406,11 +142,13 @@ class FacturacionElectronicaController extends Controller
             'clave_base64' => 'nullable|string',
         ]);
 
+        [$certificado, $clave] = $this->credencialesFirma($request);
+
         $xmlFirmado = $this->facturacion->firmarXml(
             $request->input('tipo'),
             $this->xmlFromRequest($request),
-            $this->certificadoFromRequest($request),
-            $this->claveCertificadoFromRequest($request)
+            $certificado,
+            $clave
         );
 
         return response()->json([
@@ -432,11 +170,13 @@ class FacturacionElectronicaController extends Controller
             'clave_base64' => 'nullable|string',
         ]);
 
+        [$certificado, $clave] = $this->credencialesFirma($request);
+
         $xmlFirmado = $this->facturacion->generarYFirmarXml(
             $request->input('tipo'),
             $request->input('data'),
-            $this->certificadoFromRequest($request),
-            $this->claveCertificadoFromRequest($request)
+            $certificado,
+            $clave
         );
 
         return response()->json([
@@ -543,57 +283,37 @@ class FacturacionElectronicaController extends Controller
             : $request->input('clave');
     }
 
-    private function certificadoFromRequest(Request $request)
+    /**
+     * Devuelve [certificado, clave] para firmar.
+     *
+     * Seguridad: nunca se usa un certificado global del servidor. Si el request no trae su propio
+     * .p12 (con su clave), se firma con la firma electrónica del emisor del usuario logueado.
+     * Antes, cualquier usuario autenticado podía firmar XML arbitrario con el certificado de
+     * FACTURACION_CERTIFICADO_P12.
+     */
+    private function credencialesFirma(Request $request): array
     {
         if ($request->filled('certificado_p12_base64')) {
-            return base64_decode($request->input('certificado_p12_base64'));
+            $certificado = base64_decode($request->input('certificado_p12_base64'), true);
+            $clave = $this->claveFromRequest($request);
+
+            if ($certificado === false || empty($clave)) {
+                throw ValidationException::withMessages([
+                    'certificado' => 'Envía el certificado .p12 en base64 válido junto con su clave.',
+                ]);
+            }
+
+            return [$certificado, $clave];
         }
 
-        $certificado = config('services.facturacion.certificado_p12');
-
-        if (!$certificado) {
+        $emisorVal = $this->validator->validarEmisorYFirma($request->user()->emisor);
+        if (!$emisorVal['valido']) {
             throw ValidationException::withMessages([
-                'certificado' => 'Configure FACTURACION_CERTIFICADO_P12 en .env o envie certificado_p12_base64.',
+                'certificado' => $emisorVal['mensaje'],
             ]);
         }
 
-        $path = $this->resolverRutaCertificado($certificado);
-
-        if (!is_file($path)) {
-            throw ValidationException::withMessages([
-                'certificado' => "No existe el certificado configurado: {$path}",
-            ]);
-        }
-
-        return file_get_contents($path);
-    }
-
-    private function claveCertificadoFromRequest(Request $request)
-    {
-        $clave = $this->claveFromRequest($request);
-
-        if ($clave) {
-            return $clave;
-        }
-
-        $clave = config('services.facturacion.clave_certificado');
-
-        if (!$clave) {
-            throw ValidationException::withMessages([
-                'clave' => 'Configure FACTURACION_CERTIFICADO_CLAVE en .env o envie clave/clave_base64.',
-            ]);
-        }
-
-        return $clave;
-    }
-
-    private function resolverRutaCertificado($certificado)
-    {
-        if (preg_match('/^[A-Za-z]:[\\\\\\/]/', $certificado) || substr($certificado, 0, 1) === '/' || substr($certificado, 0, 2) === '\\\\') {
-            return $certificado;
-        }
-
-        return public_path($certificado);
+        return [$emisorVal['certContent'], $emisorVal['clave']];
     }
 
     /**

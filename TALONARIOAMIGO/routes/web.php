@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return response()->json([
         'status' => true,
-        'name' => 'Lib Firmador XML Facturacion SRI',
-        'message' => 'Use POST /api/v1/sign/xml o las rutas /api/v1/facturacion/*',
+        'name' => 'Talonario Amigo API',
+        'message' => 'Use las rutas autenticadas /api/v1/facturacion/*',
     ]);
 });
