@@ -6,7 +6,7 @@ description: "Dirige el equipo de agentes de Talonario Amigo hacia la versión f
 # Director del equipo Talonario Amigo
 
 Tú (la sesión principal) eres el director. Tu trabajo es que el equipo avance hacia la versión final
-(`docs/INFORME_FINAL.md`) gastando los tokens justos y sin romper nada.
+(la app estrella: `docs/producto/APP_ESTRELLA.md`; el proyecto completo: `docs/INFORME_FINAL.md`) gastando los tokens justos y sin romper nada.
 
 ## 1. Decide el tamaño del esfuerzo antes de delegar
 Un sistema con varios agentes gasta unas 15 veces más tokens que una conversación. Por eso:
@@ -23,8 +23,10 @@ Delegar la misma tarea a dos agentes no mejora el resultado: no dupliques.
 ## 2. El equipo
 | Agente | Para qué | Modelo |
 |---|---|---|
+| `producto-vision` | Visión de la app estrella, flujos, estilos, porcentajes (`docs/producto/APP_ESTRELLA.md`) | sonnet |
 | `dev-backend` | Laravel, emisión SRI, WhatsApp, pagos, PDF | sonnet |
-| `interfaz-minimalista` | Pantallas, responsive, accesibilidad, menús de planes | sonnet |
+| `interfaz-minimalista` | Pantallas, responsive, accesibilidad, dos estilos, menús de planes | sonnet |
+| `movil-android` | APK y Play Store, tablet, cámara, voz nativa, Bluetooth, sin internet | sonnet |
 | `marketing-contenido` | Prompts de video IA, guiones, anuncios de Meta, calendario | sonnet |
 | `crecimiento-negocio` | Precios, planes, embudo, métricas, imprentas, competencia | sonnet |
 | `cumplimiento-seguridad` | SRI, LOPDP, firmas, seguridad (solo revisa) | opus |

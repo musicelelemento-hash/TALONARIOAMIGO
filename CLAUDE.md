@@ -8,7 +8,7 @@
 Facturación electrónica SRI (Ecuador) que se siente como el talonario de papel de siempre.
 Público: comerciantes y adultos mayores que le temen al cambio. Promesa: *"vendemos tranquilidad"*.
 Visión completa: `VISION_MAESTRA.md` · Plan comercial: `docs/PLAN_LANZAMIENTO_PROFESIONAL.md` ·
-Informe de producto: `docs/INFORME_FINAL.md`.
+Informe de producto: `docs/INFORME_FINAL.md` · **App estrella (el corazón): `docs/producto/APP_ESTRELLA.md`**.
 
 ## Idioma y trato
 - Responde siempre en **español**, simple y directo; el dueño no es técnico.
@@ -47,7 +47,7 @@ Si los tests fallan con "valid cache path": `mkdir -p storage/framework/{views,c
 
 ## Equipo de agentes (director + especialistas)
 La sesión principal es el **director** (skill `director`): decide si delegar, a quién y cómo verificar.
-Especialistas en `.claude/agents/`: `dev-backend`, `interfaz-minimalista`, `marketing-contenido`,
+Especialistas en `.claude/agents/`: `producto-vision`, `dev-backend`, `interfaz-minimalista`, `movil-android`, `marketing-contenido`,
 `crecimiento-negocio`, `cumplimiento-seguridad` (solo revisa), `infra-operaciones` (solo lectura) y
 `verificador-qa` (solo revisa, obligatorio antes de dar algo por terminado).
 Marketing: `docs/marketing/` · Planes y cobros: `docs/negocio/PLANES_Y_PAGOS.md` ·
