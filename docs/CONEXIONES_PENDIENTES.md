@@ -6,10 +6,10 @@
 
 | # | Conexión | Agente que la usa | Para qué | Cómo se conecta | Estado |
 |---|---|---|---|---|---|
-| 1 | **Repositorio de producción** (GitHub de la otra cuenta, o decidir que produzca este) | `infra-operaciones`, `dev-backend` | Llevar los arreglos a producción | Dar acceso a la app de Claude en GitHub a ese repo, o cambiar el repo en Render | ⏳ El dueño confirma cuál es el actual |
+| 1 | **Repositorio de producción** (GitHub de la otra cuenta, o decidir que produzca este) | `infra-operaciones`, `dev-backend` | Llevar los arreglos a producción | Dar acceso a la app de Claude en GitHub a ese repo, o cambiar el repo en Render | ⏳ Vercel y Render usan `robertcashbooking-lang/TALONARIO-AMIGO`: agregar a `musicelelemento-hash` como colaborador o instalar la app de Claude ahí |
 | 2 | **Render** (cuenta Talonario) | `infra-operaciones` | Logs, salud, variables | Network secret `api.render.com` | ✅ Conectado (rotar la llave escrita en el chat) |
 | 3 | **Supabase** (cuenta Talonario) | `infra-operaciones`, `dev-backend` | Base de datos, migraciones, advisors | Network secret `api.supabase.com` | ✅ Conectado |
-| 4 | **Cloudflare** (cuenta Talonario) | `infra-operaciones` | Keep-alive, dominio, landing | API token → network secret `api.cloudflare.com` | ⏳ Pendiente |
+| 4 | **Cloudflare** (cuenta Talonario) | `infra-operaciones` | Keep-alive, dominio, landing | Network secret `api.cloudflare.com` | ✅ Conectado (la cuenta no tiene Workers: el keep-alive nunca se desplegó) |
 | 5 | **Meta Business** (Facebook e Instagram de Talonario) | `marketing-contenido`, `crecimiento-negocio` | Publicar, anuncios, métricas | Cuenta de Meta Business + página + cuenta publicitaria; luego token para leer métricas | ⏳ Pendiente |
 | 6 | **WhatsApp Business (Cloud API)** | `dev-backend` | Factura por WhatsApp y botón Ayúdame | Las 5 variables de `docs/WHATSAPP_SETUP.md` en Render | ⏳ Pendiente |
 | 7 | **Generador de video con IA** | `marketing-contenido` | Producir los videos de `PROMPTS_VIDEO.md` | El generador de Meta en Ads Manager, o una cuenta de Veo, Kling o Runway | ⏳ Elegir herramienta |
@@ -18,7 +18,8 @@
 | 10 | **Pasarela de cobro** (PayPhone, Kushki u otra) | `dev-backend`, `crecimiento-negocio` | Cobrar los planes | Llave de pruebas (sandbox) primero → network secret | ⏳ Elegir pasarela |
 | 11 | **Google Play Console** | `dev-backend` | Publicar la APK | Cuenta de desarrollador (USD 25, una vez) | ⏳ Pendiente |
 | 12 | **Resend** (correo) | `dev-backend` | Enviar el RIDE al cliente | Ya configurado en Render | ✅ En producción |
-| 13 | **Dominio** (talonarioamigo.com o similar) | `infra-operaciones`, `marketing-contenido` | Landing, correo, confianza | Registrar y apuntar en Cloudflare | ⏳ Confirmar si existe |
+| 13 | **Dominio** `talonarioamigo.com` | `infra-operaciones`, `marketing-contenido` | Landing, correo, confianza | Ya apunta al proyecto `talonarioamigo` de Vercel | ✅ Existe |
+| 16 | **Vercel** (cuenta Talonario) | `infra-operaciones` | Frontend en producción (`talonarioamigo.com`) | Network secret `api.vercel.com` | ✅ Conectado |
 | 14 | **Carpeta de la laptop** | Todos | Archivos que solo están en tu computadora | App de escritorio de Claude → Ajustes → Claude Code → Remote Control (puede no estar disponible en todas las cuentas); si no, subir al repo | ⏳ Pendiente |
 | 15 | **Respaldo FreeLLMAPI** (modelos gratuitos) | Todos, solo en emergencia | Seguir trabajando si no hay Claude | En tu PC: `docs/RESPALDO_FREELLMAPI.md` y `scripts/respaldo-claude.ps1` | ⏳ Preparar en la PC (rotar la llave escrita en el chat) |
 

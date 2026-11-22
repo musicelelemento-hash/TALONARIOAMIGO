@@ -20,6 +20,19 @@
 - Base de datos movida a Supabase; `SUPABASE_SERVICE_ROLE_KEY` corregida en Render.
 - Skills del proyecto instaladas; `CLAUDE.md` + esta bitácora + skill `bitacora`.
 
+## Avance de la app (22/11, tarde)
+- **Factura por chat dentro de la app** (escribir o dictar → tarjeta → "Sí, emitir"), con intérprete en JS
+  y 12 tests (`npm run test:js`). **Facilidad:** letra ≥16 px, controles ≥44 px, menú "Más", pago plegado
+  al final, productos como tarjetas en celular. Commit `ffdf902`.
+- **Versión de prueba publicada** (Modo Práctica) para que el dueño la pruebe como usuario final. No
+  incluye el lector del PDF del RUC (la plataforma rechazó ese archivo).
+- Conectados Cloudflare y Vercel (cuenta Talonario). Producción del frontend: `talonarioamigo.com` en
+  Vercel, desde `robertcashbooking-lang/TALONARIO-AMIGO`; su commit extra `850c6c0` es solo de
+  configuración del despliegue. **El keep-alive de Cloudflare nunca se desplegó** (no hay Workers):
+  desplegarlo requiere aprobación del dueño.
+- Pendientes vistos en la prueba: textos con jerga tras emitir ("Comprobante Transmitido y Registrado
+  Exitosamente", "COPIA AZUL AUTOCOPIATIVA"); el Modo Tranquilo sigue su propio asistente de 3 pasos.
+
 ## La app estrella (22/11) — el corazón del proyecto
 - Especificación: `docs/producto/APP_ESTRELLA.md` (avance de la app: **38 %**). Flujos por chat, voz y
   foto; configuración en 3 pasos con el PDF del RUC; dos estilos (**Clásico** y **Minimalista**, idea
