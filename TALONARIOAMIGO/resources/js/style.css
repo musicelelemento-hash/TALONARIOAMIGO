@@ -3346,7 +3346,8 @@
 }
 
 .gravity-drop-anim {
-    display: inline-block;
+    /* Sin "display": se aplica también al <tbody> de productos y un inline-block
+       metía todas las filas dentro de la primera columna de la tabla. */
     animation: gravityDrop 0.65s cubic-bezier(0.25, 1.4, 0.45, 1) forwards;
 }
 
@@ -4459,8 +4460,39 @@ body:has(> #app-root > .landing) #app-root {
     .tranquilo-boton-texto { font-size: 18px; }
 }
 
+/* ==========================================================================
+   Correcciones de la auditoría visual (22/11/2026)
+   ========================================================================== */
 
+/* 1. Botón principal "Emitir factura ahora": la limpieza v2 le quitó el degradado
+      (background-image: none) sin darle color, y quedaba texto blanco sobre papel. */
+.btn-stamp-action {
+    background-color: #0F172A !important;
+    color: #FFFFFF !important;
+}
+.btn-stamp-action:hover {
+    background-color: #1E293B !important;
+}
 
-
-
-
+/* 2. Celular: nada debe empujar la página hacia los lados. */
+.frequent-clients-bar {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+}
+.frequent-clients-bar::-webkit-scrollbar {
+    display: none;
+}
+.frequent-client-chip {
+    flex-shrink: 0;
+}
+@media (max-width: 640px) {
+    .cliente-row {
+        flex-wrap: wrap;
+    }
+    .cliente-row .cliente-line-input {
+        min-width: 0;
+        flex: 1 1 140px;
+    }
+}
