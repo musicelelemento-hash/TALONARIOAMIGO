@@ -12,26 +12,48 @@
 
 ## 2. Obtener la connection string
 
-**Project Settings → Database → Connection string → URI** (o **Session pooler**):
+**Project Settings → Database → Connection string → Session pooler.**
+
+> ⚠️ No uses el host directo `db.<ref>.supabase.co`: solo tiene IPv6 y Render no sale por IPv6
+> (la conexión falla). Usa siempre el **Session pooler**: puerto **5432**. El puerto `6543` es el
+> modo *transacción*, que rompe las sentencias preparadas de PDO/Laravel.
 
 ```
-postgresql://postgres.<ref>:<password>@db.<ref>.supabase.co:5432/postgres?sslmode=require
+postgresql://<rol>.<ref>:<password>@aws-1-<region>.pooler.supabase.com:5432/postgres?sslmode=require
 ```
-
-> Si tu red no permite IPv6, usa el **Session Pooler** (puerto `6543`) que ya viene con SSL.
 
 ## 3. Configurar el `.env` del backend
 
+La app usa su **propio rol** (`talonario_app`), no `postgres`: así sus tablas no heredan los
+permisos que Supabase da por defecto a `anon`/`authenticated` en la Data API.
+
 ```bash
 DB_CONNECTION=pgsql
-DB_HOST=db.<ref>.supabase.co
+DB_HOST=aws-1-us-west-2.pooler.supabase.com
 DB_PORT=5432
 DB_DATABASE=postgres
-DB_USERNAME=postgres.<ref>
-DB_PASSWORD=<password>
+DB_USERNAME=talonario_app.<ref>
+DB_PASSWORD=<password del rol talonario_app>
+DB_SSLMODE=require
+SUPABASE_SERVICE_ROLE_KEY=<service_role key>   # Storage de XML; el código NO lee SUPABASE_KEY
 ```
 
-> En Render: marca la base como **public network** o usa el pooler `-pooler` si aplica.
+Crear el rol (SQL Editor, una vez):
+
+```sql
+create role talonario_app with login password '<password>';
+grant usage, create on schema public to talonario_app;
+```
+
+### Estado de producción (noviembre 2026)
+
+- La API de Render (`talonario-amigo-api`) usa esta configuración desde el 21/11/2026. La antigua
+  Postgres gratuita de Render (`talonario-amigo-db`) venció el 18/11 y ya no se usa.
+- Las 11 tablas de `public` pertenecen a `talonario_app`, tienen RLS activado y `anon` /
+  `authenticated` no tienen ningún permiso sobre ellas.
+- El contenedor ejecuta `php artisan migrate --force` al arrancar.
+- Supabase gratis se pausa tras ~7 días sin actividad: el Worker `cloudflare/keepalive` llama a
+  `/api/health` (que hace `SELECT 1`) cada 2 minutos para evitarlo.
 
 ## 4. Migrar y sembrar
 
