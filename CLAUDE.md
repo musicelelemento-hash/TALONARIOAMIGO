@@ -23,7 +23,7 @@ Informe de producto: `docs/INFORME_FINAL.md`.
 | `TALONARIOAMIGO/liberias_sri/` | Librería SRI comprada (firma XAdES, XML) — no reescribir |
 | `talonario-amigo-mobile/` | Capacitor (APK Android) · `talonario-amigo-desktop/` Electron |
 | `cloudflare/keepalive/` | Worker que llama `/api/health` cada 2 min (evita que Render y Supabase duerman) |
-| `.agents/agents/` | 22 fichas de "agentes" de rol (referencia, no código) |
+| `.agents/agents/` | 22 fichas antiguas de roles (solo referencia; el equipo real está en `.claude/agents/`) |
 | `docs/` | Guías: Render, Supabase, WhatsApp, demo, imprentas, diseño |
 
 ## Comandos (desde `TALONARIOAMIGO/`)
@@ -45,7 +45,17 @@ Si los tests fallan con "valid cache path": `mkdir -p storage/framework/{views,c
 - Los conectores MCP de Render/Vercel de claude.ai apuntan a la cuenta **personal** (otro proyecto):
   no los uses para Talonario.
 
+## Equipo de agentes (director + especialistas)
+La sesión principal es el **director** (skill `director`): decide si delegar, a quién y cómo verificar.
+Especialistas en `.claude/agents/`: `dev-backend`, `interfaz-minimalista`, `marketing-contenido`,
+`crecimiento-negocio`, `cumplimiento-seguridad` (solo revisa), `infra-operaciones` (solo lectura) y
+`verificador-qa` (solo revisa, obligatorio antes de dar algo por terminado).
+Marketing: `docs/marketing/` · Planes y cobros: `docs/negocio/PLANES_Y_PAGOS.md` ·
+Conexiones por hacer: `docs/CONEXIONES_PENDIENTES.md`.
+
 ## Reglas
+- Producción (Render, Supabase, Cloudflare, Meta) y push a `main`: siempre con aprobación del dueño
+  (candado automático en `.claude/hooks/proteger-produccion.sh`).
 - Nunca imprimas ni escribas secretos (llaves, contraseñas, `.p12`) en chat, logs, commits o docs.
 - Toda ruta de `api/v1/*` exige `auth:sanctum`, salvo las listadas en `tests/Feature/SecurityTest.php`.
 - Cambios de emisión: correr `EmissionTest`, `WhatsAppTest` y `SecurityTest`.

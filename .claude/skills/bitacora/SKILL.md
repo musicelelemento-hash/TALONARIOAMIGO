@@ -1,6 +1,6 @@
 ---
 name: bitacora
-description: Ponerse al día y dejar el relevo entre sesiones de Talonario Amigo sin releer todo el repositorio. Úsala al EMPEZAR una sesión o cuando el usuario diga "ponte al día", "retoma", "¿en qué quedamos?", "continúa"; y al TERMINAR un bloque de trabajo o cuando diga "guarda", "cierra", "deja el relevo".
+description: "Ponerse al día y dejar el relevo entre sesiones de Talonario Amigo sin releer todo el repositorio. Úsala al EMPEZAR una sesión o cuando el usuario diga \"ponte al día\", \"retoma\", \"¿en qué quedamos?\", \"continúa\"; y al TERMINAR un bloque de trabajo o cuando diga \"guarda\", \"cierra\", \"deja el relevo\"."
 ---
 
 # Bitácora de sesión (ahorro de tokens)

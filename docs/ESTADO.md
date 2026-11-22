@@ -20,6 +20,17 @@
 - Base de datos movida a Supabase; `SUPABASE_SERVICE_ROLE_KEY` corregida en Render.
 - Skills del proyecto instaladas; `CLAUDE.md` + esta bitácora + skill `bitacora`.
 
+## Bases del equipo y marketing (22/11)
+- Equipo real de agentes en `.claude/agents/` (7 especialistas) + skill `director` (cómo delegar,
+  verificar y pedir aprobación), según las recomendaciones de Anthropic. El sistema viejo de 22 fichas
+  queda como referencia histórica.
+- Candado automático de producción: `.claude/hooks/proteger-produccion.sh` (pide aprobación ante
+  cambios en Render, Supabase, Cloudflare o Meta, y ante push a `main`). Probado en sesión.
+- Marketing: `docs/marketing/ESTRATEGIA.md`, `PROMPTS_VIDEO.md` (8 prompts listos), `PROCESO_META.md`
+  (ciclo semanal y tabla de selección); skill `video-prompts`.
+- Negocio: `docs/negocio/PLANES_Y_PAGOS.md` (planes hipótesis, menús de pago, cobros). Conexiones: `docs/CONEXIONES_PENDIENTES.md`.
+- Los agentes nuevos se cargan al abrir una sesión nueva.
+
 ## Auditoría visual (22/11) — pendientes de rediseño
 Arreglados: tabla de productos rota, botón "Emitir" invisible, desborde en celular (commit `ff34156`).
 Pendientes, en orden de impacto:

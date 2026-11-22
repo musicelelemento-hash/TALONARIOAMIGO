@@ -36,7 +36,7 @@ aceptó tu factura" y un botón de ayuda que contesta una persona real.
 
 ## 3. Cuánto nos falta: avance por área
 
-**Avance global estimado: 46 %.** El motor está; falta terminar la factura completa, llevarla a
+**Avance global estimado: 47 %.** El motor está; falta terminar la factura completa, llevarla a
 todos los dispositivos, el negocio y salir a vender.
 
 | # | Área | Avance | Qué ya está | Qué falta para el 100 % |
@@ -58,7 +58,7 @@ todos los dispositivos, el negocio y salir a vender.
 | 15 | Negocio B2B (imprentas) | **60 %** | Panel imprenta, paquetes y activación | Comisiones, reportes de la imprenta, contrato con imprentas |
 | 16 | Cobros y planes | **0 %** | — | Plan gratis con límite; cobro mensual (PayPhone o Kushki); factura propia a clientes |
 | 17 | Legal | **0 %** | Aviso en README | Términos de uso, privacidad (LOPDP), contrato de servicio (abogado) |
-| 18 | Marketing y lanzamiento | **20 %** | Landing con capturas, guion de demo, one-pager para imprentas | Demo pública, videos reales, piloto con 20 comerciantes en un mercado, referidos, SEO |
+| 18 | Marketing y lanzamiento | **30 %** | Landing, guion de demo, one-pager para imprentas; estrategia, 8 prompts de video y proceso semanal en Meta | Demo pública, videos reales, piloto con 20 comerciantes en un mercado, referidos, SEO |
 
 ## 4. El camino: 5 fases hacia la versión final
 

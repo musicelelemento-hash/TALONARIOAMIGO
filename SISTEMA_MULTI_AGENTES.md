@@ -1,3 +1,8 @@
+> ⚠️ **Documento histórico (22/11/2026).** Estos 22 agentes eran solo fichas: nunca estuvieron conectados
+> a Claude. El equipo real ahora son 7 especialistas en `.claude/agents/`, coordinados por la skill
+> `director`, siguiendo las recomendaciones de Anthropic (pocos agentes enfocados, verificación y
+> aprobación humana). Este archivo queda como referencia de roles.
+
 # 🏛️ SISTEMA MAESTRO MULTI-AGENTE — TALONARIO AMIGO
 > **Versión Operativa:** 3.5 (Elite Enterprise Multi-Agent Architecture — 20 Agentes)  
 > **Lema Estratégico:** *"No vendemos facturación electrónica. Vendemos: La tranquilidad de seguir usando tu talonario de toda la vida."*
