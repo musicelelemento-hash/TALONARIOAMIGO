@@ -5,3 +5,6 @@ compatibility_date = "2024-11-01"
 # Ping cada 2 minutos para mantener vivo el servicio free de Render.
 [triggers]
 crons = ["*/2 * * * *"]
+
+# Desplegado el 22/11/2026 por la API de Cloudflare (cuenta de Talonario Amigo).
+# Para volver a desplegar desde tu PC: `npx wrangler deploy` dentro de esta carpeta.

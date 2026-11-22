@@ -9,7 +9,7 @@
 | 1 | **Repositorio de producción** (GitHub de la otra cuenta, o decidir que produzca este) | `infra-operaciones`, `dev-backend` | Llevar los arreglos a producción | Dar acceso a la app de Claude en GitHub a ese repo, o cambiar el repo en Render | ⏳ Vercel y Render usan `robertcashbooking-lang/TALONARIO-AMIGO`: agregar a `musicelelemento-hash` como colaborador o instalar la app de Claude ahí |
 | 2 | **Render** (cuenta Talonario) | `infra-operaciones` | Logs, salud, variables | Network secret `api.render.com` | ✅ Conectado (rotar la llave escrita en el chat) |
 | 3 | **Supabase** (cuenta Talonario) | `infra-operaciones`, `dev-backend` | Base de datos, migraciones, advisors | Network secret `api.supabase.com` | ✅ Conectado |
-| 4 | **Cloudflare** (cuenta Talonario) | `infra-operaciones` | Keep-alive, dominio, landing | Network secret `api.cloudflare.com` | ✅ Conectado (la cuenta no tiene Workers: el keep-alive nunca se desplegó) |
+| 4 | **Cloudflare** (cuenta Talonario) | `infra-operaciones` | Keep-alive, dominio, landing | Network secret `api.cloudflare.com` | ✅ Conectado. Keep-alive desplegado el 22/11 (`talonario-keepalive`, cada 2 min) |
 | 5 | **Meta Business** (Facebook e Instagram de Talonario) | `marketing-contenido`, `crecimiento-negocio` | Publicar, anuncios, métricas | Cuenta de Meta Business + página + cuenta publicitaria; luego token para leer métricas | ⏳ Pendiente |
 | 6 | **WhatsApp Business (Cloud API)** | `dev-backend` | Factura por WhatsApp y botón Ayúdame | Las 5 variables de `docs/WHATSAPP_SETUP.md` en Render | ⏳ Pendiente |
 | 7 | **Generador de video con IA** | `marketing-contenido` | Producir los videos de `PROMPTS_VIDEO.md` | El generador de Meta en Ads Manager, o una cuenta de Veo, Kling o Runway | ⏳ Elegir herramienta |

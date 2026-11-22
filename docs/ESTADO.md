@@ -28,8 +28,8 @@
   incluye el lector del PDF del RUC (la plataforma rechazó ese archivo).
 - Conectados Cloudflare y Vercel (cuenta Talonario). Producción del frontend: `talonarioamigo.com` en
   Vercel, desde `robertcashbooking-lang/TALONARIO-AMIGO`; su commit extra `850c6c0` es solo de
-  configuración del despliegue. **El keep-alive de Cloudflare nunca se desplegó** (no hay Workers):
-  desplegarlo requiere aprobación del dueño.
+  configuración del despliegue. **Keep-alive desplegado el 22/11 con aprobación del dueño**: Worker `talonario-keepalive`
+  en Cloudflare (subdominio `talonarioamigo.workers.dev`), cron `*/2 * * * *` → `/api/health` de Render.
 - Pendientes vistos en la prueba: textos con jerga tras emitir ("Comprobante Transmitido y Registrado
   Exitosamente", "COPIA AZUL AUTOCOPIATIVA"); el Modo Tranquilo sigue su propio asistente de 3 pasos.
 
