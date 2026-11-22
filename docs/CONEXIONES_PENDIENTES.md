@@ -19,8 +19,8 @@
 | 11 | **Google Play Console** | `dev-backend` | Publicar la APK | Cuenta de desarrollador (USD 25, una vez) | ⏳ Pendiente |
 | 12 | **Resend** (correo) | `dev-backend` | Enviar el RIDE al cliente | Ya configurado en Render | ✅ En producción |
 | 13 | **Dominio** (talonarioamigo.com o similar) | `infra-operaciones`, `marketing-contenido` | Landing, correo, confianza | Registrar y apuntar en Cloudflare | ⏳ Confirmar si existe |
-| 15 | **Respaldo FreeLLMAPI** (modelos gratuitos) | Todos, solo en emergencia | Seguir trabajando si no hay Claude | En tu PC: `docs/RESPALDO_FREELLMAPI.md` y `scripts/respaldo-claude.ps1` | ⏳ Preparar en la PC (rotar la llave escrita en el chat) |
 | 14 | **Carpeta de la laptop** | Todos | Archivos que solo están en tu computadora | App de escritorio de Claude → Ajustes → Claude Code → Remote Control (puede no estar disponible en todas las cuentas); si no, subir al repo | ⏳ Pendiente |
+| 15 | **Respaldo FreeLLMAPI** (modelos gratuitos) | Todos, solo en emergencia | Seguir trabajando si no hay Claude | En tu PC: `docs/RESPALDO_FREELLMAPI.md` y `scripts/respaldo-claude.ps1` | ⏳ Preparar en la PC (rotar la llave escrita en el chat) |
 
 **Notas:**
 - Los conectores de Render y Vercel de claude.ai apuntan a tu cuenta personal (otro proyecto): no se usan
