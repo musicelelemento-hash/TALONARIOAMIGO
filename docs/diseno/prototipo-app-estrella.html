@@ -1,0 +1,291 @@
+<title>Talonario Amigo: la app estrella</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#E9E3D3}
+:root{color-scheme:light;
+  --papel:#FCFBF6; --copia:#EBF3FF; --copia-fuerte:#1D4ED8; --lomo:#4A2E1B; --tinta:#1B2D4F; --folio:#D62828; --ok:#16793F;
+  --mesa:#E9E3D3; --marco:#2A1D13; --pantalla:#F6F1E3; --tarjeta:#FCFBF6; --linea:#D9D0B8; --boton:#1B2D4F; --boton-txt:#FCFBF6;
+  --acento:#1D4ED8; --suave:#EBF3FF; --muted:#5B6478;
+  --f-ui:'Inter',system-ui,sans-serif; --f-mano:'Caveat','Segoe Print',cursive; --f-num:'JetBrains Mono',ui-monospace,monospace;
+  --radio:10px; --sombra:0 8px 24px rgba(74,46,27,.18);
+}
+.proto[data-estilo="min"]{
+  --mesa:#F4F5F7; --marco:#111827; --pantalla:#FFFFFF; --tarjeta:#FFFFFF; --linea:#E5E7EB; --boton:#111827; --boton-txt:#FFFFFF;
+  --acento:#2563EB; --suave:#F3F6FF; --tinta:#111827; --papel:#FFFFFF; --muted:#6B7280;
+  --f-mano:'Inter',system-ui,sans-serif; --radio:14px; --sombra:0 8px 30px rgba(17,24,39,.08);
+}
+*{box-sizing:border-box}
+.proto{font-family:var(--f-ui);font-size:16px;line-height:1.45;color:var(--tinta);background:var(--mesa);padding:24px 16px 56px;min-height:100vh;transition:background .3s}
+.proto h1,.proto h2,.proto h3,.proto p{margin:0}
+.wrap{max-width:1180px;margin:0 auto}
+.cab{text-align:center;max-width:640px;margin:8px auto 28px}
+.cab h1{font-size:clamp(28px,6vw,44px);line-height:1.1;font-weight:700;font-family:var(--f-mano)}
+.proto[data-estilo="min"] .cab h1{font-weight:600;letter-spacing:-.02em}
+.cab p{font-size:18px;margin-top:12px;color:var(--muted)}
+.interruptor{display:inline-flex;margin-top:20px;background:var(--tarjeta);border:2px solid var(--tinta);border-radius:999px;padding:4px;gap:4px}
+.interruptor button{min-height:48px;min-width:132px;padding:0 20px;border:0;border-radius:999px;background:transparent;color:var(--tinta);font:600 18px var(--f-ui);cursor:pointer}
+.interruptor button[aria-checked="true"]{background:var(--boton);color:var(--boton-txt)}
+button:focus-visible,summary:focus-visible,input:focus-visible{outline:3px solid var(--acento);outline-offset:2px}
+.galeria{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:40px 24px;justify-items:center;align-items:start}
+.pieza{width:100%;display:flex;flex-direction:column;align-items:center;gap:12px}
+.pieza>h2{font-size:18px;font-weight:600;text-align:center}
+.pieza>h2 span{font-family:var(--f-num);color:var(--acento);margin-right:8px}
+.celu{width:min(100%,340px);background:var(--marco);border-radius:36px;padding:10px;box-shadow:var(--sombra)}
+.pantalla{background:var(--pantalla);border-radius:28px;min-height:600px;padding:20px 16px;display:flex;flex-direction:column;gap:16px;overflow:hidden}
+.barra{display:flex;justify-content:space-between;font:500 16px var(--f-num);color:var(--muted)}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:56px;width:100%;padding:0 16px;border:0;border-radius:var(--radio);background:var(--boton);color:var(--boton-txt);font:700 20px var(--f-ui);cursor:pointer;text-align:center}
+.btn.sec{background:transparent;color:var(--tinta);border:2px solid var(--tinta);font-size:18px;min-height:52px}
+.proto[data-estilo="clasico"] .btn:not(.sec){box-shadow:0 3px 0 #0b1530}
+.btn:active{transform:translateY(1px)}
+.saludo{font:700 34px/1.1 var(--f-mano)}
+.proto[data-estilo="min"] .saludo{font-size:28px;font-weight:600;letter-spacing:-.02em}
+.sub{color:var(--muted);font-size:18px}
+.gran{min-height:112px;font-size:26px;flex-direction:column}
+.accesos{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.acc{min-height:72px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:var(--tarjeta);border:1.5px solid var(--linea);border-radius:var(--radio);font:600 16px var(--f-ui);color:var(--tinta);cursor:pointer}
+.acc svg,.btn svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.resumen{margin-top:auto;padding:12px 14px;border-top:1.5px dashed var(--linea);color:var(--muted);font-size:16px;display:flex;justify-content:space-between;gap:8px}
+.resumen b{text-align:right;font-family:var(--f-num);color:var(--tinta)}
+/* chat */
+.chat{display:flex;flex-direction:column;gap:12px;flex:1}
+.burbuja{max-width:90%;padding:12px 14px;border-radius:16px;font-size:18px;background:var(--suave);align-self:flex-end;border-bottom-right-radius:4px}
+.proto[data-estilo="clasico"] .burbuja{font-family:var(--f-mano);font-size:22px;background:var(--copia)}
+.burbuja .quien{display:block;font-size:16px;color:var(--muted);font-family:var(--f-ui)}
+.tarjeta{background:var(--tarjeta);border:1.5px solid var(--linea);border-radius:var(--radio);padding:14px;display:flex;flex-direction:column;gap:8px;animation:aparece .6s cubic-bezier(.2,.8,.2,1) both .5s}
+.proto[data-estilo="clasico"] .tarjeta{border-left:6px solid var(--copia-fuerte);background:var(--papel)}
+.fila{display:flex;justify-content:space-between;gap:8px;font-size:16px}
+.fila b,.num{font-family:var(--f-num);font-weight:700}
+.total{font-size:20px;font-weight:700;border-top:1.5px solid var(--tinta);padding-top:8px}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.entrada{display:flex;gap:8px;margin-top:auto}
+.entrada div{flex:1;min-height:52px;border:1.5px solid var(--linea);border-radius:999px;background:var(--tarjeta);padding:0 16px;display:flex;align-items:center;color:var(--muted)}
+.mic{width:52px;height:52px;border-radius:50%;border:0;background:var(--boton);color:var(--boton-txt);display:grid;place-items:center}
+.mic svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:2}
+@keyframes aparece{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+/* hoja */
+.zona-hoja{position:relative;padding-bottom:8px}
+.hoja{background:var(--papel);border-radius:6px;padding:16px 14px;display:flex;flex-direction:column;gap:8px;position:relative}
+.proto[data-estilo="clasico"] .hoja{box-shadow:0 2px 0 var(--linea),0 6px 14px rgba(74,46,27,.2);border-left:14px solid var(--lomo);z-index:2;transform-origin:left top;animation:desprende 1.1s cubic-bezier(.3,.7,.2,1) both}
+.proto[data-estilo="clasico"] .copia{display:block}
+.copia{display:none;position:absolute;left:14px;right:-4px;top:8px;bottom:-8px;background:var(--copia);border-radius:6px;z-index:1;box-shadow:0 2px 6px rgba(29,78,216,.25)}
+.proto[data-estilo="min"] .hoja{border:1.5px solid var(--linea);border-radius:var(--radio)}
+.hoja .folio{font:700 16px var(--f-num);color:var(--folio);display:flex;flex-wrap:wrap;gap:2px 12px;justify-content:space-between}
+.proto[data-estilo="min"] .hoja .folio{color:var(--muted)}
+.hoja .mano{font-family:var(--f-mano);font-size:22px;color:var(--tinta);line-height:1.2}
+.proto[data-estilo="clasico"] .hoja .mano{color:var(--copia-fuerte)}
+.sello{align-self:center;border:3px solid var(--ok);color:var(--ok);border-radius:8px;padding:6px 14px;font:700 18px var(--f-ui);transform:rotate(-6deg);animation:sella .5s ease-out both 1.1s}
+.proto[data-estilo="min"] .sello{border:0;transform:none;padding:0;display:flex;align-items:center;gap:8px;animation:none}
+.check{display:none;width:28px;height:28px}
+.proto[data-estilo="min"] .check{display:block}
+.check circle{stroke:var(--ok);fill:none;stroke-width:3}
+.check path{stroke:var(--ok);fill:none;stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:30;stroke-dashoffset:0;animation:trazo .6s ease-out both .4s}
+@keyframes trazo{from{stroke-dashoffset:30}to{stroke-dashoffset:0}}
+@keyframes sella{from{opacity:0;transform:rotate(-6deg) scale(1.6)}to{opacity:1;transform:rotate(-6deg) scale(1)}}
+@keyframes desprende{0%{transform:translateY(-30px) rotate(-5deg);opacity:0}60%{transform:translateY(4px) rotate(1deg);opacity:1}100%{transform:none;opacity:1}}
+.repetir{background:none;border:0;min-height:48px;padding:0 16px;color:var(--acento);font:600 16px var(--f-ui);text-decoration:underline;cursor:pointer}
+details{border:1.5px solid var(--linea);border-radius:var(--radio);background:var(--tarjeta)}
+summary{min-height:52px;display:flex;align-items:center;padding:0 14px;font:600 18px var(--f-ui);cursor:pointer;list-style:none}
+summary::-webkit-details-marker{display:none}
+details[open] summary .fl{display:inline-block;transform:rotate(90deg)}
+.fl{margin-left:6px;transition:transform .2s}
+.opc{padding:4px 14px 14px;display:flex;flex-direction:column;gap:8px}
+.radio{display:flex;align-items:center;gap:12px;min-height:48px;font-size:18px;cursor:pointer}
+.radio input{width:24px;height:24px;accent-color:var(--acento)}
+/* pasos */
+.progreso{height:12px;background:var(--linea);border-radius:99px;overflow:hidden}
+.progreso i{display:block;height:100%;width:66%;background:var(--acento);border-radius:99px}
+.paso{display:flex;gap:12px;padding:14px;border:1.5px solid var(--linea);border-radius:var(--radio);background:var(--tarjeta)}
+.paso.act{border-color:var(--acento);border-width:2px}
+.paso .n{flex:none;width:36px;height:36px;border-radius:50%;background:var(--tinta);color:var(--boton-txt);display:grid;place-items:center;font:700 18px var(--f-num)}
+.paso.hecho .n{background:var(--ok)}
+.paso h3{font-size:18px;font-weight:700}
+.paso .cuerpo{display:flex;flex-direction:column;gap:8px;flex:1;min-width:0}
+.auto{font-size:16px;color:var(--muted);background:var(--suave);border-radius:8px;padding:8px 10px}
+.auto b{color:var(--tinta);font-weight:600}
+/* tablet */
+.tablet-pieza{grid-column:1/-1}
+.tab{width:min(100%,900px);background:var(--marco);border-radius:28px;padding:14px;box-shadow:var(--sombra)}
+.tab-pant{background:var(--pantalla);border-radius:16px;display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:16px;min-height:420px}
+.prods{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;align-content:start}
+.prod{min-height:92px;border:1.5px solid var(--linea);border-radius:var(--radio);background:var(--tarjeta);color:var(--tinta);font:600 18px var(--f-ui);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer}
+.prod span{font:700 16px var(--f-num);color:var(--acento)}
+.lado{display:flex;flex-direction:column;gap:10px}
+.lado h3{font-size:18px}
+@media (max-width:640px){.tab-pant{grid-template-columns:1fr}.tablet-pieza .tab{padding:8px}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+
+<div class="proto" id="proto" data-estilo="clasico">
+<div class="wrap">
+  <header class="cab">
+    <h1>Dos estilos, una sola app</h1>
+    <p>Elige cómo quieres ver tu talonario. Todo funciona igual; solo cambia la apariencia.</p>
+    <div class="interruptor" role="radiogroup" aria-label="Estilo de la app">
+      <button type="button" role="radio" aria-checked="true" data-e="clasico">Clásico</button>
+      <button type="button" role="radio" aria-checked="false" data-e="min">Minimalista</button>
+    </div>
+  </header>
+
+  <main class="galeria">
+
+    <!-- a) Inicio -->
+    <section class="pieza" aria-label="Inicio">
+      <h2><span>1</span>Inicio</h2>
+      <div class="celu"><div class="pantalla">
+        <div class="barra"><span>9:41</span><span>Rosa</span></div>
+        <div><p class="saludo">Buenos días, Rosa</p><p class="sub">¿Qué vas a vender hoy?</p></div>
+        <button class="btn gran" type="button">
+          <svg viewBox="0 0 24 24" style="width:36px;height:36px"><path d="M12 5v14M5 12h14"/></svg>Nueva factura</button>
+        <div class="accesos">
+          <button class="acc" type="button"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>Hablar</button>
+          <button class="acc" type="button"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Foto</button>
+          <button class="acc" type="button"><svg viewBox="0 0 24 24"><path d="M4 20l1-4L16 5l3 3L8 19z"/></svg>Escribir</button>
+        </div>
+        <div class="resumen"><span>Hoy vendiste</span><b>$87.40 · 6 facturas</b></div>
+      </div></div>
+    </section>
+
+    <!-- b) Chat -->
+    <section class="pieza" aria-label="Factura por chat">
+      <h2><span>2</span>Factura por chat</h2>
+      <div class="celu"><div class="pantalla">
+        <div class="barra"><span>9:42</span><span>Nueva factura</span></div>
+        <div class="chat">
+          <div class="burbuja"><span class="quien">Tú (dictado)</span>Factura a Juan Pérez 0912345678, 2 colas a 0.50 y 1 pan a 0.25</div>
+          <div class="tarjeta" id="tarjeta">
+            <p style="font-size:18px;font-weight:700">¿Está bien así?</p>
+            <div class="fila"><span>Cliente</span><b>Juan Pérez</b></div>
+            <div class="fila"><span>Cédula</span><b>0912345678</b></div>
+            <div class="fila"><span>2 colas × 0.50</span><b>$1.00</b></div>
+            <div class="fila"><span>1 pan × 0.25</span><b>$0.25</b></div>
+            <div class="fila"><span>Subtotal</span><b>$1.25</b></div>
+            <div class="fila"><span>IVA 15%</span><b>$0.19</b></div>
+            <div class="fila total"><span>Total</span><b>$1.44</b></div>
+            <div class="dos"><button class="btn" type="button" style="font-size:18px">Sí, emitir</button><button class="btn sec" type="button">Corregir</button></div>
+          </div>
+        </div>
+        <div class="entrada"><div>Escribe o habla…</div><button class="mic" type="button" aria-label="Hablar"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button></div>
+      </div></div>
+      <button class="repetir" type="button" data-rep="tarjeta">Ver de nuevo</button>
+    </section>
+
+    <!-- c) Factura emitida -->
+    <section class="pieza" aria-label="Factura emitida">
+      <h2><span>3</span>Factura emitida</h2>
+      <div class="celu"><div class="pantalla">
+        <div class="barra"><span>9:43</span><span>Lista</span></div>
+        <div class="zona-hoja" id="hoja-zona">
+          <div class="copia"></div>
+          <div class="hoja" id="hoja">
+            <div class="folio"><span>Factura</span><span>N° 001-001-000000128</span></div>
+            <p class="mano">Cliente: Juan Pérez</p>
+            <div class="fila"><span>2 colas × 0.50</span><b>$1.00</b></div>
+            <div class="fila"><span>1 pan × 0.25</span><b>$0.25</b></div>
+            <div class="fila"><span>IVA 15%</span><b>$0.19</b></div>
+            <div class="fila total"><span>Total</span><b>$1.44</b></div>
+            <div class="sello"><svg class="check" viewBox="0 0 28 28"><circle cx="14" cy="14" r="12"/><path d="M8 14.5l4 4 8-9"/></svg>Aceptada por el SRI</div>
+          </div>
+        </div>
+        <details>
+          <summary>Más opciones<span class="fl">▸</span></summary>
+          <div class="opc"><p class="sub">Pago: Efectivo</p></div>
+        </details>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:auto">
+          <button class="btn" type="button">Enviar por WhatsApp</button>
+          <button class="btn sec" type="button">Imprimir</button>
+        </div>
+      </div></div>
+      <button class="repetir" type="button" data-rep="hoja">Ver de nuevo</button>
+    </section>
+
+    <!-- d) Configuración -->
+    <section class="pieza" aria-label="Configuración en 3 pasos">
+      <h2><span>4</span>Configuración en 3 pasos</h2>
+      <div class="celu"><div class="pantalla">
+        <div class="barra"><span>9:30</span><span>Paso 2 de 3</span></div>
+        <div class="progreso" role="progressbar" aria-valuenow="2" aria-valuemin="0" aria-valuemax="3" aria-label="Progreso"><i></i></div>
+        <div class="paso hecho"><div class="n">✓</div><div class="cuerpo"><h3>Sube el PDF de tu RUC o tómale foto</h3>
+          <div class="auto">Ya lo llenamos por ti:<br><b>Rosa Elena Macías</b><br>RUC 0912345678001<br>Av. 9 de Octubre 123, Guayaquil</div></div></div>
+        <div class="paso act"><div class="n">2</div><div class="cuerpo"><h3>Sube tu firma electrónica</h3>
+          <button class="btn" type="button" style="font-size:18px">Elegir mi firma</button></div></div>
+        <div class="paso"><div class="n">3</div><div class="cuerpo"><h3>¡Listo!</h3><p class="sub">Ya puedes emitir tu primera factura.</p></div></div>
+      </div></div>
+    </section>
+
+    <!-- e) Más opciones abiertas -->
+    <section class="pieza" aria-label="Forma de pago y detalles">
+      <h2><span>5</span>Pago y detalles, al final</h2>
+      <div class="celu"><div class="pantalla">
+        <div class="barra"><span>9:42</span><span>Total $1.44</span></div>
+        <p class="sub">Si no cambias nada, se cobra en efectivo.</p>
+        <button class="btn" type="button">Emitir factura</button>
+        <details open>
+          <summary>Más opciones<span class="fl">▸</span></summary>
+          <div class="opc">
+            <p style="font-weight:600;font-size:18px">Forma de pago</p>
+            <label class="radio"><input type="radio" name="pago" checked>Efectivo</label>
+            <label class="radio"><input type="radio" name="pago">Tarjeta</label>
+            <label class="radio"><input type="radio" name="pago">Transferencia</label>
+          </div>
+          <details style="margin:0 14px 14px">
+            <summary>Detalles adicionales<span class="fl">▸</span></summary>
+            <div class="opc"><p class="sub">Correo del cliente, teléfono, una nota…</p></div>
+          </details>
+        </details>
+      </div></div>
+    </section>
+
+    <!-- f) Tablet -->
+    <section class="pieza tablet-pieza" aria-label="Modo caja en tablet">
+      <h2><span>6</span>Modo caja en tablet</h2>
+      <div class="tab"><div class="tab-pant">
+        <div class="lado">
+          <h3>Toca lo que vendes</h3>
+          <div class="prods">
+            <button class="prod" type="button">Cola<span>$0.50</span></button>
+            <button class="prod" type="button">Pan<span>$0.25</span></button>
+            <button class="prod" type="button">Agua<span>$0.60</span></button>
+            <button class="prod" type="button">Huevo<span>$0.20</span></button>
+            <button class="prod" type="button">Arroz 1 kg<span>$1.15</span></button>
+            <button class="prod" type="button">Leche<span>$1.10</span></button>
+          </div>
+        </div>
+        <div class="lado">
+          <h3>Factura de Juan Pérez</h3>
+          <div class="hoja" style="gap:10px">
+            <div class="fila"><span>2 colas × 0.50</span><b>$1.00</b></div>
+            <div class="fila"><span>1 pan × 0.25</span><b>$0.25</b></div>
+            <div class="fila"><span>IVA 15%</span><b>$0.19</b></div>
+            <div class="fila total"><span>Total</span><b>$1.44</b></div>
+          </div>
+          <details><summary>Más opciones<span class="fl">▸</span></summary><div class="opc"><p class="sub">Pago: Efectivo</p></div></details>
+          <button class="btn" type="button" style="margin-top:auto">Emitir factura</button>
+        </div>
+      </div></div>
+    </section>
+
+  </main>
+</div>
+</div>
+
+<script>
+(function(){
+  var raiz=document.getElementById('proto');
+  var botones=raiz.querySelectorAll('.interruptor button');
+  function reiniciar(id){
+    var el=document.getElementById(id); if(!el) return;
+    el.style.animation='none'; void el.offsetWidth; el.style.animation='';
+    el.querySelectorAll('.check path').forEach(function(p){p.style.animation='none';void p.offsetWidth;p.style.animation='';});
+    el.querySelectorAll('.sello').forEach(function(p){p.style.animation='none';void p.offsetWidth;p.style.animation='';});
+  }
+  function poner(e){
+    raiz.setAttribute('data-estilo',e);
+    botones.forEach(function(b){b.setAttribute('aria-checked',String(b.dataset.e===e));});
+    reiniciar('tarjeta'); reiniciar('hoja');
+  }
+  botones.forEach(function(b){b.addEventListener('click',function(){poner(b.dataset.e);});});
+  raiz.querySelectorAll('[data-rep]').forEach(function(b){b.addEventListener('click',function(){reiniciar(b.dataset.rep);});});
+})();
+</script>

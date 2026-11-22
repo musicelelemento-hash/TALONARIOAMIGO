@@ -20,6 +20,16 @@
 - Base de datos movida a Supabase; `SUPABASE_SERVICE_ROLE_KEY` corregida en Render.
 - Skills del proyecto instaladas; `CLAUDE.md` + esta bitácora + skill `bitacora`.
 
+## La app estrella (22/11) — el corazón del proyecto
+- Especificación: `docs/producto/APP_ESTRELLA.md` (avance de la app: **38 %**). Flujos por chat, voz y
+  foto; configuración en 3 pasos con el PDF del RUC; dos estilos (**Clásico** y **Minimalista**, idea
+  del dueño); lo opcional (pago y detalles) al final y plegado.
+- Prototipo visual de los dos estilos: `docs/diseno/prototipo-app-estrella.html` (publicado como página).
+- Competencia y protección de marca: `docs/negocio/COMPETENCIA_Y_PROTECCION.md` (marca en SENADI
+  clases 9 y 42, derechos de autor; el software no conviene patentarlo; varios datos marcados "verificar").
+- Agentes nuevos: `producto-vision` y `movil-android` (9 en total).
+- Ojo técnico: el dictado del navegador no funciona dentro de la APK (hace falta complemento nativo).
+
 ## Bases del equipo y marketing (22/11)
 - Equipo real de agentes en `.claude/agents/` (7 especialistas) + skill `director` (cómo delegar,
   verificar y pedir aprobación), según las recomendaciones de Anthropic. El sistema viejo de 22 fichas
