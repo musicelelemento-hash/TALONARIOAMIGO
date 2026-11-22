@@ -27,6 +27,29 @@ function renderMechanicalOdometer(numStr, isBlueCopy = false) {
     `;
 }
 
+
+// Menú plegable "Más ▾": agrupa todo lo que no es esencial en la cabecera.
+const CERRAR_MAS = "this.closest('details').removeAttribute('open')";
+function renderMenuMas(items) {
+    return `
+        <details class="mostrador-menu-mas">
+            <summary class="mostrador-mas-summary" aria-label="Más opciones">Más <span aria-hidden="true">▾</span></summary>
+            <div class="mostrador-mas-panel">
+                ${items.join('')}
+            </div>
+        </details>
+    `;
+}
+function masItem(label, onclick, extra = '', title = '') {
+    return `<button type="button" class="mostrador-mas-item ${extra}" onclick="${onclick}; ${CERRAR_MAS}"${title ? ` title="${title}"` : ''}>${label}</button>`;
+}
+function masModos(mode) {
+    return ['tranquilo', 'comerciante', 'pro'].map((m) => {
+        const label = m.charAt(0).toUpperCase() + m.slice(1);
+        return `<button type="button" class="mostrador-mas-item mostrador-mas-modo ${mode === m ? 'active' : ''}" onclick="window.appState.setExperienceMode('${m}')">${mode === m ? '✓ ' : ''}Modo ${label}</button>`;
+    }).join('');
+}
+
 // MODO TRANQUILO (A1): wizard de 3 pasos — un botón por pantalla, cero jerga.
 // Reutiliza los mismos IDs de inputs que el flujo normal para que la emisión
 // (collectEmitPayload / recalculateTotals) siga funcionando sin cambios.
@@ -44,14 +67,10 @@ function renderTranquiloWizard(emisorData, docNumStr, isDemo) {
                         <span class="mostrador-brand-sub">${isDemo ? 'Modo Práctica · no llega al SRI' : 'Emisión Real SRI'}</span>
                     </div>
                 </div>
-                <div class="mostrador-mode-segmented">
-                    <button type="button" class="mostrador-seg-btn active" onclick="window.appState.setExperienceMode('tranquilo')">Tranquilo</button>
-                    <button type="button" class="mostrador-seg-btn" onclick="window.appState.setExperienceMode('comerciante')">Comerciante</button>
-                    <button type="button" class="mostrador-seg-btn" onclick="window.appState.setExperienceMode('pro')">Pro</button>
-                </div>
             </div>
             <div class="mostrador-console-right">
                 ${isDemoGuest ? `<button type="button" class="mostrador-action-chip mostrador-cta-register" onclick="window.appState.openRegister()">Activar Mi RUC</button>` : ''}
+                ${renderMenuMas([masModos('tranquilo')])}
             </div>
         </header>
 
@@ -125,7 +144,7 @@ function renderTranquiloWizard(emisorData, docNumStr, isDemo) {
         </div>
 
         <!-- Botón flotante "Ayúdame" -->
-        <button type="button" onclick="window.appState.openHelpWhatsapp()" title="¿Necesitas ayuda? Escríbenos por WhatsApp" aria-label="Ayuda por WhatsApp" style="position: fixed; bottom: 20px; right: 20px; z-index: 9998; display: flex; align-items: center; gap: 8px; background: #25D366; color: #FFFFFF; border: none; border-radius: 999px; padding: 13px 18px; font-size: 14px; font-weight: 800; box-shadow: 0 8px 24px rgba(37,211,102,0.4); cursor: pointer;">
+        <button type="button" class="ayudame-flotante" onclick="window.appState.openHelpWhatsapp()" title="¿Necesitas ayuda? Escríbenos por WhatsApp" aria-label="Ayuda por WhatsApp" style="position: fixed; bottom: 20px; right: 20px; z-index: 9998; display: flex; align-items: center; gap: 8px; background: #25D366; color: #FFFFFF; border: none; border-radius: 999px; padding: 13px 18px; font-size: 14px; font-weight: 800; box-shadow: 0 8px 24px rgba(37,211,102,0.4); cursor: pointer;">
             <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2z"/></svg>
             Ayúdame
         </button>
@@ -148,7 +167,6 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
     const totalSheetsInBloc = blocEnd - blocStart + 1; // 50 hojas por bloc
     const currentSheetInBloc = Math.min(Math.max(docNum - blocStart + 1, 1), totalSheetsInBloc);
     const remainingSheets = Math.max(totalSheetsInBloc - currentSheetInBloc, 0);
-    const blocPercent = Math.round((currentSheetInBloc / totalSheetsInBloc) * 100);
 
     const emisor = emisorData?.user?.emisor || emisorData?.emisor || {};
     const nombreEmisor = emisor.razon_social || '';
@@ -245,7 +263,7 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                     </div>
                 </div>
 
-                <!-- Selector de Modo de Experiencia -->
+                <!-- Estado: Práctica / Real (lo único que importa a la vista) -->
                 <div class="mostrador-mode-segmented">
                     <button type="button" class="mostrador-seg-btn ${isDemo ? 'active' : ''}" onclick="window.appState.setDemoMode(true)" title="Modo Prueba sin consecuencias fiscales">
                          Práctica
@@ -253,66 +271,27 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                     <button type="button" class="mostrador-seg-btn ${!isDemo ? 'active-sri' : ''}" onclick="window.appState.setDemoMode(false)" title="Modo Real con emisión al SRI Ecuador">
                          Real SRI
                     </button>
-                    <span style="width: 1px; height: 16px; background: rgba(255,255,255,0.15); margin: 0 2px;"></span>
-                    <button type="button" class="mostrador-seg-btn ${mode === 'tranquilo' ? 'active' : ''}" onclick="window.appState.setExperienceMode('tranquilo')">
-                         Tranquilo
-                    </button>
-                    <button type="button" class="mostrador-seg-btn ${mode === 'comerciante' ? 'active' : ''}" onclick="window.appState.setExperienceMode('comerciante')">
-                         Comerciante
-                    </button>
-                    <button type="button" class="mostrador-seg-btn ${mode === 'pro' ? 'active' : ''}" onclick="window.appState.setExperienceMode('pro')">
-                         Pro
-                    </button>
-                </div>
-
-                <!-- Estado del bloc físico discreto -->
-                <div class="mostrador-bloc-pill" title="Bloc físico de ${totalSheetsInBloc} hojas (${remainingSheets} disponibles)">
-                    <span>Hoja <strong>${currentSheetInBloc}</strong>/${totalSheetsInBloc}</span>
-                    <div class="mostrador-bloc-microbar">
-                        <div style="width: ${blocPercent}%;"></div>
-                    </div>
-                    ${emisorData?.offlinePendingCount > 0 ? `
-                        <span class="offline-queue-badge" title="Comprobantes en cola offline">
-                             ${emisorData.offlinePendingCount}
-                        </span>
-                    ` : ''}
                 </div>
             </div>
 
             <div class="mostrador-console-right">
-                ${emisorData?.isDemoGuest ? `
-                    <button type="button" class="mostrador-action-chip" onclick="window.appState.loadDemoSampleData()" title="Cargar productos de ejemplo">
-                         Ejemplo
-                    </button>
-                    <button type="button" class="mostrador-action-chip" onclick="window.appState.toggleVoiceDictation()" title="Dictar por voz">
-                         Dictar
-                    </button>
-                    <button type="button" class="mostrador-action-chip" onclick="document.getElementById('gravity-file-input')?.click()" title="Escanear proforma o cédula">
-                         Foto
-                    </button>
-                    <button type="button" class="mostrador-action-chip" onclick="window.appState.open3DExperienceModal()" title="Ver y girar bloc en 3D">
-                         3D
-                    </button>
-                    <button type="button" class="mostrador-action-chip mostrador-cta-register" onclick="window.appState.openRegister()" title="Crear cuenta para facturar de verdad">
-                         Activar Mi RUC
-                    </button>
-                    <button type="button" class="mostrador-action-chip mostrador-exit-btn" onclick="window.appState.exitDemoMode()" title="Volver al portal">
-                        ✕ Salir
-                    </button>
-                ` : `
-                    <button type="button" class="mostrador-action-chip" onclick="window.appState.toggleAudio()" title="Activar/Silenciar Efectos de Sonido">
-                        ${emisorData?.audioEnabled !== false ? 'Sonido' : 'Silencio'}
-                    </button>
-                    <button type="button" class="mostrador-action-chip" onclick="window.appState.open3DExperienceModal()" title="Ver y girar el bloc en 3D">
-                         Bloc 3D
-                    </button>
-                    <button type="button" class="mostrador-action-chip" onclick="window.appState.openTomosModal()" title="Historial de tomos encuadernados">
-                         Mis Tomos
-                    </button>
-                    <button type="button" class="mostrador-action-chip" onclick="window.appState.openWhatsappModal()" title="Facturar desde tu WhatsApp">
-                         WhatsApp
-                    </button>
-                `}
+                ${renderMenuMas(emisorData?.isDemoGuest ? [
+                    masModos(mode),
+                    masItem('Ejemplo', 'window.appState.loadDemoSampleData()', '', 'Cargar productos de ejemplo'),
+                    masItem('Dictar', 'window.appState.toggleVoiceDictation()', '', 'Dictar por voz'),
+                    masItem('Foto', "document.getElementById('gravity-file-input')?.click()", '', 'Escanear proforma o cédula'),
+                    masItem('Ver en 3D', 'window.appState.open3DExperienceModal()', '', 'Ver y girar bloc en 3D'),
+                    masItem('Activar Mi RUC', 'window.appState.openRegister()', 'mostrador-cta-register', 'Crear cuenta para facturar de verdad'),
+                    masItem('Salir', 'window.appState.exitDemoMode()', 'mostrador-exit-btn', 'Volver al portal'),
+                    `<div class="mostrador-mas-nota" title="Bloc físico de ${totalSheetsInBloc} hojas (${remainingSheets} disponibles)">Hoja ${currentSheetInBloc} de ${totalSheetsInBloc}${emisorData?.offlinePendingCount > 0 ? ` · ${emisorData.offlinePendingCount} en cola` : ''}</div>`,
+                ] : [
+                    masModos(mode),
+                    masItem(emisorData?.audioEnabled !== false ? 'Sonido activado' : 'Sonido apagado', 'window.appState.toggleAudio()', '', 'Activar o silenciar los sonidos'),
+                    masItem('Ver en 3D', 'window.appState.open3DExperienceModal()', '', 'Ver y girar el bloc en 3D'),
+                    masItem('Mis Tomos', 'window.appState.openTomosModal()', '', 'Historial de tomos encuadernados'),
+                    masItem('WhatsApp', 'window.appState.openWhatsappModal()', '', 'Facturar desde tu WhatsApp'),
+                    `<div class="mostrador-mas-nota" title="Bloc físico de ${totalSheetsInBloc} hojas (${remainingSheets} disponibles)">Hoja ${currentSheetInBloc} de ${totalSheetsInBloc}${emisorData?.offlinePendingCount > 0 ? ` · ${emisorData.offlinePendingCount} en cola` : ''}</div>`,
+                ])}
             </div>
         </header>
 
@@ -364,7 +343,7 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                             ` : ''}
                             <div class="rimpe-badge">${esc(regimenEmisor)}</div>
                         </div>
-                        <label for="business-logo-input" style="cursor: pointer; font-size: 10px; font-weight: 800; color: #1D4ED8; background: #EBF3FF; padding: 3px 8px; border-radius: 6px; border: 1px solid #BFDBFE; white-space: nowrap;">
+                        <label for="business-logo-input" class="logo-cambiar-label" style="cursor: pointer; font-weight: 800; color: #1D4ED8; background: #EBF3FF; border: 1px solid #BFDBFE; white-space: nowrap;">
                              ${emisorData?.businessLogo ? 'Cambiar Logo' : '+ Tu Logo'}
                         </label>
                         <input type="file" id="business-logo-input" accept="image/*" style="display: none;" onchange="window.appState.handleLogoUpload(this)">
@@ -383,7 +362,7 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                     <div class="ruc-title-row">R U C: ${esc(rucEmisor)}</div>
                     <div class="document-type-banner">${esc(docTypeLabel)}</div>
                     <div class="serie-row">
-                        ${mode === 'pro' ? `SERIE: <select id="pro-serie-select" style="font-family: inherit; font-size: 11px; font-weight: 800; border: none; background: transparent; cursor: pointer;">
+                        ${mode === 'pro' ? `SERIE: <select id="pro-serie-select" style="font-family: inherit; font-size: 16px; font-weight: 800; border: none; background: transparent; cursor: pointer;">
                                 <option value="001-001">001-001 (Matriz)</option>
                                 <option value="001-002">001-002 (Sucursal 1)</option>
                             </select>
@@ -402,7 +381,7 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
             <!-- Principio 14: Tarjetas de Clientes Frecuentes -->
             <div class="frequent-clients-wrapper">
                 <div class="frequent-clients-label">
-                    <span>Clientes Frecuentes:</span>
+                    <span>Clientes frecuentes</span>
                 </div>
                 <div class="frequent-clients-bar">
                     <button type="button" class="frequent-client-chip" onclick="window.appState.selectFrequentClient('Juan Alberto Pérez Gómez', 'Av. Central N12-45 y Rocafuerte', '1712345678')">
@@ -426,19 +405,19 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
             <!-- Sección Datos del Cliente Receptor con Efecto Escritura Analógica -->
             <div class="cliente-seccion">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 6px;">
-                    <span style="font-size: 11px; font-weight: 800; color: #1E293B; text-transform: uppercase; letter-spacing: 0.5px;">
+                    <span class="seccion-etiqueta" style="font-weight: 800; color: #1E293B;">
                         Datos del Cliente Receptor
                     </span>
                     <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
-                        <button type="button" class="btn-voice-dictate" style="background: #10B981; border-color: #059669; color: #FFFFFF; font-weight: 800; padding: 4px 10px; font-size: 11px;" onclick="window.appState.selectFrequentClient('CONSUMIDOR FINAL', 'Ecuador', '9999999999999')" title="Llenar instantáneamente como Consumidor Final ($0 a $50)">
+                        <button type="button" class="btn-voice-dictate" style="background: #10B981; border-color: #059669; color: #FFFFFF; font-weight: 800;" onclick="window.appState.selectFrequentClient('CONSUMIDOR FINAL', 'Ecuador', '9999999999999')" title="Llenar instantáneamente como Consumidor Final ($0 a $50)">
                              Consumidor Final
                         </button>
-                        <label for="scanner-camera-input" class="btn-voice-dictate" style="background: #FEF3C7; border-color: #F59E0B; color: #B45309; cursor: pointer; padding: 4px 10px; font-size: 11px;" title="Tomar foto con cámara de la tablet/móvil a la Cédula o RUC">
+                        <label for="scanner-camera-input" class="btn-voice-dictate" style="background: #FEF3C7; border-color: #F59E0B; color: #B45309; cursor: pointer;" title="Tomar foto con cámara de la tablet/móvil a la Cédula o RUC">
                              Foto Cédula / RUC
                         </label>
                         <input type="file" id="scanner-camera-input" accept="image/*" capture="environment" style="display: none;" onchange="window.appState.handleGravityScan(this)">
 
-                        <button type="button" class="btn-voice-dictate ${emisorData?.isListeningVoice ? 'listening' : ''}" style="background: #F0FDF4; border-color: #86EFAC; color: #15803D; padding: 4px 10px; font-size: 11px;" onclick="window.appState.startVoiceDictation('client')">
+                        <button type="button" class="btn-voice-dictate ${emisorData?.isListeningVoice ? 'listening' : ''}" style="background: #F0FDF4; border-color: #86EFAC; color: #15803D;" onclick="window.appState.startVoiceDictation('client')">
                              Dictar Cliente
                         </button>
                     </div>
@@ -451,10 +430,8 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                 <div class="cliente-row">
                     <span class="cliente-label">RUC / CI #</span>
                     <input type="text" id="cliente-ruc-input" class="cliente-line-input" style="max-width: 140px;" value="1712345678" placeholder="10 o 13 dígitos" onfocus="window.appState.onInputFocus()">
-                    <span class="cliente-label" style="margin-left: 6px;">Tel / Cel:</span>
+                    <span class="cliente-label" style="margin-left: 6px;">Teléfono</span>
                     <input type="text" id="cliente-telefono-input" class="cliente-line-input" style="max-width: 130px;" placeholder="099..." onfocus="window.appState.onInputFocus()">
-                    <span class="cliente-label" style="margin-left: 6px;">Guía:</span>
-                    <input type="text" id="cliente-guia-input" class="cliente-line-input" style="max-width: 80px;" placeholder="Opcional" onfocus="window.appState.onInputFocus()">
                 </div>
                 <div class="cliente-row">
                     <span class="cliente-label">Dirección</span>
@@ -468,7 +445,7 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
 
             <!-- Principio 9: Dictado por Voz & Principio 10: Escaneo por Gravedad -->
             <div style="display: flex; justify-content: space-between; align-items: center; margin: 10px 0 6px 0; flex-wrap: wrap; gap: 6px;">
-                <span style="font-size: 11px; font-weight: 800; color: #475569;">
+                <span class="seccion-etiqueta" style="font-weight: 800; color: #475569;">
                     ${mode === 'comerciante' ? 'Renglón de Productos Rápidos:' : 'Detalle de Facturación:'}
                 </span>
                 <div style="display: flex; gap: 6px; align-items: center;">
@@ -514,7 +491,7 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
             <!-- Chips Rápidos de Productos Táctiles (Modo Comerciante) -->
             ${mode === 'comerciante' ? `
                 <div class="quick-chips-wrapper">
-                    <span style="font-size:11px; font-weight:800; color:#475569; align-self:center; margin-right:4px;">Rápidos:</span>
+                    <span class="seccion-etiqueta" style="font-weight:800; color:#475569; align-self:center; margin-right:4px;">Rápidos:</span>
                     <button type="button" class="quick-product-chip" onclick="window.appState.addQuickProduct('Quintal de Maíz', 18.50)">Maíz ($18.50)</button>
                     <button type="button" class="quick-product-chip" onclick="window.appState.addQuickProduct('Quintal de Café', 45.00)">Café ($45.00)</button>
                     <button type="button" class="quick-product-chip" onclick="window.appState.addQuickProduct('Quintal de Cacao Fino', 60.00)">Cacao ($60.00)</button>
@@ -579,24 +556,13 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                 </div>
             ` : ''}
 
-            <!-- Forma de Pago y Total Box -->
-            <div class="footer-grid">
-                <div class="forma-pago-box">
-                    <div class="forma-pago-header">FORMA DE PAGO:</div>
-                    <div class="pago-checkboxes">
-                        <label class="pago-item" onclick="window.appState.triggerHaptic(15)"><input type="checkbox" checked>EFECTIVO:</label>
-                        <label class="pago-item" onclick="window.appState.triggerHaptic(15)"><input type="checkbox">ELECTRÓNICO:</label>
-                        <label class="pago-item" onclick="window.appState.triggerHaptic(15)"><input type="checkbox">TARJETA CRÉDITO/DÉBITO:</label>
-                        <label class="pago-item" onclick="window.appState.triggerHaptic(15)"><input type="checkbox">OTROS:</label>
-                    </div>
-                </div>
-
+            <!-- Total a cobrar (siempre visible) -->
+            <div class="footer-grid footer-grid-solo-total">
                 <div class="total-cobrar-box">
                     <div class="total-cobrar-header">TOTAL A COBRAR <span style="font-size:14px;">➔</span></div>
                     <div class="total-cobrar-monto" id="grand-total-display">$54.50</div>
                 </div>
             </div>
-
 
             <!-- Firmas de Conformidad -->
             <div class="firmas-row">
@@ -609,19 +575,39 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                 <button class="btn-stamp-action" onclick="window.appState.executeEmit3DSequence()">
                      Emitir factura ahora
                 </button>
-                <div style="display: flex; gap: 8px; justify-content: center; margin-top: 10px; flex-wrap: wrap;">
-                    <button type="button" class="mode-chip-btn" style="background: #10B981; border-color: #059669; color: #FFFFFF; font-weight: 700; font-size: 11px; padding: 6px 14px;" onclick="window.appState.shareFacturaWhatsapp()" title="Compartir comprobante actual directamente por WhatsApp">
-                         Enviar por WhatsApp
-                    </button>
-                    <button type="button" class="mode-chip-btn" style="background: #1E293B; border-color: #334155; color: #F8FAFC; font-weight: 700; font-size: 11px; padding: 6px 14px;" onclick="window.appState.printThermalTicket()" title="Imprimir ticket para impresora térmica de rollo 58mm o 80mm">
-                         Imprimir Ticket POS
-                    </button>
-                    <span style="display: inline-flex; align-items: center; gap: 3px; background: rgba(15,23,42,0.06); border: 1px solid #CBD5E1; border-radius: 999px; padding: 2px;" title="Ancho del rollo de la impresora térmica">
-                        <button type="button" onclick="window.appState.setThermalWidth(58)" style="border: none; border-radius: 999px; padding: 3px 9px; font-size: 10px; font-weight: 800; cursor: pointer; ${thermalWidth === '58' ? 'background:#1E293B; color:#F8FAFC;' : 'background:transparent; color:#475569;'}">58mm</button>
-                        <button type="button" onclick="window.appState.setThermalWidth(80)" style="border: none; border-radius: 999px; padding: 3px 9px; font-size: 10px; font-weight: 800; cursor: pointer; ${thermalWidth === '80' ? 'background:#1E293B; color:#F8FAFC;' : 'background:transparent; color:#475569;'}">80mm</button>
-                    </span>
-                </div>
             </div>
+
+            <!-- Lo opcional, plegado al final -->
+            <details class="mas-opciones">
+                <summary class="mas-opciones-summary">Más opciones <span class="mas-opciones-flecha" aria-hidden="true">▸</span></summary>
+                <div class="mas-opciones-cuerpo">
+                    <div class="forma-pago-box">
+                        <div class="forma-pago-header">Forma de pago</div>
+                        <div class="pago-checkboxes">
+                            <label class="pago-item" onclick="window.appState.triggerHaptic(15)"><input type="checkbox" checked>Efectivo</label>
+                            <label class="pago-item" onclick="window.appState.triggerHaptic(15)"><input type="checkbox">Electrónico</label>
+                            <label class="pago-item" onclick="window.appState.triggerHaptic(15)"><input type="checkbox">Tarjeta crédito o débito</label>
+                            <label class="pago-item" onclick="window.appState.triggerHaptic(15)"><input type="checkbox">Otros</label>
+                        </div>
+                    </div>
+                    <div class="cliente-row mas-opciones-guia">
+                        <label class="cliente-label" for="cliente-guia-input">Guía de remisión</label>
+                        <input type="text" id="cliente-guia-input" class="cliente-line-input" placeholder="Opcional" onfocus="window.appState.onInputFocus()">
+                    </div>
+                    <div class="mas-opciones-acciones">
+                        <button type="button" class="mode-chip-btn mas-opciones-btn mas-opciones-wa" onclick="window.appState.shareFacturaWhatsapp()" title="Compartir comprobante actual directamente por WhatsApp">
+                             Enviar por WhatsApp
+                        </button>
+                        <button type="button" class="mode-chip-btn mas-opciones-btn mas-opciones-ticket" onclick="window.appState.printThermalTicket()" title="Imprimir ticket para impresora térmica de rollo 58mm o 80mm">
+                             Imprimir ticket
+                        </button>
+                        <span class="mas-opciones-rollo" title="Ancho del rollo de la impresora térmica">
+                            <button type="button" class="mas-opciones-rollo-btn ${thermalWidth === '58' ? 'active' : ''}" onclick="window.appState.setThermalWidth(58)">58 mm</button>
+                            <button type="button" class="mas-opciones-rollo-btn ${thermalWidth === '80' ? 'active' : ''}" onclick="window.appState.setThermalWidth(80)">80 mm</button>
+                        </span>
+                    </div>
+                </div>
+            </details>
         </div>
 
         ${emisorData?.isOnboardingModalOpen ? renderOnboardingModal() : ''}
@@ -710,7 +696,7 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
         ` : ''}
 
         <!-- Botón flotante "Ayúdame" (A5): WhatsApp humano a un toque desde el mostrador -->
-        <button type="button" onclick="window.appState.openHelpWhatsapp()" title="¿Necesitas ayuda? Escríbenos por WhatsApp" aria-label="Ayuda por WhatsApp" style="position: fixed; bottom: 20px; right: 20px; z-index: 9998; display: flex; align-items: center; gap: 8px; background: #25D366; color: #FFFFFF; border: none; border-radius: 999px; padding: 13px 18px; font-size: 14px; font-weight: 800; box-shadow: 0 8px 24px rgba(37,211,102,0.4); cursor: pointer;">
+        <button type="button" class="ayudame-flotante" onclick="window.appState.openHelpWhatsapp()" title="¿Necesitas ayuda? Escríbenos por WhatsApp" aria-label="Ayuda por WhatsApp" style="position: fixed; bottom: 20px; right: 20px; z-index: 9998; display: flex; align-items: center; gap: 8px; background: #25D366; color: #FFFFFF; border: none; border-radius: 999px; padding: 13px 18px; font-size: 14px; font-weight: 800; box-shadow: 0 8px 24px rgba(37,211,102,0.4); cursor: pointer;">
             <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2zm0 18.11c-1.49 0-2.95-.4-4.22-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24 4.54 0 8.24 3.7 8.24 8.24 0 4.54-3.7 8.24-8.24 8.24z"/><path d="M17.5 13.87c-.27-.13-1.58-.78-1.83-.87-.25-.09-.42-.13-.6.13-.18.27-.69.87-.85 1.05-.15.18-.31.2-.58.07-.27-.13-1.12-.41-2.13-1.31-.79-.7-1.32-1.56-1.47-1.83-.15-.27-.02-.42.12-.55.12-.12.27-.31.4-.47.13-.16.18-.27.27-.45.09-.18.04-.34-.02-.47-.07-.13-.6-1.44-.82-1.97-.21-.52-.43-.45-.6-.45-.15-.01-.33-.01-.51-.01-.18 0-.47.07-.72.34-.25.27-.95.93-.95 2.26s.97 2.62 1.1 2.8c.13.18 1.9 2.9 4.6 4.07.64.28 1.14.44 1.53.57.64.2 1.23.17 1.69.1.52-.08 1.58-.65 1.8-1.27.22-.62.22-1.15.16-1.27-.07-.12-.25-.18-.52-.31z"/></svg>
             Ayúdame
         </button>

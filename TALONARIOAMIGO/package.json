@@ -10,6 +10,7 @@
     "sync:mobile": "node scripts/sync_mobile.mjs",
     "build:mobile": "npm run build && node scripts/sync_mobile.mjs",
     "lint": "eslint resources/js",
+    "test:js": "node --test tests/js/*.test.mjs",
     "format": "prettier --write resources/js",
     "preview": "vite preview"
   },

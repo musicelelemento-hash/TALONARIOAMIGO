@@ -18,6 +18,7 @@ import { voiceDictation } from '../services/voiceDictation.js';
 import { gravityScanner } from '../services/gravityScanner.js';
 import { offlineQueue } from '../services/offlineQueue.js';
 import { invoiceValidator } from '../services/invoiceValidator.js';
+import { abrirChatFactura } from './ChatFactura.js';
 import { printThermalTicket, setThermalWidth, getThermalWidth } from './ThermalTicket.js';
 
 function escapeHtml(value) {
@@ -142,6 +143,9 @@ export class AppManager {
                 if (this.state.currentRole === 'CLIENT') {
                     setTimeout(() => this.loadDemoSampleData(false), 250);
                 }
+                if (deepParams.get('view') === 'chat' && this.state.currentRole === 'CLIENT') {
+                    setTimeout(() => this.openChatFactura(), 600);
+                }
                 if (deepParams.get('view') === '3d') {
                     setTimeout(() => this.open3DExperienceModal(), 1000);
                 }
@@ -244,6 +248,10 @@ export class AppManager {
         }
         if (this.state.isWhatsappModalOpen) {
             this.container.innerHTML += renderWhatsAppModal(this.state.whatsappInfo);
+        }
+        if (!this.state.isShowingBlueCopy && !document.getElementById('chatf-root')) {
+            this.container.insertAdjacentHTML('beforeend',
+                '<button type="button" class="chatf-fab" onclick="window.appState.openChatFactura()">💬 Facturar escribiendo</button>');
         }
         this.setupTactilePaperInteractions();
     }
@@ -507,7 +515,7 @@ export class AppManager {
         const emailInput = document.getElementById('cliente-email-input');
 
         if (nomInput) nomInput.value = 'Juan Alberto Pérez Gómez';
-        if (rucInput) rucInput.value = '0928374615';
+        if (rucInput) rucInput.value = '0928374610';
         if (dirInput) dirInput.value = 'Av. 9 de Octubre y Boyacá, Guayaquil';
         if (telInput) telInput.value = '0981234567';
         if (emailInput) emailInput.value = 'juan.perez@ejemplo.com';
@@ -846,7 +854,7 @@ export class AppManager {
                 { id: '2026-07', anio_mes: '2026-07', nombre: 'JULIO 2026', hojas_count: 5, total_monto: 420.00 }
             ];
             this.state.comprobantesList = [
-                { secuencial: '000000126', numero_comprobante: '001-001-000000126', fecha_emision: '2026-08-28', cliente_nombre: 'Juan Alberto Pérez Gómez', cliente_identificacion: '0928374615', importe_total: 85.00, estado: 'AUTORIZADO', clave_acceso: '2808202601092837461500110010010000001261234567812' },
+                { secuencial: '000000126', numero_comprobante: '001-001-000000126', fecha_emision: '2026-08-28', cliente_nombre: 'Juan Alberto Pérez Gómez', cliente_identificacion: '0928374610', importe_total: 85.00, estado: 'AUTORIZADO', clave_acceso: '2808202601092837461000110010010000001261234567812' },
                 { secuencial: '000000125', numero_comprobante: '001-001-000000125', fecha_emision: '2026-08-28', cliente_nombre: 'María Elena Loor', cliente_identificacion: '1309876543', importe_total: 45.00, estado: 'AUTORIZADO', clave_acceso: '2808202601130987654300110010010000001251234567819' },
                 { secuencial: '000000124', numero_comprobante: '001-001-000000124', fecha_emision: '2026-08-27', cliente_nombre: 'Ab. Carlos Zambrano', cliente_identificacion: '1712345678', importe_total: 24.50, estado: 'AUTORIZADO', clave_acceso: '2708202601171234567800110010010000001241234567813' }
             ];
@@ -1264,6 +1272,43 @@ export class AppManager {
         }
     }
 
+    // FACTURA POR CHAT: abre la pantalla de chat sobre el facturador (cerrar vuelve al facturador)
+    openChatFactura() {
+        document.querySelector('.chatf-fab')?.remove();
+        abrirChatFactura({
+            practica: !!(this.state.isDemoGuest || this.state.isDemoMode),
+            emitir: (payload) => this.emitirDesdeChat(payload),
+            onClose: () => this.evaluateStateAndRender(),
+        });
+    }
+
+    // Emite lo confirmado en el chat con el mismo camino que el facturador y avanza la hoja.
+    async emitirDesdeChat(payload) {
+        const preFlight = invoiceValidator.validatePreFlight(payload, this.state);
+        if (!preFlight.valid) {
+            const cedulaMala = /c[eé]dula/i.test(preFlight.title || '');
+            return {
+                ok: false,
+                error: cedulaMala
+                    ? `Revisa la cédula de ${payload.cliente.nombre}: ese número no es válido. Corrígela y escribe la factura otra vez.`
+                    : `${preFlight.title}. ${preFlight.message}`
+            };
+        }
+        const res = await this.emitirPayload(payload);
+        if (!res) return { ok: false, error: 'Revisa el aviso en pantalla e inténtalo de nuevo.' };
+
+        const secuencial = String(res.secuencial || this.state.currentDocNumber).padStart(9, '0');
+        this.state.currentDocNumber += 1; // nueva hoja, como al pasar la copia azul
+        soundFx.playStamp();
+        this.triggerHaptic([40, 20, 60]);
+        return {
+            ok: true,
+            numero: `001-001-${secuencial}`,
+            practica: !!res.isDemo,
+            offline: res.estado === 'OFFLINE_LOCAL',
+        };
+    }
+
     // Recolecta el payload de emisión desde el formulario del talonario (cliente + items)
     collectEmitPayload() {
         const nombre = document.getElementById('cliente-nombre-input')?.value.trim() || '';
@@ -1284,6 +1329,62 @@ export class AppManager {
             items.push({ descripcion, cantidad, precioUnitario, exento: false });
         });
         return { cliente: { nombre, identificacion, direccion, telefono, email }, items };
+    }
+
+    // Decide cómo emitir un payload: práctica simulada, cola offline o emisión real.
+    // Devuelve la respuesta (res), o null si el error ya se avisó al usuario.
+    async emitirPayload(payload) {
+        let res;
+        if (this.state.isDemoGuest || this.state.isDemoMode) {
+            // Modo Demostración Interactivo: Simulación completa legal de emisión al SRI
+            const demoSecuencial = String(this.state.currentDocNumber).padStart(9, '0');
+            res = {
+                secuencial: demoSecuencial,
+                claveAcceso: '290920260107020653190011001001' + demoSecuencial + '1234567814',
+                estado: 'AUTORIZADO',
+                numeroAutorizacion: '290920260107020653190011001001' + demoSecuencial + '1234567814',
+                fechaAutorizacion: new Date().toISOString(),
+                isDemo: true
+            };
+        } else if (!offlineQueue.isOnline()) {
+            // Modo Rural Offline: Guarda en talonario local sin error
+            offlineQueue.enqueue(payload);
+            this.state.offlinePendingCount = offlineQueue.getPendingCount();
+            const offlineSecuencial = String(this.state.currentDocNumber).padStart(9, '0');
+            res = {
+                secuencial: offlineSecuencial,
+                claveAcceso: 'OFFLINE-' + Date.now() + '-RURAL-SRI',
+                estado: 'OFFLINE_LOCAL',
+                numeroAutorizacion: 'PENDIENTE_SINCRONIZACION'
+            };
+        } else {
+            try {
+                res = await api.emitirFactura(payload);
+            } catch (netErr) {
+                // Si se pierde la conexión durante el envío, encola localmente sin bloquear al comerciante
+                if (!navigator.onLine || netErr.message?.includes('Failed to fetch') || netErr.message?.includes('NetworkError')) {
+                    offlineQueue.enqueue(payload);
+                    this.state.offlinePendingCount = offlineQueue.getPendingCount();
+                    const offlineSecuencial = String(this.state.currentDocNumber).padStart(9, '0');
+                    res = {
+                        secuencial: offlineSecuencial,
+                        claveAcceso: 'OFFLINE-' + Date.now() + '-RURAL-SRI',
+                        estado: 'OFFLINE_LOCAL',
+                        numeroAutorizacion: 'PENDIENTE_SINCRONIZACION'
+                    };
+                } else {
+                    // Diagnóstico inteligente del error con Agente 20
+                    const diag = invoiceValidator.diagnosticarError(netErr);
+                    this.triggerHaptic([70, 40, 70]);
+                    this.showToast(` ${diag.titulo}: ${diag.mensaje}`);
+                    if (diag.isSignatureError) {
+                        this.openOnboardingModal();
+                    }
+                    return null;
+                }
+            }
+        }
+        return res;
     }
 
     // SECUENCIA DE EMISIÓN REAL CON DESPRENDIMIENTO 3D Y REVELADO DE COPIA AZUL (PRINCIPIO 12 & COLA OFFLINE)
@@ -1316,56 +1417,8 @@ export class AppManager {
                 return;
             }
 
-            let res;
-            if (this.state.isDemoGuest || this.state.isDemoMode) {
-                // Modo Demostración Interactivo: Simulación completa legal de emisión al SRI
-                const demoSecuencial = String(this.state.currentDocNumber).padStart(9, '0');
-                res = {
-                    secuencial: demoSecuencial,
-                    claveAcceso: '290920260107020653190011001001' + demoSecuencial + '1234567814',
-                    estado: 'AUTORIZADO',
-                    numeroAutorizacion: '290920260107020653190011001001' + demoSecuencial + '1234567814',
-                    fechaAutorizacion: new Date().toISOString(),
-                    isDemo: true
-                };
-            } else if (!offlineQueue.isOnline()) {
-                // Modo Rural Offline: Guarda en talonario local sin error
-                offlineQueue.enqueue(payload);
-                this.state.offlinePendingCount = offlineQueue.getPendingCount();
-                const offlineSecuencial = String(this.state.currentDocNumber).padStart(9, '0');
-                res = {
-                    secuencial: offlineSecuencial,
-                    claveAcceso: 'OFFLINE-' + Date.now() + '-RURAL-SRI',
-                    estado: 'OFFLINE_LOCAL',
-                    numeroAutorizacion: 'PENDIENTE_SINCRONIZACION'
-                };
-            } else {
-                try {
-                    res = await api.emitirFactura(payload);
-                } catch (netErr) {
-                    // Si se pierde la conexión durante el envío, encola localmente sin bloquear al comerciante
-                    if (!navigator.onLine || netErr.message?.includes('Failed to fetch') || netErr.message?.includes('NetworkError')) {
-                        offlineQueue.enqueue(payload);
-                        this.state.offlinePendingCount = offlineQueue.getPendingCount();
-                        const offlineSecuencial = String(this.state.currentDocNumber).padStart(9, '0');
-                        res = {
-                            secuencial: offlineSecuencial,
-                            claveAcceso: 'OFFLINE-' + Date.now() + '-RURAL-SRI',
-                            estado: 'OFFLINE_LOCAL',
-                            numeroAutorizacion: 'PENDIENTE_SINCRONIZACION'
-                        };
-                    } else {
-                        // Diagnóstico inteligente del error con Agente 20
-                        const diag = invoiceValidator.diagnosticarError(netErr);
-                        this.triggerHaptic([70, 40, 70]);
-                        this.showToast(` ${diag.titulo}: ${diag.mensaje}`);
-                        if (diag.isSignatureError) {
-                            this.openOnboardingModal();
-                        }
-                        return;
-                    }
-                }
-            }
+            const res = await this.emitirPayload(payload);
+            if (!res) return;
 
             const stampBadge = document.getElementById('stamp-sri-badge');
             if (stampBadge) {
@@ -1469,7 +1522,7 @@ export class AppManager {
                 position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
                 background: #0F172A; color: white; padding: 12px 20px; border-radius: 10px;
                 font-family: var(--font-sans); font-size: 13px; font-weight: 800;
-                box-shadow: 0 8px 24px rgba(0,0,0,0.3); z-index: 1000; border: 1.5px solid #1A1A1A;
+                box-shadow: 0 8px 24px rgba(0,0,0,0.3); z-index: 10001; border: 1.5px solid #1A1A1A;
                 text-align: center; max-width: 90%; animation: paperEntrance 0.3s ease;
             `;
             document.body.appendChild(toast);
