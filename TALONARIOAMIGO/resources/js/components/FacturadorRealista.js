@@ -10,6 +10,7 @@
 import { renderOnboardingModal } from './OnboardingScreen.js';
 import { renderHoyTarjeta } from './HoyResumen.js';
 import { palomitasHTML, nivelDeEmision } from './Palomitas.js';
+import { ESTILOS, setEstilo } from '../services/estilo.js';
 
 function esc(value) {
     return String(value ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -45,11 +46,19 @@ function renderMenuMas(items) {
 function masItem(label, onclick, extra = '', title = '') {
     return `<button type="button" class="mostrador-mas-item ${extra}" onclick="${onclick}; ${CERRAR_MAS}"${title ? ` title="${title}"` : ''}>${label}</button>`;
 }
+// Selector de estilo visual (Clásico / Minimalista). Solo cambia la apariencia: el atributo
+// <html data-estilo> lo pone setEstilo y el CSS hace el resto, sin recargar. La marca ✓ la pinta
+// el CSS según el estilo activo (estilo-minimalista.css), así el menú siempre queda al día.
+window.taSetEstilo = (id) => setEstilo(id);
+function masEstilos() {
+    const items = ESTILOS.map((e) => `<button type="button" class="mostrador-mas-item mostrador-mas-estilo" data-estilo-id="${e.id}" title="${esc(e.descripcion)}" onclick="window.taSetEstilo('${e.id}')">Estilo ${esc(e.nombre)}</button>`);
+    return items.join('');
+}
 function masModos(mode) {
     return ['tranquilo', 'comerciante', 'pro'].map((m) => {
         const label = m.charAt(0).toUpperCase() + m.slice(1);
         return `<button type="button" class="mostrador-mas-item mostrador-mas-modo ${mode === m ? 'active' : ''}" onclick="window.appState.setExperienceMode('${m}')">${mode === m ? '✓ ' : ''}Modo ${label}</button>`;
-    }).join('');
+    }).join('') + masEstilos();
 }
 
 // MODO TRANQUILO (A1): wizard de 3 pasos — un botón por pantalla, cero jerga.
