@@ -95,6 +95,9 @@ los dos estilos y llevarlo bien a cada dispositivo.
 | 17 | Planes y pagos dentro de la app | 5 % | Diseño en `docs/negocio/PLANES_Y_PAGOS.md` | Medidor amable, pantalla de planes, cobro |
 
 ## 8. Orden recomendado para construir
+> Ideas aceptadas del explorador (ver `docs/producto/IDEAS.md`): IDEA-001 palomitas de estado,
+> IDEA-002 "Emitiendo en 5… Deshacer", IDEA-004 pantalla "Hoy". Entran en los pasos 2 y 3.
+
 1. **Facilidad primero:** letra, botones y menos controles (lo que encontró la auditoría).
 2. **Factura por chat en la app** (reusa el intérprete de WhatsApp) + **lo opcional al final**.
 3. **Configuración en 3 pasos** con el PDF del RUC.
