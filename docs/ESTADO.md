@@ -29,8 +29,9 @@
   SRI recibía $62,68). Ahora usa el mismo cálculo que el chat y el servidor, con desglose.
 - 🚨 **Llaves reales en el historial de git** (commits de sep–oct en `.env.production` y similares), y este
   repo es público. La `APP_KEY` de producción **es la filtrada**; una contraseña filtrada es del usuario
-  principal de Supabase. Pendiente de aprobación del dueño: rotar `APP_KEY` en Render y la contraseña de
-  Supabase. Recomendado: poner privado este repo y revocar las llaves viejas de Resend y R2.
+  principal de Supabase. **El dueño decidió rotarlas más adelante (23/11).** ⛔ REQUISITO OBLIGATORIO antes de llevar
+  cambios a producción o de que entre el primer comerciante real: rotar `APP_KEY` en Render y la
+  contraseña del usuario principal de Supabase (con aprobación del dueño en ese momento). Recomendado: poner privado este repo y revocar las llaves viejas de Resend y R2.
 
 ## Avance de la app (22/11, tarde)
 - **Factura por chat dentro de la app** (escribir o dictar → tarjeta → "Sí, emitir"), con intérprete en JS

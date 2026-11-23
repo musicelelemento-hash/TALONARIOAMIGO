@@ -54,6 +54,11 @@ un resumen: así no se llena tu contexto.
 - Nunca reportes como hecho algo sin evidencia.
 
 ## 5. Puntos de aprobación del dueño (siempre parar y preguntar)
+⛔ **Bloqueo vigente:** antes de cualquier despliegue a producción o de registrar comerciantes reales,
+recordar al dueño rotar la `APP_KEY` de Render y la contraseña principal de Supabase (quedaron en el
+historial público de git; ver `docs/ESTADO.md`). No desplegar sin que esté resuelto o que el dueño
+lo acepte explícitamente en ese momento.
+
 1. Cualquier cambio en producción (Render, Supabase, Cloudflare, Meta) o un push a `main`
    (además hay un candado automático en `.claude/hooks/proteger-produccion.sh`).
 2. Gastar dinero: anuncios pagados, planes de servicios, compras.
