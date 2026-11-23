@@ -13,6 +13,8 @@ import { renderWhatsAppModal } from './WhatsAppModal.js';
 import { Talonario3DExperience } from './Talonario3DExperience.js';
 import { api } from '../api.js';
 import { extractDataFromSriPdf } from '../services/sriPdf.js';
+import { leerRucDeFoto } from '../services/rucFoto.js';
+import { setEstilo } from '../services/estilo.js';
 import { soundFx } from '../services/soundFx.js';
 import { voiceDictation } from '../services/voiceDictation.js';
 import { gravityScanner } from '../services/gravityScanner.js';
@@ -1662,178 +1664,264 @@ export class AppManager {
         this.evaluateStateAndRender();
     }
 
-    openRegister() {
-        this.container.innerHTML = renderRegisterScreen();
+    /* ------------------------------------------------------------------
+     * Asistente de registro en 3 pasos (ver RegisterScreen.js).
+     * Paso 1: RUC (PDF/foto) + cuenta · Paso 2: firma · Paso 3: estilo · 4: ¡Listo!
+     * En modo práctica (sin servidor) se recorre entero sin llamadas reales.
+     * ------------------------------------------------------------------ */
+    _regVacio() {
+        return {
+            paso: 1,
+            datos: { nombre: '', ruc: '', direccion: '', regimen: 'RIMPE_POPULAR' },
+            cuenta: { email: '', password: '' },
+            leido: false, manual: false, archivo: '',
+            estado: '', estadoTipo: 'info',
+            registrado: false, offline: false,
+            firmaOk: false, firmaNombre: '', firmaFile: null,
+            estilo: '', user: null,
+        };
     }
 
-    // Auto-registro de usuario normal: crea cuenta + facturador (emisor) + activa talonario.
-    async handleRegister() {
+    openRegister() {
+        this.reg = this._regVacio();
+        this._regPintar();
+    }
+
+    _regPintar() {
+        this.container.innerHTML = renderRegisterScreen(this.reg);
+        window.scrollTo(0, 0);
+    }
+
+    _regEstado(sel, texto, tipo) {
+        const el = document.getElementById(sel);
+        if (el) { el.textContent = texto; el.className = 'reg-estado ' + tipo; }
+    }
+
+    _regLeerCampos() {
+        const v = (id) => document.getElementById(id)?.value;
+        const r = this.reg;
+        if (document.getElementById('reg-nombre')) {
+            r.datos = {
+                nombre: (v('reg-nombre') || '').trim(),
+                ruc: (v('reg-ruc') || '').trim(),
+                direccion: (v('reg-direccion') || '').trim(),
+                regimen: v('reg-regimen') || 'GENERAL',
+            };
+            r.cuenta = { email: (v('reg-email') || '').trim(), password: v('reg-pass') || '' };
+        }
+    }
+
+    regManual() {
+        this._regLeerCampos();
+        this.reg.manual = true;
+        this._regPintar();
+    }
+
+    regAtras() {
+        this.triggerHaptic(10);
+        if (this.reg.paso > 1) {
+            this.reg.paso -= 1;
+            this.reg.estado = '';
+            this._regPintar();
+        }
+    }
+
+    // Lee el RUC desde PDF (texto del certificado) o foto (OCR). Si no se entiende, se completa a mano.
+    async regLeerRuc(input) {
+        const file = input.files && input.files[0];
+        if (!file) return;
+        this._regLeerCampos();
+        const r = this.reg;
+        r.archivo = file.name;
+        this._regEstado('reg-ruc-estado', 'Leyendo tu certificado, un momento…', 'info');
+        const mapa = { 'RIMPE Negocio Popular': 'RIMPE_POPULAR', 'RIMPE Emprendedor': 'RIMPE_EMPRENDEDOR', General: 'GENERAL' };
+        let lectura = { ruc: '', nombre: '', direccion: '', regimen: '' };
+        try {
+            if (/pdf/i.test(file.type) || /\.pdf$/i.test(file.name)) {
+                const d = await extractDataFromSriPdf(file);
+                lectura = {
+                    ruc: d.ruc || '',
+                    nombre: d.apellidos_nombres && d.apellidos_nombres !== 'CONTRIBUYENTE' ? d.apellidos_nombres : '',
+                    direccion: d.direccion && !/no detectada/i.test(d.direccion) ? d.direccion : '',
+                    regimen: mapa[d.regimen] || '',
+                };
+            } else {
+                lectura = await leerRucDeFoto(file);
+            }
+        } catch (e) {
+            console.warn('[Registro] No se pudo leer el archivo del RUC:', e);
+        }
+        const dt = r.datos;
+        if (lectura.ruc) dt.ruc = lectura.ruc;
+        if (lectura.nombre) dt.nombre = lectura.nombre;
+        if (lectura.direccion) dt.direccion = lectura.direccion;
+        if (lectura.regimen) dt.regimen = lectura.regimen;
+        const completo = lectura.ruc && lectura.nombre && lectura.direccion;
+        r.leido = true;
+        if (completo) {
+            r.estado = 'Listo, ya llenamos tus datos. Revísalos y toca «Seguir».';
+            r.estadoTipo = 'ok';
+        } else if (lectura.ruc || lectura.nombre) {
+            r.estado = 'Leímos una parte. Completa lo que falte aquí abajo.';
+            r.estadoTipo = 'info';
+        } else {
+            r.estado = 'No pudimos leer bien el archivo. Escribe tus datos aquí abajo, es rápido.';
+            r.estadoTipo = 'mal';
+        }
+        this._regPintar();
+    }
+
+    _regErrorPaso1(msg) {
+        this.triggerHaptic(50);
+        const el = document.getElementById('reg-error');
+        if (el) el.textContent = msg;
+        const b = document.getElementById('reg-principal');
+        if (b) { b.disabled = false; b.textContent = 'Seguir'; }
+    }
+
+    async regSiguiente() {
         this.triggerHaptic(20);
-        const name = document.getElementById('reg-name')?.value?.trim();
-        const email = document.getElementById('reg-email')?.value?.trim();
-        const password = document.getElementById('reg-pass')?.value;
-        let ruc = document.getElementById('reg-ruc')?.value?.trim();
-        const razon_social = document.getElementById('reg-nombre')?.value?.trim();
-        const direccion_matriz = document.getElementById('reg-direccion')?.value?.trim();
-        const tipo_regimen = document.getElementById('reg-regimen')?.value || 'GENERAL';
-        const p12 = document.getElementById('reg-p12')?.files[0];
-        const clave = document.getElementById('reg-clave')?.value;
-        const errEl = document.getElementById('reg-error-msg');
-        const submitBtn = document.getElementById('btn-submit-register');
+        const r = this.reg;
+        if (r.paso === 1) return this._regPaso1();
+        if (r.paso === 2) return this._regPaso2();
+        if (r.paso === 3) { r.paso = 4; this._regPintar(); soundFx.playStamp(); }
+    }
 
-        const showError = (msg) => {
-            this.triggerHaptic(50);
-            if (errEl) {
-                errEl.innerText = msg;
-                errEl.style.display = 'block';
-            }
-            this.showToast(' ' + msg);
-            if (submitBtn) {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = '<span>CREAR MI FACTURADOR + PAGAR</span>';
-                submitBtn.style.opacity = '1';
-            }
-        };
-
-        if (errEl) errEl.style.display = 'none';
-
-        if (!name || !email || !password || !ruc || !razon_social || !direccion_matriz) {
-            showError('Completa todos los campos obligatorios del facturador.');
+    async _regPaso1() {
+        const r = this.reg;
+        this._regLeerCampos();
+        if (!r.leido && !r.manual) {
+            this._regErrorPaso1('Primero sube el PDF o la foto de tu RUC, o toca «No tengo el papel».');
             return;
         }
+        const { nombre, direccion, regimen } = r.datos;
+        let { ruc } = r.datos;
+        if (/^\d{10}$/.test(ruc)) ruc += '001';
+        if (!nombre || !direccion) { this._regErrorPaso1('Falta el nombre o la dirección de tu negocio.'); return; }
+        if (!/^\d{13}$/.test(ruc)) { this._regErrorPaso1('El RUC tiene 13 números. Revísalo, por favor.'); return; }
+        if (!/^\S+@\S+\.\S+$/.test(r.cuenta.email)) { this._regErrorPaso1('Escribe un correo válido, por ejemplo nombre@gmail.com.'); return; }
+        if (r.cuenta.password.length < 6) { this._regErrorPaso1('La contraseña necesita al menos 6 letras o números.'); return; }
+        r.datos.ruc = ruc;
 
-        // Si ingresó cédula de 10 dígitos, añadir automáticamente 001 para RUC ecuatoriano
-        if (ruc.length === 10) {
-            ruc = ruc + '001';
-            const rucInput = document.getElementById('reg-ruc');
-            if (rucInput) rucInput.value = ruc;
-        }
-
-        if (ruc.length !== 13) {
-            showError('El RUC debe tener 13 dígitos numéricos (ej: 0928374615001).');
-            return;
-        }
-
-        if (password.length < 6) {
-            showError('La contraseña debe tener al menos 6 caracteres.');
-            return;
-        }
-
-        if (submitBtn) {
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span>Creando y activando facturador...</span>';
-            submitBtn.style.opacity = '0.75';
-        }
-
-        this.showToast('Creando tu facturador…');
-
-        const registerPayload = {
-            name,
-            email,
-            password,
-            ruc,
-            razon_social,
-            nombre_comercial: razon_social,
-            direccion_matriz,
-            tipo_regimen,
-            obligado_contabilidad: false,
-        };
-
-        let userResult;
-        let tokenResult;
+        const b = document.getElementById('reg-principal');
+        if (b) { b.disabled = true; b.textContent = 'Un momento…'; }
+        const emisorBase = { ruc, razon_social: nombre, nombre_comercial: nombre, direccion_matriz: direccion, tipo_regimen: regimen, obligado_contabilidad: false };
 
         try {
-            const res = await api.register(registerPayload);
-            userResult = res.user;
-            tokenResult = res.token;
-            if (tokenResult) localStorage.setItem('ta_auth_token', tokenResult);
-        } catch (apiErr) {
-            console.warn('[Register] API call returned error, proceeding with offline/local-first activation:', apiErr);
-            // Si el backend remoto está en proceso de despliegue o la conexión falla,
-            // activamos el facturador local-first para que el comerciante nunca quede bloqueado
-            userResult = {
-                id: Date.now(),
-                name,
-                email,
-                role: 'CLIENT',
-                status: 'ACTIVE',
-            };
-            tokenResult = 'local_session_' + Date.now();
-            localStorage.setItem('ta_auth_token', tokenResult);
+            if (!r.registrado) {
+                const res = await api.register({ name: nombre, email: r.cuenta.email, password: r.cuenta.password, ...emisorBase });
+                if (res.token) localStorage.setItem('ta_auth_token', res.token);
+                r.user = res.user;
+                r.registrado = true;
+            } else if (!r.offline) {
+                await api.setupEmisor({ ...emisorBase, contribuyente_especial: '', ambiente: '1' });
+            }
+        } catch (e) {
+            if (e.status === 422 && e.data && e.data.errors && e.data.errors.email) {
+                this._regErrorPaso1('Ese correo ya tiene una cuenta. Toca «Ya tengo cuenta» arriba para entrar.');
+                return;
+            }
+            if (e.status) {
+                console.warn('[Registro] El servidor no aceptó el registro:', e);
+                this._regErrorPaso1('Ahora no pudimos crear tu cuenta. Revisa los datos o toca «Que me ayude una persona».');
+                return;
+            }
+            // Sin conexión NO se finge una cuenta: la persona creería que ya está registrada y esa
+            // cuenta (con su contraseña) nunca existiría en el servidor. Se le dice la verdad y se
+            // conservan sus datos en pantalla para reintentar.
+            console.warn('[Registro] Sin conexión con el servidor:', e);
+            this._regErrorPaso1('No hay conexión a internet y todavía no creamos tu cuenta. Tus datos siguen aquí: revisa tu señal y toca «Seguir» otra vez. Mientras tanto puedes practicar desde la portada con «Probar el talonario ahora».');
+            return;
         }
+        r.paso = 2;
+        r.estado = '';
+        this._regPintar();
+    }
 
-        // Estructura de emisor para renderizado del talonario
+    regFirmaElegida(input) {
+        const f = input.files && input.files[0];
+        this.reg.firmaFile = f || null;
+        this.reg.firmaNombre = f ? f.name : '';
+        this.reg.firmaOk = false;
+        const n = document.getElementById('reg-p12-nombre');
+        if (n) n.textContent = f ? f.name : 'Toca aquí';
+        this._regEstado('reg-firma-estado', '', 'info');
+        const b = document.getElementById('reg-principal');
+        if (b) b.textContent = 'Revisar mi firma';
+    }
+
+    regSaltarFirma() {
+        this.reg.paso = 3;
+        this.reg.estado = '';
+        this._regPintar();
+    }
+
+    async _regPaso2() {
+        const r = this.reg;
+        if (r.firmaOk) { r.paso = 3; r.estado = ''; this._regPintar(); return; }
+        const clave = document.getElementById('reg-clave')?.value || '';
+        if (!r.firmaFile) { this.triggerHaptic(50); this._regEstado('reg-firma-estado', 'Elige primero el archivo de tu firma.', 'mal'); return; }
+        if (!clave) { this.triggerHaptic(50); this._regEstado('reg-firma-estado', 'Escribe la clave de tu firma.', 'mal'); return; }
+        if (r.offline) {
+            // Modo práctica: sin servidor no se puede revisar de verdad; se avisa y se sigue.
+            r.paso = 3; r.estado = ''; this._regPintar();
+            return;
+        }
+        const b = document.getElementById('reg-principal');
+        if (b) { b.disabled = true; b.textContent = 'Revisando tu firma…'; }
+        try {
+            const res = await api.uploadFirma(r.firmaFile, clave);
+            this.state.hasSignature = true;
+            r.firmaOk = true;
+            const cad = res && res.data && res.data.firma_expires_at ? ` Vence el ${String(res.data.firma_expires_at).slice(0, 10)}.` : '';
+            r.estado = 'Tu firma es válida y quedó guardada.' + cad;
+            r.estadoTipo = 'ok';
+            this._regPintar();
+        } catch (e) {
+            this.triggerHaptic(50);
+            const msg = e.status === 422
+                ? 'La clave no es correcta o el archivo no sirve. Revisa la clave y vuelve a intentar.'
+                : 'No pudimos revisar tu firma ahora. Revisa tu internet e intenta otra vez.';
+            this._regEstado('reg-firma-estado', msg, 'mal');
+            if (b) { b.disabled = false; b.textContent = 'Revisar mi firma'; }
+        }
+    }
+
+    regElegirEstilo(id) {
+        this.triggerHaptic(10);
+        this.reg.estilo = setEstilo(id);
+        document.querySelectorAll('[data-estilo-op]').forEach((el) => {
+            const on = el.getAttribute('data-estilo-op') === this.reg.estilo;
+            el.classList.toggle('sel', on);
+            el.setAttribute('aria-pressed', String(on));
+        });
+    }
+
+    // Entra al talonario con la cuenta recién creada
+    regFinalizar() {
+        const r = this.reg;
         const emisorData = {
-            ruc,
-            razon_social,
-            nombre_comercial: razon_social,
-            direccion_matriz,
-            tipo_regimen,
+            ruc: r.datos.ruc,
+            razon_social: r.datos.nombre,
+            nombre_comercial: r.datos.nombre,
+            direccion_matriz: r.datos.direccion,
+            tipo_regimen: r.datos.regimen,
             telefono: '0993050689',
             numero_autorizacion: 'PENDIENTE',
         };
-
-        userResult.emisor = emisorData;
-        localStorage.setItem('ta_auth_user', JSON.stringify(userResult));
+        const user = { ...(r.user || {}), emisor: emisorData };
+        localStorage.setItem('ta_auth_user', JSON.stringify(user));
         localStorage.setItem('ta_local_emisor', JSON.stringify(emisorData));
-
-        // Subida de firma si fue seleccionada
-        if (p12 && clave) {
-            try {
-                this.showToast('Vinculando tu firma electrónica...');
-                await api.uploadFirma(p12, clave);
-                this.state.hasSignature = true;
-            } catch (_firmaErr) {
-                console.warn('[Register] Firma .p12 upload queued or failed validation:', _firmaErr);
-                this.state.hasSignature = false;
-            }
-        } else {
-            this.state.hasSignature = false;
-        }
-
-        // Actualizar estado del AppManager para mostrar el facturador inmediatamente
+        this.state.hasSignature = !!r.firmaOk;
         this.state.currentRole = 'CLIENT';
-        this.state.user = userResult;
+        this.state.user = user;
         this.state.emisor = emisorData;
         this.state.isLoggedIn = true;
         this.state.isConfigured = true;
         this.state.isDemoGuest = false;
-
+        this.reg = null;
         soundFx.playStamp();
-        this.showToast('¡Tu facturador está listo y activado! Bienvenido.');
         this.evaluateStateAndRender();
-    }
-
-    // Autocompleta el registro desde el Certificado de RUC
-    async handleRegisterRucPdf(input) {
-        const file = input.files && input.files[0];
-        const statusEl = document.getElementById('reg-ruc-status');
-        if (!file) return;
-        if (statusEl) { statusEl.textContent = 'Analizando certificado…'; statusEl.style.color = '#1D4ED8'; }
-        try {
-            const data = await extractDataFromSriPdf(file);
-            const set = (id, val) => { const el = document.getElementById(id); if (el && val && !el.value) el.value = val; };
-            set('reg-ruc', data.ruc);
-            set('reg-nombre', data.apellidos_nombres);
-            set('reg-direccion', data.direccion);
-            const reg = document.getElementById('reg-regimen');
-            const mapa = { 'RIMPE Negocio Popular': 'RIMPE_POPULAR', 'RIMPE Emprendedor': 'RIMPE_EMPRENDEDOR' };
-            if (reg && mapa[data.regimen]) reg.value = mapa[data.regimen];
-            if (statusEl) { statusEl.textContent = `✓ Datos detectados (${data.regimen})`; statusEl.style.color = '#16A34A'; }
-            this.showToast('✓ Certificado procesado: datos autocompletados.');
-        } catch (e) {
-            if (statusEl) { statusEl.textContent = ' ' + (e.message || 'Error'); statusEl.style.color = '#D90429'; }
-        }
-    }
-
-    async testRegisterSignature() {
-        this.triggerHaptic(10);
-        const p12 = document.getElementById('reg-p12')?.files[0];
-        const clave = document.getElementById('reg-clave')?.value;
-        const statusEl = document.getElementById('reg-firma-status');
-        if (!p12 || !clave) { this.showToast('Selecciona tu .p12 y su contraseña.'); return; }
-        if (statusEl) { statusEl.textContent = '✓ Firma seleccionada (se valida de verdad al confirmar).'; statusEl.style.color = '#16A34A'; }
-        this.showToast('✓ La firma se validará con el backend al crear tu cuenta.');
     }
 
     // Autocompleta la creación de cliente de la imprenta desde el Certificado de RUC

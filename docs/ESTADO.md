@@ -94,3 +94,4 @@ Script de auditoría: Playwright a 375/820/1366/1920 px en modo demo (sin tocar 
 
 ## Historial (una línea por sesión; máximo 5)
 - 21–22/11/2026 — Primera sesión en la nube: seguridad, WhatsApp, Supabase, skills, informe final.
+- 23/11/2026 — Registro como asistente de 3 pasos (RUC PDF/foto + cuenta, firma, estilo), sin pago; ver RegisterScreen.js y registro.css.

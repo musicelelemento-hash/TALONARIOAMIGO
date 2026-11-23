@@ -1,0 +1,34 @@
+/* Asistente de 3 pasos (registro). Papel marfil + tinta azul; letra >= 16px, botones >= 48px. */
+.reg-wiz { min-height: 100vh; display: flex; justify-content: center; padding: 16px; background: #F4EEDD; box-sizing: border-box; font-size: 16px; color: #1B2540; }
+.reg-wiz *, .reg-wiz *::before, .reg-wiz *::after { box-sizing: border-box; }
+.reg-card { width: 100%; max-width: 480px; background: #FFFDF6; border: 1px solid #D9CFB4; border-radius: 16px; padding: 20px 18px 24px; align-self: flex-start; }
+.reg-top { display: flex; align-items: center; justify-content: space-between; min-height: 44px; }
+.reg-atras { background: none; border: none; color: #55608A; font-size: 16px; min-height: 44px; min-width: 44px; padding: 0 8px; cursor: pointer; }
+.reg-paso-txt { font-size: 16px; font-weight: 700; color: #55608A; }
+.reg-barra { height: 10px; background: #E7DFC8; border-radius: 999px; overflow: hidden; margin: 6px 0 18px; }
+.reg-barra > span { display: block; height: 100%; background: #1F3A93; border-radius: 999px; transition: width .3s ease; }
+.reg-wiz h1 { font-size: 24px; line-height: 1.25; margin: 0 0 6px; font-weight: 800; }
+.reg-sub { font-size: 16px; line-height: 1.45; color: #4A5578; margin: 0 0 16px; }
+.reg-subir { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; width: 100%; min-height: 96px; padding: 14px; border: 2px dashed #1F3A93; border-radius: 14px; background: #F3F5FF; color: #1F3A93; font-size: 18px; font-weight: 700; text-align: center; cursor: pointer; }
+.reg-subir small { font-size: 16px; font-weight: 400; color: #4A5578; word-break: break-word; }
+.reg-wiz input[type=file] { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.reg-estado { min-height: 24px; margin: 10px 0; font-size: 16px; font-weight: 600; line-height: 1.4; }
+.reg-estado.ok { color: #12713F; }
+.reg-estado.mal { color: #A3261B; }
+.reg-estado.info { color: #1F3A93; }
+.reg-campo { display: block; margin: 0 0 12px; }
+.reg-campo > span { display: block; font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+.reg-wiz .reg-campo input, .reg-wiz .reg-campo select { width: 100%; min-height: 48px; padding: 10px 12px; font-size: 16px; border: 1.5px solid #B9AE8E; border-radius: 10px; background: #fff; color: #1B2540; font-family: inherit; }
+.reg-wiz .reg-campo input:focus, .reg-wiz .reg-campo select:focus { outline: 3px solid #9DB0F5; border-color: #1F3A93; }
+.reg-seccion { margin: 18px 0 8px; font-size: 18px; font-weight: 800; }
+.reg-principal { display: block; width: 100%; min-height: 54px; margin-top: 16px; border: none; border-radius: 12px; background: #1F3A93; color: #fff; font-size: 18px; font-weight: 800; cursor: pointer; }
+.reg-principal:disabled { opacity: .6; cursor: wait; }
+.reg-enlace { display: block; width: 100%; min-height: 48px; margin-top: 8px; background: none; border: none; color: #1F3A93; font-size: 16px; text-decoration: underline; cursor: pointer; }
+.reg-ayuda { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 48px; margin-top: 14px; border: 1.5px solid #25D366; border-radius: 12px; background: #fff; color: #0E6B34; font-size: 16px; font-weight: 700; cursor: pointer; }
+.reg-nota { font-size: 16px; line-height: 1.45; color: #4A5578; background: #F3F5FF; border-radius: 10px; padding: 10px 12px; margin: 0 0 12px; }
+.reg-estilos { display: grid; grid-template-columns: 1fr; gap: 12px; }
+.reg-estilo { text-align: left; min-height: 80px; padding: 14px; border: 2px solid #D9CFB4; border-radius: 14px; background: #fff; color: #1B2540; font-size: 16px; cursor: pointer; font-family: inherit; }
+.reg-estilo b { display: block; font-size: 20px; margin-bottom: 2px; }
+.reg-estilo.sel { border-color: #1F3A93; background: #F3F5FF; box-shadow: 0 0 0 2px #1F3A93 inset; }
+.reg-listo { text-align: center; padding: 24px 0 4px; }
+.reg-listo .reg-check { width: 72px; height: 72px; margin: 0 auto 12px; border-radius: 50%; background: #12713F; color: #fff; font-size: 40px; display: flex; align-items: center; justify-content: center; }
