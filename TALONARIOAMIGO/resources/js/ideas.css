@@ -1,0 +1,58 @@
+/* IDEA-001 palomitas, IDEA-002 deshacer, IDEA-004 Hoy. Papel marfil + copia azul, sin brillos. */
+
+/* ---- Palomitas ---- */
+.ta-pal { display: inline-flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 700; }
+.ta-pal-marca { font-size: 20px; letter-spacing: -3px; line-height: 1; }
+.ta-pal-1 { color: #64748B; }
+.ta-pal-2 { color: #15803D; }
+.ta-pal-practica { color: #1D4ED8; }
+.ta-pal-3 { color: #1D4ED8; }
+.chatf-ok .ta-pal { display: flex; margin-top: 6px; }
+
+/* ---- Emitiendo en 5… Deshacer ---- */
+.ta-deshacer {
+    position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 10050;
+    max-width: 560px; margin: 0 auto; background: #1B2D4F; color: #fff;
+    border-radius: 14px; box-shadow: 0 6px 20px rgba(11, 18, 32, 0.3); overflow: hidden;
+    font-family: var(--ds-font, sans-serif);
+}
+.ta-deshacer-fila { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; }
+.ta-deshacer-txt { margin: 0; font-size: 22px; font-weight: 700; }
+.ta-deshacer-n { font-size: 28px; }
+.ta-deshacer-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.ta-deshacer .ta-deshacer-btn {
+    min-height: 56px; min-width: 120px; padding: 0 20px; border-radius: 12px; border: 2px solid #fff;
+    background: #fff; color: #1B2D4F; font: 800 20px var(--ds-font, sans-serif); cursor: pointer;
+}
+.ta-deshacer-barra { height: 6px; background: rgba(255, 255, 255, 0.25); }
+.ta-deshacer-barra span { display: block; height: 100%; background: #93C5FD; transform-origin: left; animation: ta-cuenta linear forwards; }
+@keyframes ta-cuenta { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+@media (prefers-reduced-motion: reduce) { .ta-deshacer-barra span { animation: none; } }
+
+/* ---- Pantalla Hoy ---- */
+.ta-hoy { max-width: 560px; margin: 0 auto; padding: 20px 16px 32px; box-sizing: border-box; }
+.ta-hoy-card {
+    background: #FCFBF6; border: 1.5px solid #1B2D4F; border-left: 8px solid #1D4ED8;
+    border-radius: 14px; padding: 22px 20px; color: #1B2D4F;
+}
+.ta-hoy .ta-hoy-dia { margin: 0 0 6px; font-size: 20px; font-weight: 600; }
+.ta-hoy .ta-hoy-monto { margin: 0 0 14px; font-size: 40px; line-height: 1.15; font-weight: 800; overflow-wrap: anywhere; }
+.ta-hoy .ta-hoy-cant { font-size: 24px; font-weight: 700; white-space: nowrap; }
+.ta-hoy .ta-hoy-sep { color: #64748B; }
+.ta-hoy .ta-hoy-estado { margin: 0; font-size: 20px; font-weight: 700; }
+.ta-hoy-ok { color: #15803D; }
+.ta-hoy-espera { color: #B45309; }
+.ta-hoy-practica { color: #1D4ED8; }
+.ta-hoy .ta-hoy-boton {
+    display: block; width: 100%; min-height: 64px; margin-top: 20px; border: 0; border-radius: 14px;
+    background: #1D4ED8; color: #fff; font: 800 22px var(--ds-font, sans-serif); cursor: pointer;
+}
+.ta-hoy .ta-hoy-boton:active { transform: scale(0.98); }
+
+/* Desglose bajo el total a cobrar: el total ya incluye el IVA, igual que la factura del SRI. */
+.grand-total-desglose {
+    margin-top: 6px;
+    font-size: 16px;
+    font-weight: 500;
+    opacity: 0.85;
+}

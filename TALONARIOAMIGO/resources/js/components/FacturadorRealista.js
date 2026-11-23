@@ -8,6 +8,8 @@
  */
 
 import { renderOnboardingModal } from './OnboardingScreen.js';
+import { renderHoyTarjeta } from './HoyResumen.js';
+import { palomitasHTML, nivelDeEmision } from './Palomitas.js';
 
 function esc(value) {
     return String(value ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -151,6 +153,29 @@ function renderTranquiloWizard(emisorData, docNumStr, isDemo) {
     `;
 }
 
+// PANTALLA "HOY": tarjeta con lo vendido y un solo botón. Se muestra al entrar al mostrador.
+export function renderHoy(emisorData, experienceMode, resumen) {
+    const isDemo = emisorData?.isDemoMode !== false;
+    const mode = experienceMode || 'comerciante';
+    const items = [masModos(mode)];
+    if (emisorData?.isDemoGuest) items.push(masItem('Salir', 'window.appState.exitDemoMode()', 'mostrador-exit-btn', 'Volver al portal'));
+    else items.push(masItem('Mis Tomos', 'window.appState.openTomosModal()', '', 'Historial de tomos encuadernados'));
+    return `
+        <header class="mostrador-console-header">
+            <div class="mostrador-console-left">
+                <div class="mostrador-brand-pill">
+                    <span class="mostrador-brand-icon">TA</span>
+                    <div class="mostrador-brand-texts">
+                        <span class="mostrador-brand-title">Talonario Amigo</span>
+                        <span class="mostrador-brand-sub">${isDemo ? 'Modo Práctica · no llega al SRI' : 'Emisión Real SRI'}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="mostrador-console-right">${renderMenuMas(items)}</div>
+        </header>
+        <div class="ta-hoy-wrap ${mode === 'tranquilo' ? 'ta-hoy-tranquilo' : ''}">${renderHoyTarjeta(resumen)}</div>`;
+}
+
 export function renderFacturadorRealista(emisorData, currentDocNumber, experienceMode = 'comerciante', isShowingBlueCopy = false) {
     const isDemo = emisorData?.isDemoMode !== false;
     const hasSignature = !!emisorData?.hasSignature;
@@ -227,6 +252,7 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                     <h3 style="font-size: 16px; font-weight: 800; color: #1E3A8A; margin-bottom: 6px;">
                         ✓ Comprobante Transmitido y Registrado Exitosamente
                     </h3>
+                    <p style="margin: 0 0 10px;">${palomitasHTML(nivelDeEmision({ offline: !!emisorData?.lastReceipt?.offline }), !!emisorData?.lastReceipt?.practica)}</p>
                     <p style="font-size: 13px; color: #1D4ED8; margin-bottom: 14px;">
                         Esta copia queda archivada en tu tomo físico digital. Puedes enviarla por WhatsApp al cliente o pasar a la siguiente hoja.
                     </p>

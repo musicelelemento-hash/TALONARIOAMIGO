@@ -10,6 +10,8 @@ import '../chat.css';
 import { prepararFactura, dinero, ejemploFactura, CONSUMIDOR_FINAL } from '../services/interpreteFactura.js';
 import { voiceDictation } from '../services/voiceDictation.js';
 import { invoiceValidator } from '../services/invoiceValidator.js';
+import { esperarConDeshacer } from './EmitirConDeshacer.js';
+import { crearPalomitas, nivelDeEmision } from './Palomitas.js';
 
 const SI = ['si', 'sii', 'ok', 'dale', 'confirmo', 'emitir', 'emitela', 'listo'];
 const NO = ['no', 'cancelar', 'cancela', 'borrar', 'corregir'];
@@ -32,7 +34,7 @@ function cantidadTexto(n) {
  * @param {{ emitir: (payload:object)=>Promise<{ok:boolean,numero?:string,practica?:boolean,offline?:boolean,error?:string}>,
  *           onClose: ()=>void, practica: boolean }} opciones
  */
-export function abrirChatFactura({ emitir, onClose, practica = false }) {
+export function abrirChatFactura({ emitir, onClose, practica = false, segundosDeshacer = 5 }) {
     document.getElementById('chatf-root')?.remove();
 
     const root = document.createElement('div');
@@ -59,6 +61,8 @@ export function abrirChatFactura({ emitir, onClose, practica = false }) {
     const micBtn = root.querySelector('#chatf-mic');
     let pendiente = null; // { cliente, items, totales, card }
     let ocupado = false;
+    let cuenta = null; // cuenta regresiva "Emitiendo en…" en curso
+    let cerrado = false;
 
     const bajar = () => { msgs.scrollTop = msgs.scrollHeight; };
 
@@ -124,6 +128,10 @@ export function abrirChatFactura({ emitir, onClose, practica = false }) {
         pendiente?.card?.querySelectorAll('button').forEach((b) => { b.disabled = true; });
     }
 
+    function reabrirTarjeta(p) {
+        p.card?.querySelectorAll('button').forEach((b) => { b.disabled = false; });
+    }
+
     function ayuda() {
         burbuja('Escríbeme la venta como la dirías en voz alta. Por ejemplo:');
         burbuja(ejemploFactura(), 'user');
@@ -142,26 +150,44 @@ export function abrirChatFactura({ emitir, onClose, practica = false }) {
         if (!pendiente || ocupado) return;
         ocupado = true;
         cerrarTarjeta();
-        const { cliente, items } = pendiente;
+        const borrador = pendiente;
+        const { cliente, items } = borrador;
         pendiente = null;
+
+        // Primero la cuenta regresiva: hasta que termine NO se llama a la emisión.
+        cuenta = esperarConDeshacer({ segundos: segundosDeshacer });
+        const decision = await cuenta.promesa;
+        cuenta = null;
+        if (cerrado || decision === 'cancelado') { ocupado = false; return; }
+        if (decision === 'deshacer') {
+            ocupado = false;
+            pendiente = borrador;
+            reabrirTarjeta(borrador);
+            burbuja('Listo, no se emitió nada. Corrige lo que necesites o toca "Sí, emitir" otra vez.');
+            return;
+        }
+
         const espera = burbuja('Emitiendo tu factura…');
         let r;
         try {
-            r = await emitir({ cliente, items: items.map((i) => ({ ...i, exento: false })) });
+            r = await emitir({ cliente, items: items.map((i) => ({ ...i, exento: false })) }, { total: borrador.totales.total });
         } catch (e) {
             r = { ok: false, error: e?.message || '' };
         }
         espera.remove();
         ocupado = false;
+        if (cerrado) return;
         if (!r || !r.ok) {
             burbuja('😕 No pude emitir la factura. ' + (r?.error || 'Inténtalo en un momento.') + '\nNo se emitió nada.');
             return;
         }
+        let ok;
         if (r.offline) {
-            burbuja(`📴 Sin señal. Guardé la factura ${r.numero} en tu talonario y se enviará sola cuando vuelva la señal.`, 'bot', 'chatf-ok');
+            ok = burbuja(`📴 Sin señal. Guardé la factura ${r.numero} en tu talonario y se enviará sola cuando vuelva la señal.`, 'bot', 'chatf-ok');
         } else {
-            burbuja(`✅ ¡Listo! Factura ${r.numero}` + (r.practica ? '\nModo Práctica: no llegó al SRI.' : ''), 'bot', 'chatf-ok');
+            ok = burbuja(`✅ ¡Listo! Factura ${r.numero}`, 'bot', 'chatf-ok');
         }
+        ok.appendChild(crearPalomitas(nivelDeEmision({ offline: r.offline }), !!r.practica));
         burbuja('¿Otra venta? Escríbela cuando quieras.');
     }
 
@@ -201,6 +227,8 @@ Si el cliente no quiere dar sus datos, escribe "consumidor final".`);
     }
 
     function cerrar() {
+        cerrado = true;
+        cuenta?.cancelar(); // si cierra durante la cuenta, no se emite
         voiceDictation.stop();
         root.remove();
         if (onClose) onClose();

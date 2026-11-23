@@ -20,6 +20,18 @@
 - Base de datos movida a Supabase; `SUPABASE_SERVICE_ROLE_KEY` corregida en Render.
 - Skills del proyecto instaladas; `CLAUDE.md` + esta bitácora + skill `bitacora`.
 
+## Repos unidos, ideas construidas y llaves expuestas (23/11)
+- El repo oficial `robertcashbooking-lang/TALONARIO-AMIGO` = este hasta `0e9ab20` + 1 commit (`850c6c0`, 4
+  líneas de Vercel). **Ya unido a la rama de trabajo** (`f0e0878`). Producción no se tocó.
+- Construidas IDEA-001 (palomitas ✓/✓✓), IDEA-002 ("Emitiendo en 5… Deshacer", 10 s en Tranquilo) e
+  IDEA-004 (pantalla "Hoy"). Tests JS 14/14.
+- **Error corregido:** el "TOTAL A COBRAR" del facturador clásico no sumaba el IVA (mostraba $54,50 y el
+  SRI recibía $62,68). Ahora usa el mismo cálculo que el chat y el servidor, con desglose.
+- 🚨 **Llaves reales en el historial de git** (commits de sep–oct en `.env.production` y similares), y este
+  repo es público. La `APP_KEY` de producción **es la filtrada**; una contraseña filtrada es del usuario
+  principal de Supabase. Pendiente de aprobación del dueño: rotar `APP_KEY` en Render y la contraseña de
+  Supabase. Recomendado: poner privado este repo y revocar las llaves viejas de Resend y R2.
+
 ## Avance de la app (22/11, tarde)
 - **Factura por chat dentro de la app** (escribir o dictar → tarjeta → "Sí, emitir"), con intérprete en JS
   y 12 tests (`npm run test:js`). **Facilidad:** letra ≥16 px, controles ≥44 px, menú "Más", pago plegado

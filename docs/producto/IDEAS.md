@@ -23,7 +23,7 @@ _(vacío: el explorador escribe aquí)_
 - Cómo se vería en Talonario Amigo: junto a cada factura, tres pasos con palomitas propias (dibujo nuestro, no el de WhatsApp): ✓ "Guardada en tu celular" → ✓✓ "El SRI la aceptó" → ✓✓ en azul copia "Tu cliente la recibió" (cuando se mandó por WhatsApp o correo). Si no hay señal se queda en una palomita con el texto "La enviamos apenas vuelva la señal". Tocar las palomitas abre una frase sencilla de qué significa cada una. En Clásico se ven como un sello de tinta azul en el margen de la hoja; en Minimalista, como palomitas finas junto al total.
 - Impacto: alto · Esfuerzo: bajo (los estados ya existen en el pipeline de emisión; es una capa visual)
 - Quién la construiría: interfaz-minimalista (dibujo y textos) + dev-backend (exponer el estado "cliente la recibió")
-- Estado: **aceptada (22/11)**
+- Estado: **construida (23/11)** — en la rama de trabajo, probada en Modo Práctica
 - Veredicto del director: Más tranquilidad con casi nada de trabajo: el comerciante ve que su factura llegó. Primero ✓ guardada y ✓✓ aceptada por el SRI; la tercera (el cliente la recibió) cuando exista el envío del RIDE.
 
 ### IDEA-002 · "Emitiendo en 5… Deshacer" antes de mandar al SRI
@@ -33,7 +33,7 @@ _(vacío: el explorador escribe aquí)_
 - Cómo se vería en Talonario Amigo: al tocar "Sí, emitir", la factura queda en una franja grande abajo: "Enviando tu factura… [ DESHACER ]" con una cuenta regresiva de 5 segundos (en Modo Tranquilo, 10). Si toca Deshacer, vuelve a la factura tal cual para corregirla, sin nota de crédito ni nada ante el SRI. En Clásico la hoja tiembla antes de desprenderse del bloc; en Minimalista se llena un círculo suave. Mejora la idea de "Deshacer" de `docs/INFORME_MEJORA.md` (A4): primero evita el error; anular queda para después.
 - Impacto: alto · Esfuerzo: bajo (la cola local ya existe; solo se retrasa el envío unos segundos)
 - Quién la construiría: interfaz-minimalista + dev-backend (revisar que la cola respete la espera) · cumplimiento-seguridad revisa que nada salga al SRI antes de tiempo
-- Estado: **aceptada (22/11)**
+- Estado: **construida (23/11)** — en la rama de trabajo, probada en Modo Práctica
 - Veredicto del director: Ataca el miedo número uno ("me equivoqué y ya no hay vuelta"). La espera ocurre en el celular antes de llamar al servidor, así que nada sale al SRI antes de tiempo. Revisión rápida de cumplimiento-seguridad antes de cerrar.
 
 ### IDEA-004 · Pantalla "Hoy": todo lo de hoy en un vistazo
@@ -43,7 +43,7 @@ _(vacío: el explorador escribe aquí)_
 - Cómo se vería en Talonario Amigo: arriba, en letra grande, "Hoy vendiste $48,50 · 12 facturas"; debajo una sola línea de tranquilidad: "Todas llegaron al SRI ✓✓" (o "1 está esperando señal, nosotros la enviamos"). Luego, como mucho, una tarjeta de "algo por hacer" (ej. "Tu firma vence en 20 días: te ayudamos a renovarla") y el botón principal "Nueva factura". En Clásico parece la última hoja del talonario con la suma escrita a mano; en Minimalista, una tarjeta blanca con el número grande. En tablet va a la izquierda del modo caja.
 - Impacto: medio · Esfuerzo: bajo (los datos ya existen)
 - Quién la construiría: interfaz-minimalista + dev-backend (un endpoint de resumen del día)
-- Estado: **aceptada (22/11)**
+- Estado: **construida (23/11)** — en la rama de trabajo, probada en Modo Práctica
 - Veredicto del director: Resuelve el "resumen del día" pendiente y ya está dibujado en el prototipo. Poco esfuerzo, mucho orden para el comerciante.
 
 ## En espera

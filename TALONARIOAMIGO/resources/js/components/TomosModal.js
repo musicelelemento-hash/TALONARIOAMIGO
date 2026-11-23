@@ -4,6 +4,8 @@
  * Permite al comerciante consultar sus facturas archivadas por meses como talonarios reales.
  */
 
+import { palomitasHTML } from './Palomitas.js';
+
 function esc(value) {
     return String(value ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
@@ -80,7 +82,6 @@ export function renderTomosModal(activeTomoMonth = 'AGOSTO 2026', tomosData = nu
             const numComp = h.numero_comprobante || `001-001-${num}`;
             const fechaStr = h.fecha_emision ? new Date(h.fecha_emision).toLocaleDateString('es-EC', { day: '2-digit', month: '2-digit', year: 'numeric' }) : 'Hoy';
             const totalFmt = typeof h.importe_total === 'number' ? `$${h.importe_total.toFixed(2)}` : (h.importe_total ? `$${parseFloat(h.importe_total).toFixed(2)}` : '$0.00');
-            const estadoBadge = h.estado === 'AUTORIZADO' ? '✓ SRI AUTORIZADO' : (h.estado || 'EMITIDO');
             const claveAcceso = h.clave_acceso || '';
 
             return `
@@ -90,9 +91,7 @@ export function renderTomosModal(activeTomoMonth = 'AGOSTO 2026', tomosData = nu
                             <span style="font-family: var(--font-mono-num); font-size: 13px; font-weight: 800; color: #D62828;">
                                 N° ${esc(numComp)}
                             </span>
-                            <span style="font-size: 10px; font-weight: 800; background: #DCFCE7; color: #15803D; padding: 2px 6px; border-radius: 6px;">
-                                ${esc(estadoBadge)}
-                            </span>
+                            ${palomitasHTML(h.estado === 'AUTORIZADO' ? 2 : 1, false)}
                             <span style="font-size: 11px; color: #64748B;"> ${esc(fechaStr)}</span>
                         </div>
                         <div style="font-size: 14px; font-weight: 700; color: #0F172A; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">

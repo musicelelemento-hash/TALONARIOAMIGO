@@ -19,6 +19,10 @@ import { gravityScanner } from '../services/gravityScanner.js';
 import { offlineQueue } from '../services/offlineQueue.js';
 import { invoiceValidator } from '../services/invoiceValidator.js';
 import { abrirChatFactura } from './ChatFactura.js';
+import { esperarConDeshacer, segundosDeshacer, hayCuentaActiva } from './EmitirConDeshacer.js';
+import { emisionHoy } from '../services/emisionHoy.js';
+import { calcularTotales, redondear2 } from '../services/interpreteFactura.js';
+import { renderHoy } from './FacturadorRealista.js';
 import { printThermalTicket, setThermalWidth, getThermalWidth } from './ThermalTicket.js';
 
 function escapeHtml(value) {
@@ -237,6 +241,16 @@ export class AppManager {
             return;
         }
 
+        if (this.state.vistaHoy !== false && !this.state.isShowingBlueCopy && this.state.experienceMode !== 'pro') {
+            const practica = !!(this.state.isDemoGuest || this.state.isDemoMode);
+            this.container.innerHTML = renderHoy(this.state, this.state.experienceMode, {
+                ...emisionHoy.resumen(practica),
+                pendientes: practica ? 0 : (this.state.offlinePendingCount || 0),
+                practica,
+            });
+            return;
+        }
+
         this.container.innerHTML = renderFacturadorRealista(this.state, this.state.currentDocNumber, this.state.experienceMode, this.state.isShowingBlueCopy);
         if (this.state.isTomosModalOpen) {
             this.container.innerHTML += renderTomosModal(
@@ -254,6 +268,9 @@ export class AppManager {
                 '<button type="button" class="chatf-fab" onclick="window.appState.openChatFactura()">💬 Facturar escribiendo</button>');
         }
         this.setupTactilePaperInteractions();
+        // El total que trae el HTML es fijo: se recalcula al mostrar la pantalla para que siempre
+        // incluya el IVA igual que la factura que llega al SRI.
+        if (document.getElementById('realista-items-body')) this.recalculateTotals();
     }
 
     // CAMBIO DE ROL OPERATIVO (CLIENT / RESELLER / SUPER_ADMIN)
@@ -1132,6 +1149,7 @@ export class AppManager {
         this.state.isShowingBlueCopy = false;
         this.state.currentDocNumber += 1;
         this.state.tranquiloStep = 1; // Nueva hoja: reinicia el wizard Tranquilo
+        this.state.vistaHoy = true; // vuelve a "Hoy" para ver cómo va el día
         soundFx.playPaperSlide();
         this.evaluateStateAndRender();
 
@@ -1277,13 +1295,17 @@ export class AppManager {
         document.querySelector('.chatf-fab')?.remove();
         abrirChatFactura({
             practica: !!(this.state.isDemoGuest || this.state.isDemoMode),
-            emitir: (payload) => this.emitirDesdeChat(payload),
-            onClose: () => this.evaluateStateAndRender(),
+            segundosDeshacer: segundosDeshacer(this.state.experienceMode),
+            emitir: (payload, extra) => this.emitirDesdeChat(payload, extra),
+            onClose: () => {
+                if (this.state.emitioDesdeChat) { this.state.emitioDesdeChat = false; this.state.vistaHoy = true; }
+                this.evaluateStateAndRender();
+            },
         });
     }
 
     // Emite lo confirmado en el chat con el mismo camino que el facturador y avanza la hoja.
-    async emitirDesdeChat(payload) {
+    async emitirDesdeChat(payload, extra = {}) {
         const preFlight = invoiceValidator.validatePreFlight(payload, this.state);
         if (!preFlight.valid) {
             const cedulaMala = /c[eé]dula/i.test(preFlight.title || '');
@@ -1301,6 +1323,8 @@ export class AppManager {
         this.state.currentDocNumber += 1; // nueva hoja, como al pasar la copia azul
         soundFx.playStamp();
         this.triggerHaptic([40, 20, 60]);
+        this.registrarHoy(res, extra.total);
+        this.state.emitioDesdeChat = true;
         return {
             ok: true,
             numero: `001-001-${secuencial}`,
@@ -1329,6 +1353,22 @@ export class AppManager {
             items.push({ descripcion, cantidad, precioUnitario, exento: false });
         });
         return { cliente: { nombre, identificacion, direccion, telefono, email }, items };
+    }
+
+    // Anota la factura en el registro local de "Hoy" (solo total y estado, sin datos personales).
+    registrarHoy(res, total) {
+        emisionHoy.registrar({
+            total,
+            practica: !!res.isDemo,
+            offline: res.estado === 'OFFLINE_LOCAL',
+        });
+    }
+
+    // Botón único de la pantalla "Hoy".
+    irANuevaFactura() {
+        this.triggerHaptic(15);
+        this.state.vistaHoy = false;
+        this.evaluateStateAndRender();
     }
 
     // Decide cómo emitir un payload: práctica simulada, cola offline o emisión real.
@@ -1389,8 +1429,8 @@ export class AppManager {
 
     // SECUENCIA DE EMISIÓN REAL CON DESPRENDIMIENTO 3D Y REVELADO DE COPIA AZUL (PRINCIPIO 12 & COLA OFFLINE)
     async executeEmit3DSequence() {
+        if (hayCuentaActiva() || this.state.emitiendoAhora) return;
         this.triggerHaptic([40, 30, 80]);
-        this.showToast('Firmando y procesando en el talonario…');
 
         let payload;
         try {
@@ -1417,8 +1457,24 @@ export class AppManager {
                 return;
             }
 
+            // Cuenta regresiva ANTES de emitir: si toca Deshacer, no se llama a nada.
+            const totalPantalla = parseFloat(String(document.getElementById('grand-total-display')?.innerText || '').replace(/[^0-9.]/g, '')) || 0;
+            this.state.emitiendoAhora = true;
+            const decision = await esperarConDeshacer({ segundos: segundosDeshacer(this.state.experienceMode) }).promesa;
+            this.state.emitiendoAhora = false;
+            if (decision === 'cancelado') return;
+            if (decision === 'deshacer') {
+                this.triggerHaptic(20);
+                this.showToast('Listo, no se emitió nada. Corrige lo que necesites y vuelve a emitir.');
+                return;
+            }
+            this.showToast('Firmando y procesando en el talonario…');
+
+            this.state.emitiendoAhora = true;
             const res = await this.emitirPayload(payload);
+            this.state.emitiendoAhora = false;
             if (!res) return;
+            this.registrarHoy(res, totalPantalla);
 
             const stampBadge = document.getElementById('stamp-sri-badge');
             if (stampBadge) {
@@ -1448,7 +1504,9 @@ export class AppManager {
                 total: document.getElementById('grand-total-display')?.innerText || '$85.00',
                 secuencial: secuencial,
                 claveAcceso: res.claveAcceso || '',
-                numeroAutorizacion: res.numeroAutorizacion || ''
+                numeroAutorizacion: res.numeroAutorizacion || '',
+                offline: res.estado === 'OFFLINE_LOCAL',
+                practica: !!res.isDemo
             };
 
             if (res.isDemo) {
@@ -1474,6 +1532,7 @@ export class AppManager {
             }, 750);
 
         } catch (e) {
+            this.state.emitiendoAhora = false;
             this.triggerHaptic(50);
             const msg = (e.code === 'PENDING_ONBOARDING')
                 ? 'Completa tus datos tributarios (RUC, razón social) antes de emitir.'
@@ -1489,8 +1548,13 @@ export class AppManager {
     // CÁLCULO DINÁMICO DE TOTALES
     recalculateTotals() {
         const rows = document.querySelectorAll('#realista-items-body tr');
-        let grandTotal = 0;
+        let grandTotal;
 
+        // El total a cobrar debe ser EXACTAMENTE el de la factura que llega al SRI: el servidor
+        // suma el IVA 15 % a los precios, así que aquí se calcula igual (mismo redondeo que el
+        // chat y que EmisionService). Antes se mostraba el subtotal sin IVA y el comerciante
+        // cobraba de menos.
+        const items = [];
         rows.forEach(row => {
             const qtyInput = row.querySelector('td:nth-child(1) input');
             const priceInput = row.querySelector('td:nth-child(3) input');
@@ -1499,13 +1563,24 @@ export class AppManager {
             if (qtyInput && priceInput && totalCell) {
                 const qty = parseFloat(qtyInput.value) || 0;
                 const price = parseFloat(priceInput.value) || 0;
-                const rowTotal = qty * price;
-                totalCell.innerText = `$${rowTotal.toFixed(2)}`;
-                grandTotal += rowTotal;
+                totalCell.innerText = `$${redondear2(qty * price).toFixed(2)}`;
+                items.push({ cantidad: qty, precioUnitario: price });
             }
         });
 
+        const totales = calcularTotales(items);
+        grandTotal = totales.total;
         const totalDisplay = document.getElementById('grand-total-display');
+        let desglose = document.getElementById('grand-total-desglose');
+        if (totalDisplay && !desglose) {
+            desglose = document.createElement('div');
+            desglose.id = 'grand-total-desglose';
+            desglose.className = 'grand-total-desglose';
+            totalDisplay.insertAdjacentElement('afterend', desglose);
+        }
+        if (desglose) {
+            desglose.innerText = `Subtotal $${totales.subtotal.toFixed(2)} + IVA 15 % $${totales.iva.toFixed(2)}`;
+        }
         if (totalDisplay) {
             totalDisplay.innerText = `$${grandTotal.toFixed(2)}`;
             totalDisplay.style.transform = 'scale(1.1)';
