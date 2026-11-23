@@ -874,8 +874,8 @@ export class AppManager {
             ];
             this.state.comprobantesList = [
                 { secuencial: '000000126', numero_comprobante: '001-001-000000126', fecha_emision: '2026-08-28', cliente_nombre: 'Juan Alberto Pérez Gómez', cliente_identificacion: '0928374610', importe_total: 85.00, estado: 'AUTORIZADO', clave_acceso: '2808202601092837461000110010010000001261234567812' },
-                { secuencial: '000000125', numero_comprobante: '001-001-000000125', fecha_emision: '2026-08-28', cliente_nombre: 'María Elena Loor', cliente_identificacion: '1309876543', importe_total: 45.00, estado: 'AUTORIZADO', clave_acceso: '2808202601130987654300110010010000001251234567819' },
-                { secuencial: '000000124', numero_comprobante: '001-001-000000124', fecha_emision: '2026-08-27', cliente_nombre: 'Ab. Carlos Zambrano', cliente_identificacion: '1712345678', importe_total: 24.50, estado: 'AUTORIZADO', clave_acceso: '2708202601171234567800110010010000001241234567813' }
+                { secuencial: '000000125', numero_comprobante: '001-001-000000125', fecha_emision: '2026-08-28', cliente_nombre: 'María Elena Loor', cliente_identificacion: '1309876546', importe_total: 45.00, estado: 'AUTORIZADO', clave_acceso: '2808202601130987654600110010010000001251234567819' },
+                { secuencial: '000000124', numero_comprobante: '001-001-000000124', fecha_emision: '2026-08-27', cliente_nombre: 'Ab. Carlos Zambrano', cliente_identificacion: '1712345675', importe_total: 24.50, estado: 'AUTORIZADO', clave_acceso: '2708202601171234567500110010010000001241234567813' }
             ];
             this.evaluateStateAndRender();
             return;
@@ -1512,7 +1512,7 @@ export class AppManager {
             };
 
             if (res.isDemo) {
-                this.showToast(`¡HOJA DESPRENDIDA! Factura N° 001-001-${secuencial} autorizada (Demo). Mostrando Copia Azul.`);
+                this.showToast(`¡Listo! Factura N° 001-001-${secuencial} hecha en Modo Práctica (no llegó al SRI).`);
             } else if (res.estado === 'OFFLINE_LOCAL') {
                 this.showToast(`Sin conexión: Comprobante N° 001-001-${secuencial} guardado en tu talonario local.`);
             } else {

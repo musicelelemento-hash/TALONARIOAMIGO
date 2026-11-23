@@ -67,8 +67,8 @@ export const invoiceValidator = {
                 return {
                     valid: false,
                     code: 'INVALID_CEDULA',
-                    title: 'Cédula Ecuatoriana Inválida',
-                    message: `El número ${id} no corresponde a una cédula válida según el algoritmo de Módulo 10 del Registro Civil.`,
+                    title: 'Cédula no válida',
+                    message: `La cédula ${id} no es válida. Revisa los 10 números.`,
                     solution: 'Verifica los 10 dígitos de la cédula del comprador.'
                 };
             }

@@ -173,14 +173,14 @@ export function renderLoginScreen() {
 
                         <div class="card">
                             <div class="card-icon">${ICONS.offline}</div>
-                            <div class="card-title">100% offline en zonas rurales</div>
+                            <div class="card-title">Factura aunque no haya señal</div>
                             <div class="card-text">Si se cae el internet o estás en carretera, sigue emitiendo. Las facturas quedan selladas y se sincronizan solas al recuperar la señal.</div>
                         </div>
 
                         <div class="card">
                             <div class="card-icon">${ICONS.archive}</div>
                             <div class="card-title">Archivo por tomos encuadernados</div>
-                            <div class="card-text">Tus facturas se organizan como libros: <em>JULIO · 150 hojas</em>, <em>AGOSTO · 83 hojas</em>, con buscador en vivo por cliente y descarga de XML.</div>
+                            <div class="card-text">Tus facturas se organizan como libros: <em>JULIO · 150 hojas</em>, <em>AGOSTO · 83 hojas</em>, con buscador por cliente y el archivo para tu contador.</div>
                         </div>
                     </div>
 
@@ -246,7 +246,7 @@ export function renderLoginScreen() {
                             <div class="card">
                                 <div class="card-icon">${ICONS.lock}</div>
                                 <div class="card-title">Alta de cliente en 60 segundos</div>
-                                <div class="card-text">Cargas el RUC y la firma <strong>.p12</strong> del cliente y le entregas su facturador listo para emitir.</div>
+                                <div class="card-text">Cargas el RUC y la firma electrónica del cliente y le entregas su talonario listo para facturar.</div>
                             </div>
                             <div class="card">
                                 <div class="card-icon">${ICONS.layers}</div>
@@ -293,12 +293,12 @@ export function renderLoginScreen() {
                         <div class="card">
                             <div class="card-icon">${ICONS.database}</div>
                             <div class="card-title">Postgres con RLS</div>
-                            <div class="card-text">Políticas de Row Level Security estrictas que garantizan aislamiento total por emisor.</div>
+                            <div class="card-text">Cada negocio ve solo sus propias facturas. Nadie más puede verlas.</div>
                         </div>
                         <div class="card">
                             <div class="card-icon">${ICONS.send}</div>
-                            <div class="card-title">Entrega en menos de 2 segundos</div>
-                            <div class="card-text">RIDE PDF y XML autorizado enviados al correo del cliente mediante Resend.</div>
+                            <div class="card-title">Tu cliente la recibe al instante</div>
+                            <div class="card-text">Por WhatsApp o por correo, apenas emites la factura.</div>
                         </div>
                     </div>
 
@@ -336,7 +336,7 @@ export function renderLoginScreen() {
                                 <tr><td>Interfaz de usuario</td><td>45 menús, tablas y modales confusos</td><td>Una hoja de papel táctil</td></tr>
                                 <tr><td>Curva de aprendizaje</td><td>Semanas de capacitación</td><td>0 minutos: es tu papel de siempre</td></tr>
                                 <tr><td>Tiempo por factura</td><td>15 a 20 clics (1 a 2 minutos)</td><td>5 segundos o dictado por voz</td></tr>
-                                <tr><td>Modo sin internet</td><td>Se bloquea, no puedes cobrar</td><td>100% offline con auto-sincronización</td></tr>
+                                <tr><td>Modo sin internet</td><td>Se bloquea, no puedes cobrar</td><td>Guarda la factura y la envía cuando vuelve la señal</td></tr>
                                 <tr><td>Copia para el emisor</td><td>PDF perdidos en carpetas</td><td>Copia azul autocopiativa tradicional</td></tr>
                                 <tr><td>Voz y escáner de foto</td><td>No disponible o muy costoso</td><td>Reconoce cédula, RUC y productos</td></tr>
                                 <tr><td>Dispositivos</td><td>Computadora e impresora especial</td><td>Cualquier celular o tablet</td></tr>
@@ -371,9 +371,9 @@ export function renderLoginScreen() {
                                 ${priceFeature('inteligente (cédula, RUC, productos)', 'Dictado por voz')}
                                 ${priceFeature('por foto con física de gravedad', 'Escáner OCR')}
                                 ${priceFeature('tradicional para tu archivo', 'Copia azul autocopiativa')}
-                                ${priceFeature('(factura en carretera o campo)', '100% offline')}
+                                ${priceFeature('(se envía cuando vuelve la señal)', 'Factura sin señal')}
                                 ${priceFeature('y correo al cliente', 'Envío por WhatsApp')}
-                                ${priceFeature('con descarga de XML', 'Archivo por tomos')}
+                                ${priceFeature('con archivo para tu contador', 'Archivo por tomos')}
                             </ul>
                             <button type="button" class="btn btn-primary btn-block btn-lg" onclick="window.appState.openRegister()">Crear mi talonario</button>
                         </div>
@@ -428,10 +428,9 @@ export function renderLoginScreen() {
                     </div>
 
                     <div class="legal-note">
-                        <strong>Sustento legal SRI:</strong> cumplimiento del esquema XML Factura v1.1.0 según la
-                        <strong>Resolución NAC-DGERCGC18-00000431</strong> y la <strong>Resolución NAC-DGERCGC22-00000024</strong>
-                        (obligatoriedad RIMPE y Régimen General). Firma digital con algoritmo <strong>XAdES-BES</strong> y
-                        verificación módulo 11 en la clave de acceso de 49 dígitos.
+                        <strong>Cumple con el SRI:</strong> las facturas siguen el formato oficial de factura electrónica
+                        del SRI (Resoluciones <strong>NAC-DGERCGC18-00000431</strong> y <strong>NAC-DGERCGC22-00000024</strong>)
+                        y se firman con tu firma electrónica, como exige la ley.
                     </div>
                 </div>
             </section>
@@ -447,23 +446,23 @@ export function renderLoginScreen() {
                     <div class="faq">
                         <details>
                             <summary>¿Qué necesito para empezar a facturar hoy mismo?</summary>
-                            <div class="faq-body">Solo tu número de RUC activo y el archivo de firma electrónica en formato <strong>.p12</strong> (Security Data, Registro Civil, ANF, UANATACA, etc.). Si aún no la tienes, tu imprenta aliada o nuestro equipo te guía en menos de 24 horas.</div>
+                            <div class="faq-body">Solo tu RUC activo y tu firma electrónica (el archivo que te dan Security Data, Registro Civil, ANF, UANATACA u otros). Si aún no la tienes, tu imprenta aliada o nuestro equipo te guía en menos de 24 horas.</div>
                         </details>
                         <details>
                             <summary>¿Qué pasa si se corta el internet o estoy en zona rural?</summary>
-                            <div class="faq-body">Talonario Amigo tiene un motor <strong>100% offline</strong>. Puedes seguir emitiendo sin cobertura. Las facturas quedan selladas criptográficamente y en cola local, sincronizándose automáticamente al recuperar la señal.</div>
+                            <div class="faq-body">Puedes seguir facturando. La factura se guarda en tu teléfono y se envía sola al SRI apenas vuelve la señal.</div>
                         </details>
                         <details>
-                            <summary>¿Mi firma electrónica .p12 está segura?</summary>
-                            <div class="faq-body">Sí. Tu firma se realiza en tu propio dispositivo y la clave privada nunca viaja desprotegida a servidores externos. Esa firma queda cifrada y solo tú puedes usarla.</div>
+                            <summary>¿Mi firma electrónica está segura?</summary>
+                            <div class="faq-body">Sí. Tu firma y su clave se guardan cifradas en nuestro servidor y solo se usan para firmar tus propias facturas. Nadie más puede usarlas.</div>
                         </details>
                         <details>
                             <summary>¿Sirve para el régimen RIMPE Negocio Popular y Emprendedor?</summary>
-                            <div class="faq-body">Sí. Se adapta automáticamente: en <strong>RIMPE Negocio Popular</strong> emite notas de venta con la leyenda obligatoria del SRI y tarifa 0%; en <strong>RIMPE Emprendedor</strong> o <strong>Régimen General</strong> calcula el 15% de IVA con desglose oficial.</div>
+                            <div class="faq-body">Sí. Funciona para <strong>RIMPE Negocio Popular</strong>, <strong>RIMPE Emprendedor</strong> y <strong>Régimen General</strong>, y te muestra el total con el IVA antes de emitir.</div>
                         </details>
                         <details>
                             <summary>¿Cómo se entrega la factura al cliente si no tengo impresora?</summary>
-                            <div class="faq-body">Al emitir, el sistema envía el <strong>RIDE PDF y el XML autorizado</strong> al correo del cliente mediante Resend. También tienes un botón de <strong>WhatsApp directo</strong> para compartir el comprobante al instante.</div>
+                            <div class="faq-body">Al emitir, le llega un aviso al correo de tu cliente y tienes un botón de <strong>WhatsApp</strong> para mandarle la factura al instante.</div>
                         </details>
                         <details>
                             <summary>¿Soy imprenta gráfica, cómo empiezo a vender talonarios en mi cantón?</summary>
@@ -489,7 +488,7 @@ export function renderLoginScreen() {
                         </div>
                     </div>
                     <div class="landing-legal">
-                        © 2026 Talonario Amigo. Todos los derechos reservados. Cumplimiento técnico XAdES-BES, SOAP SRI y Ley Orgánica para el Desarrollo Económico y Sostenibilidad Fiscal.
+                        © 2026 Talonario Amigo. Todos los derechos reservados. Facturación electrónica conforme a la normativa del SRI del Ecuador.
                     </div>
                 </div>
             </footer>

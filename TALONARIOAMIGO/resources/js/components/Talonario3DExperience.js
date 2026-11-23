@@ -174,7 +174,7 @@ export class Talonario3DExperience {
         ctx.fillRect(620, 175, 350, 36);
         ctx.fillStyle = '#FFFFFF';
         ctx.font = 'bold 18px "Outfit", sans-serif';
-        ctx.fillText(isBlueCopy ? 'COPIA AZUL AUTOCOPIATIVA' : 'FACTURA ELECTRÓNICA', 645, 200);
+        ctx.fillText(isBlueCopy ? 'TU COPIA' : 'FACTURA ELECTRÓNICA', 645, 200);
 
         ctx.font = 'bold 28px "JetBrains Mono", monospace';
         ctx.fillStyle = '#D62828';

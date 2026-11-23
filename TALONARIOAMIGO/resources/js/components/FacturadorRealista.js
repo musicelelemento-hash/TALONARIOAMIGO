@@ -250,7 +250,7 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
 
                     <div class="ruc-box-container" style="border-color:#1D4ED8; color:#1D4ED8;">
                         <div class="ruc-title-row" style="color:#1D4ED8;">R U C: ${esc(rucEmisor)}</div>
-                        <div class="document-type-banner" style="background:#1D4ED8; color:#FFFFFF;">COPIA AZUL AUTOCOPIATIVA</div>
+                        <div class="document-type-banner" style="background:#1D4ED8; color:#FFFFFF;">TU COPIA</div>
                         <div class="serie-row" style="color:#1D4ED8;">SERIE: 001-001</div>
                         ${renderMechanicalOdometer(docNumStr, true)}
                         <div class="aut-sri-row" style="color:#1D4ED8;">AUT. S R I: ${esc(emisor.numero_autorizacion || 'PENDIENTE')}</div>
@@ -258,23 +258,23 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                 </div>
 
                 <div style="margin-top: 24px; padding: 18px; border: 1.5px dashed #60A5FA; border-radius: 12px; text-align: center; background: rgba(255,255,255,0.6);">
-                    <h3 style="font-size: 16px; font-weight: 800; color: #1E3A8A; margin-bottom: 6px;">
-                        ✓ Comprobante Transmitido y Registrado Exitosamente
+                    <h3 style="font-size: 20px; font-weight: 800; color: #1E3A8A; margin-bottom: 6px;">
+                        ¡Listo! Tu factura quedó hecha
                     </h3>
                     <p style="margin: 0 0 10px;">${palomitasHTML(nivelDeEmision({ offline: !!emisorData?.lastReceipt?.offline }), !!emisorData?.lastReceipt?.practica)}</p>
-                    <p style="font-size: 13px; color: #1D4ED8; margin-bottom: 14px;">
-                        Esta copia queda archivada en tu tomo físico digital. Puedes enviarla por WhatsApp al cliente o pasar a la siguiente hoja.
+                    <p style="font-size: 16px; color: #1D4ED8; margin-bottom: 14px;">
+                        Tu copia quedó guardada en «Mis tomos». ¿Se la mandas a tu cliente?
                     </p>
                     <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
-                        <button class="btn-whatsapp-direct" style="padding: 10px 20px; font-size: 12px;" onclick="window.appState.shareFacturaWhatsapp()">
-                             Enviar Factura al Cliente por WhatsApp
+                        <button class="btn-whatsapp-direct" style="padding: 12px 20px; font-size: 16px; min-height: 48px;" onclick="window.appState.shareFacturaWhatsapp()">
+                             Enviar al cliente por WhatsApp
                         </button>
-                        <button class="btn-stamp" style="background: #1D4ED8; border-color: #1D4ED8; width: auto; padding: 10px 22px; font-size: 12px;" onclick="window.appState.finishBlueCopyPreview()">
-                             Pasar a Nueva Hoja
+                        <button class="btn-stamp" style="background: #1D4ED8; border-color: #1D4ED8; width: auto; padding: 12px 22px; font-size: 16px; min-height: 48px;" onclick="window.appState.finishBlueCopyPreview()">
+                             Nueva factura
                         </button>
                         ${emisorData?.isDemoGuest ? `
-                            <button type="button" class="btn-stamp" style="background: #10B981; border-color: #10B981; width: auto; padding: 10px 22px; font-size: 12px; color: white; font-weight: 900;" onclick="window.appState.openRegister()">
-                                 Configurar Mi RUC y Facturar de Verdad
+                            <button type="button" class="btn-stamp" style="background: #10B981; border-color: #10B981; width: auto; padding: 12px 22px; font-size: 16px; min-height: 48px; color: white; font-weight: 800;" onclick="window.appState.openRegister()">
+                                 Facturar de verdad con mi RUC
                             </button>
                         ` : ''}
                     </div>
@@ -419,7 +419,7 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                     <span>Clientes frecuentes</span>
                 </div>
                 <div class="frequent-clients-bar">
-                    <button type="button" class="frequent-client-chip" onclick="window.appState.selectFrequentClient('Juan Alberto Pérez Gómez', 'Av. Central N12-45 y Rocafuerte', '1712345678')">
+                    <button type="button" class="frequent-client-chip" onclick="window.appState.selectFrequentClient('Juan Alberto Pérez Gómez', 'Av. Central N12-45 y Rocafuerte', '1712345675')">
                         <span>Juan Pérez</span>
                         <span class="frequent-client-badge">14 compras</span>
                     </button>
@@ -427,7 +427,7 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                         <span>María Loor</span>
                         <span class="frequent-client-badge">8 compras</span>
                     </button>
-                    <button type="button" class="frequent-client-chip" onclick="window.appState.selectFrequentClient('Ab. Carlos Zambrano', 'Edif. La Previsora Of. 402', '0704938291')">
+                    <button type="button" class="frequent-client-chip" onclick="window.appState.selectFrequentClient('Ab. Carlos Zambrano', 'Edif. La Previsora Of. 402', '0704938299')">
                         <span>Carlos Zambrano</span>
                         <span class="frequent-client-badge">22 compras</span>
                     </button>
@@ -464,7 +464,7 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                 </div>
                 <div class="cliente-row">
                     <span class="cliente-label">RUC / CI #</span>
-                    <input type="text" id="cliente-ruc-input" class="cliente-line-input" style="max-width: 140px;" value="1712345678" placeholder="10 o 13 dígitos" onfocus="window.appState.onInputFocus()">
+                    <input type="text" id="cliente-ruc-input" class="cliente-line-input" style="max-width: 140px;" value="1712345675" placeholder="10 o 13 dígitos" onfocus="window.appState.onInputFocus()">
                     <span class="cliente-label" style="margin-left: 6px;">Teléfono</span>
                     <input type="text" id="cliente-telefono-input" class="cliente-line-input" style="max-width: 130px;" placeholder="099..." onfocus="window.appState.onInputFocus()">
                 </div>

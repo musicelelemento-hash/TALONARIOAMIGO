@@ -56,3 +56,12 @@
     font-weight: 500;
     opacity: 0.85;
 }
+
+/* El desglose dentro de la caja oscura del total necesita texto claro para leerse. */
+.total-cobrar-box .grand-total-desglose {
+    color: #CBD5E1 !important;
+    opacity: 1;
+}
+:root[data-estilo="minimalista"] .total-cobrar-box .grand-total-desglose {
+    color: #374151 !important;
+}
