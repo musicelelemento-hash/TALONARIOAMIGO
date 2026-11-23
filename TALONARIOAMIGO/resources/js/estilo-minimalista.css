@@ -1,2 +1,282 @@
 /* Estilo Minimalista: blanco, limpio y moderno. Todo cuelga de :root[data-estilo="minimalista"].
-   El estilo Clásico (talonario de papel) es el de style.css y no cambia. */
+   El estilo Clásico (talonario de papel) es el de style.css y no cambia.
+   Paleta (del prototipo aprobado): blanco, tinta #111827, gris #6B7280, línea #E5E7EB,
+   un solo acento azul #2563EB, verde #16793F solo para "listo".
+   Mucho aire, sin papel, sin lomo, sin sombras pesadas. Letra >= 16 px, controles >= 44 px.
+   Ojo: style.css tiene reglas !important del bloque "design v2" y estilos en línea; por eso
+   aquí se usa el prefijo :root[data-estilo="minimalista"] body y !important solo donde hace falta. */
+
+:root[data-estilo="minimalista"] {
+    --mn-tinta: #111827;
+    --mn-muted: #6B7280;
+    --mn-linea: #E5E7EB;
+    --mn-suave: #F3F6FF;
+    --mn-acento: #2563EB;
+    --mn-ok: #16793F;
+    --mn-radio: 14px;
+    --mn-sombra: 0 1px 2px rgba(17, 24, 39, 0.05), 0 8px 30px rgba(17, 24, 39, 0.06);
+    --mn-font: 'Inter', 'Outfit', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+/* ---- Marca del selector (✓) en el menú "Más": sirve en ambos estilos ---- */
+.mostrador-mas-estilo::before { content: ''; display: inline-block; width: 1.1em; }
+:root:not([data-estilo="minimalista"]) .mostrador-mas-estilo[data-estilo-id="clasico"],
+:root[data-estilo="minimalista"] .mostrador-mas-estilo[data-estilo-id="minimalista"] { font-weight: 800; color: #93C5FD; }
+:root:not([data-estilo="minimalista"]) .mostrador-mas-estilo[data-estilo-id="clasico"]::before,
+:root[data-estilo="minimalista"] .mostrador-mas-estilo[data-estilo-id="minimalista"]::before { content: '✓'; }
+
+/* ================= Base: página blanca ================= */
+:root[data-estilo="minimalista"] body {
+    background: #FFFFFF !important;
+    color: var(--mn-tinta);
+    font-family: var(--mn-font);
+}
+:root[data-estilo="minimalista"] body #app-root { padding-top: 16px; }
+:root[data-estilo="minimalista"] body *::-webkit-scrollbar-thumb { background: #D1D5DB; }
+
+/* ================= Cabecera + menú "Más" ================= */
+:root[data-estilo="minimalista"] body .mostrador-console-header {
+    background: transparent !important; border: 0 !important; box-shadow: none !important;
+    border-bottom: 1px solid var(--mn-linea) !important; border-radius: 0 !important;
+    padding: 8px 4px 12px !important; margin-bottom: 8px;
+}
+:root[data-estilo="minimalista"] body .mostrador-brand-pill {
+    background: transparent !important; border: 0 !important; box-shadow: none !important; padding: 0 !important;
+}
+:root[data-estilo="minimalista"] body .mostrador-brand-icon {
+    background: var(--mn-tinta) !important; color: #fff !important; box-shadow: none !important; border-radius: 10px !important;
+}
+:root[data-estilo="minimalista"] body .mostrador-brand-title { color: var(--mn-tinta) !important; font-weight: 600 !important; letter-spacing: -0.01em; }
+:root[data-estilo="minimalista"] body .mostrador-brand-sub { color: var(--mn-muted) !important; font-size: 16px !important; }
+:root[data-estilo="minimalista"] body .mostrador-mode-segmented {
+    background: #F3F4F6 !important; border: 0 !important; border-radius: 999px !important; padding: 3px !important; box-shadow: none !important;
+}
+:root[data-estilo="minimalista"] body .mostrador-seg-btn { color: var(--mn-muted) !important; background: transparent !important; border: 0 !important; border-radius: 999px !important; box-shadow: none !important; }
+:root[data-estilo="minimalista"] body .mostrador-seg-btn.active,
+:root[data-estilo="minimalista"] body .mostrador-seg-btn.active-sri { background: #fff !important; color: var(--mn-tinta) !important; box-shadow: 0 1px 2px rgba(17,24,39,.12) !important; }
+:root[data-estilo="minimalista"] body .mostrador-action-chip,
+:root[data-estilo="minimalista"] body .mostrador-mas-summary {
+    background: #fff !important; color: var(--mn-tinta) !important; border: 1.5px solid var(--mn-linea) !important; border-radius: 12px; box-shadow: none !important;
+}
+:root[data-estilo="minimalista"] body .mostrador-menu-mas[open] > .mostrador-mas-summary { background: #F3F4F6 !important; }
+:root[data-estilo="minimalista"] body .mostrador-mas-panel {
+    background: #fff !important; border: 1px solid var(--mn-linea) !important; border-radius: var(--mn-radio) !important; box-shadow: var(--mn-sombra) !important;
+}
+:root[data-estilo="minimalista"] body .mostrador-mas-item { color: var(--mn-tinta) !important; }
+:root[data-estilo="minimalista"] body .mostrador-mas-item:hover,
+:root[data-estilo="minimalista"] body .mostrador-mas-item:focus-visible { background: #F3F4F6 !important; }
+:root[data-estilo="minimalista"] body .mostrador-mas-modo.active,
+:root[data-estilo="minimalista"] body .mostrador-mas-estilo[data-estilo-id="minimalista"] { color: var(--mn-acento) !important; font-weight: 700; }
+:root[data-estilo="minimalista"] body .mostrador-mas-estilo[data-estilo-id="clasico"] { color: var(--mn-tinta) !important; font-weight: 600; }
+:root[data-estilo="minimalista"] body .mostrador-mas-item.mostrador-cta-register { color: var(--mn-ok) !important; }
+:root[data-estilo="minimalista"] body .mostrador-mas-item.mostrador-exit-btn { color: #B91C1C !important; }
+:root[data-estilo="minimalista"] body .mostrador-mas-nota { color: var(--mn-muted) !important; }
+
+/* ================= Pantalla "Hoy" ================= */
+:root[data-estilo="minimalista"] .ta-hoy { padding-top: 40px; }
+:root[data-estilo="minimalista"] .ta-hoy-card {
+    background: #fff; border: 0; border-radius: 0; padding: 8px 4px 0; color: var(--mn-tinta);
+}
+:root[data-estilo="minimalista"] .ta-hoy .ta-hoy-dia { font-size: 18px; font-weight: 500; color: var(--mn-muted); }
+:root[data-estilo="minimalista"] .ta-hoy .ta-hoy-monto { font-size: 48px; font-weight: 600; letter-spacing: -0.03em; margin-bottom: 18px; }
+:root[data-estilo="minimalista"] .ta-hoy .ta-hoy-cant { font-size: 18px; font-weight: 500; color: var(--mn-muted); letter-spacing: 0; }
+:root[data-estilo="minimalista"] .ta-hoy .ta-hoy-sep { display: none; }
+:root[data-estilo="minimalista"] .ta-hoy .ta-hoy-cant { display: block; margin-top: 4px; }
+:root[data-estilo="minimalista"] .ta-hoy .ta-hoy-estado { font-size: 18px; font-weight: 500; }
+:root[data-estilo="minimalista"] .ta-hoy-ok { color: var(--mn-ok); }
+:root[data-estilo="minimalista"] .ta-hoy-espera { color: #92400E; }
+:root[data-estilo="minimalista"] .ta-hoy-practica { color: var(--mn-muted); }
+:root[data-estilo="minimalista"] .ta-hoy .ta-hoy-boton {
+    margin-top: 48px; min-height: 60px; border-radius: var(--mn-radio); background: var(--mn-tinta); color: #fff;
+    font: 600 20px var(--mn-font); box-shadow: none;
+}
+:root[data-estilo="minimalista"] .ta-hoy .ta-hoy-boton:hover { background: #1F2937; }
+
+/* ================= Facturador (comerciante / pro): hoja blanca plana ================= */
+:root[data-estilo="minimalista"] body .factura-talonario-container,
+:root[data-estilo="minimalista"] body #receipt-paper-card {
+    background: #fff !important; background-image: none !important; color: var(--mn-tinta);
+    border: 0 !important; border-radius: var(--mn-radio) !important; box-shadow: none !important;
+    padding: 20px 4px 24px !important; animation: none !important; transform: none !important;
+}
+:root[data-estilo="minimalista"] body .factura-talonario-container::before,
+:root[data-estilo="minimalista"] body .factura-talonario-container::after,
+:root[data-estilo="minimalista"] body .tear-perforation-strip,
+:root[data-estilo="minimalista"] body .leaf-corner-curl,
+:root[data-estilo="minimalista"] body .copia-azul-watermark,
+:root[data-estilo="minimalista"] body .copia-azul-stamp,
+:root[data-estilo="minimalista"] body .stamp-sri-impact:not(.slam-anim) { display: none !important; }
+:root[data-estilo="minimalista"] body .firmas-row { display: none; }
+:root[data-estilo="minimalista"] body .header-grid { gap: 20px; }
+:root[data-estilo="minimalista"] body .emisor-nombre { color: var(--mn-tinta) !important; font-family: var(--mn-font); font-weight: 600; }
+:root[data-estilo="minimalista"] body .emisor-actividad,
+:root[data-estilo="minimalista"] body .emisor-detalles { color: var(--mn-muted) !important; font-family: var(--mn-font); }
+:root[data-estilo="minimalista"] body .rimpe-badge {
+    background: #F3F4F6 !important; color: var(--mn-muted) !important; border: 0 !important; border-radius: 999px; font-family: var(--mn-font); font-size: 16px;
+}
+:root[data-estilo="minimalista"] body .logo-cambiar-label { background: #fff !important; color: var(--mn-acento) !important; border: 1.5px solid var(--mn-linea) !important; border-radius: 10px; min-height: 44px; display: inline-flex; align-items: center; }
+/* Cuadro del número: sin fondo de papel ni rojo de folio */
+:root[data-estilo="minimalista"] body .ruc-box-container {
+    border: 1.5px solid var(--mn-linea) !important; border-radius: var(--mn-radio) !important; background: #fff !important; color: var(--mn-tinta) !important;
+}
+:root[data-estilo="minimalista"] body .ruc-box-container > * { background: transparent !important; color: var(--mn-tinta) !important; border-color: var(--mn-linea) !important; font-family: var(--mn-font) !important; }
+:root[data-estilo="minimalista"] body .document-type-banner { font-weight: 600; letter-spacing: 0; }
+:root[data-estilo="minimalista"] body .numeralia-roja,
+:root[data-estilo="minimalista"] body .numeralia-roja .odometer-digit-val { background: transparent !important; color: var(--mn-tinta) !important; border-color: transparent !important; box-shadow: none !important; }
+:root[data-estilo="minimalista"] body .fecha-grid-box > div { background: transparent !important; color: var(--mn-muted) !important; }
+:root[data-estilo="minimalista"] body .fecha-grid-box strong { color: var(--mn-tinta); }
+
+/* Clientes frecuentes, secciones y botoncitos de ayuda */
+:root[data-estilo="minimalista"] body .frequent-clients-wrapper,
+:root[data-estilo="minimalista"] body .cliente-seccion {
+    background: #fff !important; border: 0 !important; border-top: 1px solid var(--mn-linea) !important; border-radius: 0 !important; padding: 20px 0 !important; box-shadow: none !important;
+}
+:root[data-estilo="minimalista"] body .frequent-clients-label,
+:root[data-estilo="minimalista"] body .seccion-etiqueta { color: var(--mn-muted) !important; font-weight: 500 !important; font-family: var(--mn-font); }
+:root[data-estilo="minimalista"] body .frequent-client-chip,
+:root[data-estilo="minimalista"] body .quick-product-chip {
+    background: #fff !important; color: var(--mn-tinta) !important; border: 1.5px solid var(--mn-linea) !important; border-radius: 999px !important; box-shadow: none !important; font-weight: 600; min-height: 44px;
+}
+:root[data-estilo="minimalista"] body .frequent-client-badge { background: var(--mn-suave) !important; color: var(--mn-acento) !important; }
+:root[data-estilo="minimalista"] body .btn-voice-dictate {
+    background: #fff !important; color: var(--mn-acento) !important; border: 1.5px solid var(--mn-linea) !important; border-radius: 999px !important; box-shadow: none !important; font-weight: 600 !important; min-height: 44px;
+}
+:root[data-estilo="minimalista"] body .cliente-label { color: var(--mn-muted) !important; font-family: var(--mn-font); font-weight: 500; }
+:root[data-estilo="minimalista"] body .cliente-line-input,
+:root[data-estilo="minimalista"] body .table-input {
+    background: #fff !important; color: var(--mn-tinta) !important; border: 1.5px solid var(--mn-linea) !important; border-radius: 10px !important;
+    box-shadow: none !important; font-family: var(--mn-font) !important; font-weight: 500 !important; min-height: 48px; padding: 0 14px;
+}
+:root[data-estilo="minimalista"] body .cliente-line-input:focus,
+:root[data-estilo="minimalista"] body .table-input:focus { border-color: var(--mn-acento) !important; outline: 3px solid rgba(37, 99, 235, 0.18); outline-offset: 0; }
+
+/* Tabla de productos: renglones con aire, sin rayas de papel */
+:root[data-estilo="minimalista"] body .tabla-productos-wrapper { border: 0 !important; background: transparent !important; box-shadow: none !important; }
+:root[data-estilo="minimalista"] body .tabla-realista { background: transparent !important; border: 0 !important; }
+:root[data-estilo="minimalista"] body .tabla-realista th { background: transparent !important; color: var(--mn-muted) !important; font-weight: 500 !important; letter-spacing: 0 !important; border: 0 !important; border-bottom: 1px solid var(--mn-linea) !important; font-family: var(--mn-font); }
+:root[data-estilo="minimalista"] body .tabla-realista td { background: transparent !important; border-color: var(--mn-linea) !important; color: var(--mn-tinta) !important; font-family: var(--mn-font) !important; }
+:root[data-estilo="minimalista"] body .row-total { font-weight: 600; }
+
+/* Total y botón principal */
+:root[data-estilo="minimalista"] body .total-cobrar-box {
+    background: var(--mn-suave) !important; border: 0 !important; border-radius: var(--mn-radio) !important; box-shadow: none !important;
+}
+:root[data-estilo="minimalista"] body .total-cobrar-header { color: var(--mn-muted) !important; font-weight: 500 !important; letter-spacing: 0 !important; text-transform: none; }
+:root[data-estilo="minimalista"] body .total-cobrar-monto { color: var(--mn-tinta) !important; font-family: var(--mn-font) !important; font-weight: 600 !important; text-shadow: none !important; }
+:root[data-estilo="minimalista"] body .grand-total-desglose { color: var(--mn-muted) !important; opacity: 1; }
+:root[data-estilo="minimalista"] body .btn-stamp-action,
+:root[data-estilo="minimalista"] body .tranquilo-emitir {
+    background: var(--mn-tinta) !important; background-image: none !important; color: #fff !important; border: 0 !important; border-radius: var(--mn-radio) !important;
+    box-shadow: none !important; text-shadow: none !important; font-family: var(--mn-font) !important; font-weight: 600 !important; min-height: 60px;
+}
+:root[data-estilo="minimalista"] body .btn-stamp-action::before { display: none !important; }
+:root[data-estilo="minimalista"] body .btn-stamp-action:hover,
+:root[data-estilo="minimalista"] body .tranquilo-emitir:hover { background: #1F2937 !important; }
+:root[data-estilo="minimalista"] body .mas-opciones { border: 0 !important; border-top: 1px solid var(--mn-linea) !important; background: transparent !important; border-radius: 0 !important; }
+:root[data-estilo="minimalista"] body .mas-opciones-summary { color: var(--mn-acento) !important; font-family: var(--mn-font); }
+:root[data-estilo="minimalista"] body .forma-pago-box,
+:root[data-estilo="minimalista"] body .pro-tax-breakdown { background: #fff !important; border: 1.5px solid var(--mn-linea) !important; border-radius: var(--mn-radio) !important; box-shadow: none !important; }
+:root[data-estilo="minimalista"] body .mode-chip-btn { background: #fff !important; color: var(--mn-tinta) !important; border: 1.5px solid var(--mn-linea) !important; border-radius: 12px !important; box-shadow: none !important; }
+:root[data-estilo="minimalista"] body .alerta-modo-real-roja { border-radius: var(--mn-radio); box-shadow: none; }
+
+/* Botones flotantes: discretos */
+:root[data-estilo="minimalista"] .chatf-fab { background: var(--mn-tinta); box-shadow: 0 2px 10px rgba(17, 24, 39, 0.18); font-weight: 600; }
+
+/* ================= Modo Tranquilo (wizard de 3 pasos) ================= */
+:root[data-estilo="minimalista"] body .tranquilo-wizard { background: transparent !important; color: var(--mn-tinta); }
+:root[data-estilo="minimalista"] body .tranquilo-titulo { color: var(--mn-tinta) !important; font-family: var(--mn-font) !important; font-weight: 600 !important; letter-spacing: -0.02em; }
+:root[data-estilo="minimalista"] body .tranquilo-progreso { color: var(--mn-muted) !important; background: transparent !important; }
+:root[data-estilo="minimalista"] body .tranquilo-boton-grande {
+    background: var(--mn-tinta) !important; background-image: none !important; color: #fff !important; border: 0 !important; border-radius: var(--mn-radio) !important; box-shadow: none !important; font-family: var(--mn-font) !important;
+}
+:root[data-estilo="minimalista"] body .tranquilo-boton-grande.tranquilo-boton-claro { background: #fff !important; color: var(--mn-tinta) !important; border: 1.5px solid var(--mn-linea) !important; }
+:root[data-estilo="minimalista"] body .tranquilo-boton-grande span { color: inherit !important; }
+
+/* ================= Copia / factura emitida: recibo blanco con check suave ================= */
+:root[data-estilo="minimalista"] body .copia-azul-container {
+    background: #fff !important; border: 1.5px solid var(--mn-linea) !important; border-radius: var(--mn-radio) !important; box-shadow: var(--mn-sombra) !important;
+    padding: 24px 20px !important; margin-top: 12px;
+}
+:root[data-estilo="minimalista"] body .copia-azul-container *:not(button):not(svg):not(path):not(circle) { color: var(--mn-tinta) !important; font-family: var(--mn-font) !important; }
+:root[data-estilo="minimalista"] body .copia-azul-container .emisor-actividad,
+:root[data-estilo="minimalista"] body .copia-azul-container .emisor-detalles,
+:root[data-estilo="minimalista"] body .copia-azul-container p { color: var(--mn-muted) !important; }
+:root[data-estilo="minimalista"] body .copia-azul-container .rimpe-badge { background: #F3F4F6 !important; border: 0 !important; }
+:root[data-estilo="minimalista"] body .copia-azul-container .ruc-box-container { border-color: var(--mn-linea) !important; }
+:root[data-estilo="minimalista"] body .copia-azul-container .document-type-banner { background: var(--mn-suave) !important; color: var(--mn-acento) !important; }
+:root[data-estilo="minimalista"] body .copia-azul-container > div:last-child {
+    border: 0 !important; background: transparent !important; padding: 28px 0 0 !important;
+}
+/* Check suave sobre el aviso de "Comprobante transmitido" (dibujado con CSS, sin tocar el contenido) */
+:root[data-estilo="minimalista"] body .copia-azul-container > div:last-child h3 {
+    font-size: 20px !important; font-weight: 600 !important; display: flex; flex-direction: column; align-items: center; gap: 12px;
+}
+:root[data-estilo="minimalista"] body .copia-azul-container > div:last-child h3::before {
+    content: ''; width: 56px; height: 56px; border-radius: 50%; background: #E8F5EC; border: 2px solid var(--mn-ok);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2316793F' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4 8-9'/%3E%3C/svg%3E");
+    background-size: 30px; background-position: center; background-repeat: no-repeat;
+}
+:root[data-estilo="minimalista"] body .copia-azul-container .btn-whatsapp-direct,
+:root[data-estilo="minimalista"] body .copia-azul-container .btn-stamp {
+    min-height: 52px; font-size: 16px !important; border-radius: var(--mn-radio) !important; box-shadow: none !important; text-shadow: none !important; font-weight: 600 !important;
+}
+:root[data-estilo="minimalista"] body .copia-azul-container .btn-stamp { background: var(--mn-tinta) !important; border-color: var(--mn-tinta) !important; color: #fff !important; }
+:root[data-estilo="minimalista"] body .copia-azul-container .btn-whatsapp-direct { background: #fff !important; color: var(--mn-tinta) !important; border: 1.5px solid var(--mn-linea) !important; }
+:root[data-estilo="minimalista"] body .mode-switcher-bar { background: transparent !important; border: 0 !important; }
+:root[data-estilo="minimalista"] body .mode-switcher-bar span { color: var(--mn-muted) !important; font-size: 16px !important; font-weight: 500 !important; }
+
+/* ================= Palomitas ================= */
+:root[data-estilo="minimalista"] .ta-pal { font-weight: 500; }
+:root[data-estilo="minimalista"] .ta-pal-1 { color: var(--mn-muted); }
+:root[data-estilo="minimalista"] .ta-pal-2 { color: var(--mn-ok); }
+:root[data-estilo="minimalista"] .ta-pal-practica { color: var(--mn-muted); }
+:root[data-estilo="minimalista"] .ta-pal-3 { color: var(--mn-acento); }
+
+/* ================= Aviso "Emitiendo en 5… Deshacer" ================= */
+:root[data-estilo="minimalista"] .ta-deshacer {
+    background: #fff; color: var(--mn-tinta); border: 1px solid var(--mn-linea); border-radius: var(--mn-radio);
+    box-shadow: 0 8px 30px rgba(17, 24, 39, 0.12); font-family: var(--mn-font);
+}
+:root[data-estilo="minimalista"] .ta-deshacer-txt { font-size: 20px; font-weight: 500; }
+:root[data-estilo="minimalista"] .ta-deshacer-n { font-size: 24px; font-weight: 600; }
+:root[data-estilo="minimalista"] .ta-deshacer .ta-deshacer-btn {
+    background: #fff; color: var(--mn-acento); border: 1.5px solid var(--mn-linea); border-radius: 12px; font: 600 18px var(--mn-font);
+}
+:root[data-estilo="minimalista"] .ta-deshacer-barra { background: #F3F4F6; height: 4px; }
+:root[data-estilo="minimalista"] .ta-deshacer-barra span { background: var(--mn-acento); }
+
+/* ================= Chat ================= */
+:root[data-estilo="minimalista"] .chatf-root { background: #fff; color: var(--mn-tinta); font-family: var(--mn-font); }
+:root[data-estilo="minimalista"] .chatf-head { background: #fff; color: var(--mn-tinta); border-bottom: 1px solid var(--mn-linea); }
+:root[data-estilo="minimalista"] .chatf-head h2 { font-weight: 600; }
+:root[data-estilo="minimalista"] .chatf-close { color: var(--mn-tinta); border-color: var(--mn-linea); background: #fff; }
+:root[data-estilo="minimalista"] .chatf-badge { background: #F3F4F6; color: var(--mn-muted); border-bottom: 0; }
+:root[data-estilo="minimalista"] .chatf-msgs { gap: 14px; padding: 20px 16px; }
+:root[data-estilo="minimalista"] .chatf-bubble { border-radius: 18px; }
+:root[data-estilo="minimalista"] .chatf-bot { background: #F3F4F6; border: 0; color: var(--mn-tinta); border-bottom-left-radius: 6px; }
+:root[data-estilo="minimalista"] .chatf-user { background: var(--mn-tinta); border: 0; color: #fff; border-bottom-right-radius: 6px; }
+:root[data-estilo="minimalista"] .chatf-ok { background: #E8F5EC; color: var(--mn-ok); border: 0; }
+:root[data-estilo="minimalista"] .chatf-chip { border: 1.5px solid var(--mn-linea); color: var(--mn-acento); background: #fff; }
+:root[data-estilo="minimalista"] .chatf-card {
+    border: 1.5px solid var(--mn-linea); border-radius: var(--mn-radio); box-shadow: none; padding: 18px;
+}
+:root[data-estilo="minimalista"] .chatf-card h3 { font-weight: 600; }
+:root[data-estilo="minimalista"] .chatf-row.chatf-item { border-bottom: 1px solid var(--mn-linea); }
+:root[data-estilo="minimalista"] .chatf-row.chatf-total { border-top: 1px solid var(--mn-tinta); font-weight: 600; }
+:root[data-estilo="minimalista"] .chatf-btn { border: 1.5px solid var(--mn-linea); color: var(--mn-tinta); border-radius: 12px; font-weight: 600; }
+:root[data-estilo="minimalista"] .chatf-btn.chatf-primary { background: var(--mn-tinta); border-color: var(--mn-tinta); color: #fff; }
+:root[data-estilo="minimalista"] .chatf-composer { background: #fff; border-top: 1px solid var(--mn-linea); }
+:root[data-estilo="minimalista"] .chatf-input { border: 1.5px solid var(--mn-linea); border-radius: 999px; padding: 12px 18px; }
+:root[data-estilo="minimalista"] .chatf-input:focus { outline: 3px solid rgba(37, 99, 235, 0.18); border-color: var(--mn-acento); }
+:root[data-estilo="minimalista"] .chatf-send { background: var(--mn-tinta); }
+:root[data-estilo="minimalista"] .chatf-mic { border-color: var(--mn-linea); }
+
+/* ---- Ajustes finos de la copia emitida: textos >= 16 px, botones a todo el ancho, un solo botón principal ---- */
+:root[data-estilo="minimalista"] body .copia-azul-container p,
+:root[data-estilo="minimalista"] body .copia-azul-container .ta-pal { font-size: 16px !important; }
+:root[data-estilo="minimalista"] body .copia-azul-container > div:last-child > div:last-child { flex-direction: column; align-items: stretch; }
+:root[data-estilo="minimalista"] body .copia-azul-container .btn-whatsapp-direct,
+:root[data-estilo="minimalista"] body .copia-azul-container .btn-stamp { width: 100% !important; padding: 12px 18px !important; }
+:root[data-estilo="minimalista"] body .copia-azul-container .btn-stamp[onclick*="openRegister"] { background: #fff !important; color: var(--mn-acento) !important; border: 1.5px solid var(--mn-linea) !important; }
+:root[data-estilo="minimalista"] body .frequent-client-chip { min-height: 48px !important; }
+:root[data-estilo="minimalista"] body .total-cobrar-header span { font-size: 16px !important; }

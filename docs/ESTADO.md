@@ -20,6 +20,17 @@
 - Base de datos movida a Supabase; `SUPABASE_SERVICE_ROLE_KEY` corregida en Render.
 - Skills del proyecto instaladas; `CLAUDE.md` + esta bitácora + skill `bitacora`.
 
+## Estilos, registro en 3 pasos y repo oficial conectado (23/11, tarde)
+- **Estilo Minimalista** + selector "Estilo" en el menú "Más" (services/estilo.js, estilo-minimalista.css).
+  Clásico sin cambios a 390 px; a 1366 px hay diferencias mínimas de bordes de texto sin cambio visible.
+- **Configuración en 3 pasos** (PDF o foto del RUC → firma → estilo), sin pago en el flujo. Sin internet
+  ya no se finge una cuenta local (corrección del director).
+- Repo oficial conectado a la sesión (lectura) en `/home/user/talonario-amigo`. **Para subir cambios falta
+  instalar la app de Claude en la cuenta `robertcashbooking-lang`.** Plan: rama aparte → vista previa en
+  Vercel → rotar llaves → publicar con aprobación.
+- Pendientes de texto: "COPIA AZUL AUTOCOPIATIVA", "Comprobante Transmitido y Registrado Exitosamente",
+  ✓ duplicada en la copia; revisar Minimalista a 820/1920 px y en modo Pro y Tranquilo.
+
 ## Repos unidos, ideas construidas y llaves expuestas (23/11)
 - El repo oficial `robertcashbooking-lang/TALONARIO-AMIGO` = este hasta `0e9ab20` + 1 commit (`850c6c0`, 4
   líneas de Vercel). **Ya unido a la rama de trabajo** (`f0e0878`). Producción no se tocó.
