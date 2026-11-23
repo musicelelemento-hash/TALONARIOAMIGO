@@ -28,8 +28,11 @@
 - Repo oficial conectado a la sesión (lectura) en `/home/user/talonario-amigo`. **Para subir cambios falta
   instalar la app de Claude en la cuenta `robertcashbooking-lang`.** Plan: rama aparte → vista previa en
   Vercel → rotar llaves → publicar con aprobación.
-- Pendientes de texto: "COPIA AZUL AUTOCOPIATIVA", "Comprobante Transmitido y Registrado Exitosamente",
-  ✓ duplicada en la copia; revisar Minimalista a 820/1920 px y en modo Pro y Tranquilo.
+- Textos de la hoja emitida y de la portada sin jerga ni promesas falsas (commit `3487c36`); cédulas de
+  ejemplo corregidas (3 eran inválidas y rompían la práctica). Pendiente: revisar Minimalista a 820/1920 px
+  y en modo Pro y Tranquilo.
+- ⚠️ La portada decía "notas de venta tarifa 0 % para RIMPE": se quitó porque hoy se emite factura con IVA 15 %.
+  Sigue pendiente la decisión tributaria (nota de venta vs. factura para RIMPE Negocio Popular) con un contador.
 
 ## Repos unidos, ideas construidas y llaves expuestas (23/11)
 - El repo oficial `robertcashbooking-lang/TALONARIO-AMIGO` = este hasta `0e9ab20` + 1 commit (`850c6c0`, 4
