@@ -1,5 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "installCommand": "npm --prefix TALONARIOAMIGO install",
   "buildCommand": "npm run build",
   "outputDirectory": "TALONARIOAMIGO/public/dist",
   "cleanUrls": true,
