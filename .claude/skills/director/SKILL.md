@@ -32,6 +32,7 @@ Delegar la misma tarea a dos agentes no mejora el resultado: no dupliques.
 | `cumplimiento-seguridad` | SRI, LOPDP, firmas, seguridad (solo revisa) | opus |
 | `infra-operaciones` | Render, Supabase, Cloudflare (solo lectura) | sonnet |
 | `verificador-qa` | Verificación independiente antes de cerrar (solo revisa) | sonnet |
+| `explorador-ideas` | Trae ideas nuevas inspiradas en otras apps y tendencias (solo propone) | sonnet |
 
 ## 3. Cómo dar una orden (plantilla obligatoria)
 Cada delegación incluye estas 5 partes; las órdenes cortas producen trabajo duplicado:
@@ -60,6 +61,12 @@ un resumen: así no se llena tu contexto.
 4. Decisiones tributarias o legales (tipo de comprobante, términos, privacidad).
 5. Precios finales.
 
-## 6. Al cerrar
+## 6. Ideas nuevas (explorador)
+Cuando el dueño pida ideas o al empezar una fase, pide al `explorador-ideas` hasta 5 propuestas.
+Revisa cada una contra los 5 criterios de `docs/producto/IDEAS.md` y muévela a Aceptadas, En espera
+o Rechazadas **con el motivo en una línea**. Las aceptadas entran al orden de construcción de
+`docs/producto/APP_ESTRELLA.md`. Cuéntale al dueño qué aceptaste y qué no, en pocas palabras.
+
+## 7. Al cerrar
 Actualiza `docs/ESTADO.md` con la skill `bitacora` y ajusta los porcentajes de `docs/INFORME_FINAL.md`
 solo si hubo avance real.

@@ -49,7 +49,8 @@ Si los tests fallan con "valid cache path": `mkdir -p storage/framework/{views,c
 La sesión principal es el **director** (skill `director`): decide si delegar, a quién y cómo verificar.
 Especialistas en `.claude/agents/`: `producto-vision`, `dev-backend`, `interfaz-minimalista`, `movil-android`, `marketing-contenido`,
 `crecimiento-negocio`, `cumplimiento-seguridad` (solo revisa), `infra-operaciones` (solo lectura) y
-`verificador-qa` (solo revisa, obligatorio antes de dar algo por terminado).
+`verificador-qa` (solo revisa, obligatorio antes de dar algo por terminado) y `explorador-ideas`
+(trae ideas de otras apps y tendencias; el director decide en `docs/producto/IDEAS.md`).
 Marketing: `docs/marketing/` · Planes y cobros: `docs/negocio/PLANES_Y_PAGOS.md` ·
 Conexiones por hacer: `docs/CONEXIONES_PENDIENTES.md`.
 
