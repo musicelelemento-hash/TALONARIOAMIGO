@@ -49,4 +49,8 @@ return [
         'bot_number' => env('WHATSAPP_BOT_NUMBER'),
     ],
 
+    'resend' => [
+        'key' => env('RESEND_API_KEY'),
+    ],
+
 ];

@@ -74,6 +74,7 @@ class SecurityTest extends TestCase
             'api/v1/auth/login',
             'api/v1/auth/register',
             'api/v1/whatsapp/webhook', // protegido por firma HMAC de Meta (ver WhatsAppTest)
+            'api/v1/ride/{claveAcceso}', // protegida por firma de URL (ver RideTest)
         ];
 
         foreach (Route::getRoutes() as $route) {

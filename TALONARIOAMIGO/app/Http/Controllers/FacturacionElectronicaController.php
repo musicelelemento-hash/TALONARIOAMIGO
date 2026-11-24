@@ -11,6 +11,7 @@ use App\Services\EmisionService;
 use App\Services\InvoiceValidationService;
 use App\Services\SupabaseStorageService;
 use App\Services\ResendService;
+use App\Services\RideService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -349,7 +350,11 @@ class FacturacionElectronicaController extends Controller
 
         return response()->json([
             'success' => true,
-            'comprobantes' => $comprobantes->items(),
+            'comprobantes' => collect($comprobantes->items())->map(function ($c) {
+                $fila = $c->toArray();
+                $fila['ride_url'] = $c->estado === 'AUTORIZADO' ? RideService::urlFirmada($c) : null;
+                return $fila;
+            })->values(),
             'total' => $comprobantes->total(),
             'current_page' => $comprobantes->currentPage(),
             'last_page' => $comprobantes->lastPage(),
@@ -468,6 +473,49 @@ class FacturacionElectronicaController extends Controller
         return response($xmlContent, 200, [
             'Content-Type' => 'application/xml',
             'Content-Disposition' => "attachment; filename=\"{$comprobante->numero_comprobante}.xml\"",
+        ]);
+    }
+
+    /**
+     * PDF de la factura (RIDE) para el dueño del comprobante. ?estilo=clasico|minimalista
+     */
+    public function descargarRide(Request $request, $claveAcceso)
+    {
+        $emisor = $request->user()->emisor;
+        $comprobante = $emisor
+            ? Comprobante::where('emisor_id', $emisor->id)->where('clave_acceso', $claveAcceso)->first()
+            : null;
+
+        if (!$comprobante) {
+            return response()->json(['error' => 'Comprobante no encontrado'], 404);
+        }
+
+        return $this->respuestaRide($comprobante, (string) $request->query('estilo', 'clasico'));
+    }
+
+    /** PDF para el cliente final: protegido por la firma de la URL (middleware signed). */
+    public function rideFirmado(Request $request, $claveAcceso)
+    {
+        $comprobante = Comprobante::where('clave_acceso', $claveAcceso)->first();
+        if (!$comprobante) {
+            return response()->json(['error' => 'Comprobante no encontrado'], 404);
+        }
+
+        return $this->respuestaRide($comprobante, 'clasico');
+    }
+
+    private function respuestaRide(Comprobante $comprobante, string $estilo)
+    {
+        try {
+            $pdf = app(RideService::class)->generar($comprobante, $estilo);
+        } catch (\Throwable $e) {
+            \Log::error('[Ride] No se pudo generar el PDF: ' . $e->getMessage());
+            return response()->json(['error' => 'No pudimos preparar el PDF de tu factura. Intenta de nuevo en un momento.'], 500);
+        }
+
+        return response($pdf, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="' . RideService::nombreArchivo($comprobante) . '"',
         ]);
     }
 }

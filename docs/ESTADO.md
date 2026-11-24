@@ -20,6 +20,15 @@
 - Base de datos movida a Supabase; `SUPABASE_SERVICE_ROLE_KEY` corregida en Render.
 - Skills del proyecto instaladas; `CLAUDE.md` + esta bitácora + skill `bitacora`.
 
+## RIDE en PDF (24/11)
+- PDF de la factura según el SRI (dompdf 2.0.8 + picqer barcode 2.4.2), estilos Clásico y Minimalista,
+  código de barras de la clave de acceso. Endpoint del dueño + enlace público firmado (30 días,
+  throttle). Correo con PDF adjunto y enlace. "Ver PDF" en la copia y en Mis Tomos; WhatsApp con
+  mensaje simple y enlace; tercera palomita "Enviada al cliente por correo". 46 tests PHP, 18 JS.
+- Firma de URL **relativa** (`signed:relative` + APP_URL) para que funcione detrás del proxy de Render
+  sin confiar en todos los proxies (eso permitiría falsear IP y saltarse el límite de login).
+- En producción el correo necesita `RESEND_API_KEY` y `APP_URL=https://talonario-amigo-api.onrender.com`.
+
 ## Estilos, registro en 3 pasos y repo oficial conectado (23/11, tarde)
 - **Estilo Minimalista** + selector "Estilo" en el menú "Más" (services/estilo.js, estilo-minimalista.css).
   Clásico sin cambios a 390 px; a 1366 px hay diferencias mínimas de bordes de texto sin cambio visible.

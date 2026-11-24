@@ -13,7 +13,7 @@ class ResendService
 
     public function __construct()
     {
-        $this->apiKey = env('RESEND_API_KEY');
+        $this->apiKey = config('services.resend.key');
         $this->fromEmail = env('MAIL_FROM_ADDRESS', 'onboarding@resend.dev');
         $this->fromName = env('MAIL_FROM_NAME', 'Talonario Amigo');
     }
@@ -21,7 +21,7 @@ class ResendService
     /**
      * Enviar comprobante electrónico por email vía Resend API
      */
-    public function enviarComprobante($destinatario, $clienteNombre, $numeroComprobante, $tipoComprobante, $total, $pdfUrl = null, $xmlUrl = null)
+    public function enviarComprobante($destinatario, $clienteNombre, $numeroComprobante, $tipoComprobante, $total, $pdfUrl = null, $xmlUrl = null, array $adjuntos = [])
     {
         if (empty($this->apiKey) || empty($destinatario)) {
             Log::info("[ResendService] Envío omitido: no hay API Key o email de destinatario.");
@@ -57,7 +57,7 @@ class ResendService
                 </div>
 
                 <div style='text-align: center; margin: 24px 0;'>
-                    " . ($pdfUrl ? "<a href='{$pdfUrl}' style='background: #0F172A; color: #FFFFFF; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; display: inline-block; margin-right: 8px;'>📥 Descargar PDF (RIDE)</a>" : "") . "
+                    " . ($pdfUrl ? "<a href='{$pdfUrl}' style='background: #0F172A; color: #FFFFFF; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; display: inline-block; margin-right: 8px;'>Ver mi factura en PDF</a>" : "") . "
                     " . ($xmlUrl ? "<a href='{$xmlUrl}' style='background: #E2E8F0; color: #0F172A; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; display: inline-block;'>📄 Descargar XML</a>" : "") . "
                 </div>
 
@@ -67,13 +67,18 @@ class ResendService
             </div>
             ";
 
-            $response = Http::withToken($this->apiKey)
-                ->post('https://api.resend.com/emails', [
-                    'from' => "{$this->fromName} <{$this->fromEmail}>",
-                    'to' => [$destinatario],
-                    'subject' => "Tu {$tipoComprobante} N° {$numeroComprobante} — Talonario Amigo",
-                    'html' => $html,
-                ]);
+            $payload = [
+                'from' => "{$this->fromName} <{$this->fromEmail}>",
+                'to' => [$destinatario],
+                'subject' => "Tu {$tipoComprobante} N° {$numeroComprobante} — Talonario Amigo",
+                'html' => $html,
+            ];
+            if (!empty($adjuntos)) {
+                // Cada adjunto: ['filename' => 'factura.pdf', 'content' => <base64>]
+                $payload['attachments'] = $adjuntos;
+            }
+
+            $response = Http::withToken($this->apiKey)->post('https://api.resend.com/emails', $payload);
 
             if ($response->successful()) {
                 Log::info("[ResendService] Correo enviado exitosamente a {$destinatario}. ID: " . ($response->json('id') ?? ''));

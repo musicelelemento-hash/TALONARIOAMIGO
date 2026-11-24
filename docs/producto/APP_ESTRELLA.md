@@ -85,7 +85,7 @@ los dos estilos y llevarlo bien a cada dispositivo.
 | 7 | Facilidad y accesibilidad | 45 % | Modo Tranquilo, botón Ayúdame | Letra ≥16 px, botones ≥44 px, menos controles (ver auditoría en `docs/ESTADO.md`) |
 | 8 | Lo opcional al final (pago y detalles) | 20 % | Forma de pago visible en la factura | Plegar en "Más opciones" al final |
 | 9 | Animaciones con propósito | 40 % | Bloc 3D, efectos de papel | Animación de emitir en ambos estilos; quitar lo que distrae |
-| 10 | Después de emitir (PDF, WhatsApp, imprimir) | 35 % | Ticket térmico, correo sin PDF | RIDE en PDF, envío por WhatsApp |
+| 10 | Después de emitir (PDF, WhatsApp, imprimir) | 75 % | RIDE en PDF (2 estilos), correo con adjunto, enlace por WhatsApp, ticket térmico | Probar en producción; PDF también en Modo Práctica |
 | 11 | Corregir (anular y repetir) | 5 % | — | Nota de crédito con un toque |
 | 12 | Sin internet | 30 % | Cola local básica | Envío garantizado y aviso claro |
 | 13 | Android en Play Store | 35 % | Capacitor, APK sin conexión | Versión firmada, permisos, Bluetooth, publicar |

@@ -821,15 +821,14 @@ export class AppManager {
         this.evaluateStateAndRender();
     }
 
-    shareHistoricalFactura(num, cliente, total, claveAcceso = '') {
+    shareHistoricalFactura(num, cliente, total, rideUrl = '') {
         this.triggerHaptic(15);
-        const msg = `*COMPROBANTE ARCHIVADO — TALONARIO AMIGO SRI*\n\n`
-            + ` *Factura Electrónica:* N° ${num}\n`
-            + ` *Cliente:* ${cliente}\n`
-            + ` *Total Facturado:* ${total}\n`
-            + `✓ *Estado SRI:* AUTORIZADO\n`
-            + (claveAcceso ? ` *Clave de Acceso:* ${claveAcceso}\n` : '')
-            + `\n_Copia fiel archivada en tu talonario digital._`;
+        const emisorNombre = this.state.user?.emisor?.razon_social || this.state.emisor?.razon_social || '';
+        // Mismo mensaje simple que tras emitir: sin jerga técnica.
+        const msg = `Hola${cliente ? ' ' + cliente : ''}, te envío tu factura N° ${num}`
+            + (emisorNombre ? ` de ${emisorNombre}` : '')
+            + ` por ${total}.`
+            + (rideUrl ? ` Puedes verla aquí: ${rideUrl}` : '');
         const waUrl = `https://wa.me/?text=${encodeURIComponent(msg)}`;
         window.open(waUrl, '_blank');
         this.showToast('Compartiendo comprobante por WhatsApp...');
@@ -1257,17 +1256,9 @@ export class AppManager {
         const emisorNombre = this.state.user?.emisor?.razon_social || this.state.emisor?.razon_social || 'Emisor';
         const docNum = rc ? rc.secuencial : String(this.state.currentDocNumber).padStart(9, '0');
         const total = rc ? rc.total : '';
-        const clienteNombre = rc?.cliente?.nombre || 'Cliente Frecuente';
-        const clave = rc?.claveAcceso || '';
-
-        const msg = `*COMPROBANTE ELECTRÓNICO — TALONARIO AMIGO SRI*\n\n`
-            + ` *Emisor:* ${emisorNombre}\n`
-            + ` *Documento:* Nota de Venta N° 001-001-${docNum}\n`
-            + ` *Cliente:* ${clienteNombre}\n`
-            + ` *Total a Pagar:* ${total}\n`
-            + ` *Clave de Acceso SRI:*\n${clave}\n\n`
-            + `_Comprobante emitido electrónicamente y autorizado por el SRI._\n`
-            + `_¡Gracias por su preferencia!_`;
+        const num = `001-001-${docNum}`;
+        const aqui = rc?.rideUrl ? ` Puedes verla aquí: ${rc.rideUrl}` : '';
+        const msg = `Hola, te envío tu factura N° ${num} de ${emisorNombre} por ${total}.${aqui}`;
 
         const waUrl = `https://wa.me/?text=${encodeURIComponent(msg)}`;
         window.open(waUrl, '_blank');
@@ -1508,7 +1499,9 @@ export class AppManager {
                 claveAcceso: res.claveAcceso || '',
                 numeroAutorizacion: res.numeroAutorizacion || '',
                 offline: res.estado === 'OFFLINE_LOCAL',
-                practica: !!res.isDemo
+                practica: !!res.isDemo,
+                rideUrl: res.ride_url || '',
+                emailEnviado: !!res.email_enviado
             };
 
             if (res.isDemo) {

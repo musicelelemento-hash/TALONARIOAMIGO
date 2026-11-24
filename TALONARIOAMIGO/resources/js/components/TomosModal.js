@@ -91,7 +91,7 @@ export function renderTomosModal(activeTomoMonth = 'AGOSTO 2026', tomosData = nu
                             <span style="font-family: var(--font-mono-num); font-size: 13px; font-weight: 800; color: #D62828;">
                                 N° ${esc(numComp)}
                             </span>
-                            ${palomitasHTML(h.estado === 'AUTORIZADO' ? 2 : 1, false)}
+                            ${palomitasHTML(h.estado === 'AUTORIZADO' ? (h.email_enviado ? 3 : 2) : 1, false)}
                             <span style="font-size: 11px; color: #64748B;"> ${esc(fechaStr)}</span>
                         </div>
                         <div style="font-size: 14px; font-weight: 700; color: #0F172A; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
@@ -107,9 +107,14 @@ export function renderTomosModal(activeTomoMonth = 'AGOSTO 2026', tomosData = nu
                             ${esc(totalFmt)}
                         </div>
                         <div style="margin-top: 6px; display: flex; gap: 6px; justify-content: flex-end; flex-wrap: wrap;">
-                            <button type="button" class="btn-whatsapp-direct" style="padding: 4px 8px; font-size: 10px; border-radius: 8px;" onclick="window.appState.shareHistoricalFactura('${esc(numComp)}', '${esc(h.cliente_nombre || '')}', '${esc(totalFmt)}', '${esc(claveAcceso)}')">
+                            <button type="button" class="btn-whatsapp-direct" style="padding: 10px 14px; font-size: 16px; min-height: 44px; border-radius: 10px;" onclick="window.appState.shareHistoricalFactura('${esc(numComp)}', '${esc(h.cliente_nombre || '')}', '${esc(totalFmt)}', '${esc(h.ride_url || '')}')">
                                  WhatsApp
                             </button>
+                            ${h.ride_url ? `
+                                <a class="sim-btn" href="${esc(h.ride_url)}" target="_blank" rel="noopener" style="background: #334155; color: white; padding: 10px 16px; font-size: 14px; font-weight: 800; border-radius: 8px; text-decoration: none; min-height: 40px; display: inline-flex; align-items: center;">
+                                     Ver PDF
+                                </a>
+                            ` : ''}
                             ${claveAcceso ? `
                                 <button type="button" class="sim-btn" style="background: #0284C7; color: white; padding: 4px 8px; font-size: 10px; border-radius: 8px;" onclick="window.appState.downloadXmlFactura('${esc(claveAcceso)}')">
                                      XML

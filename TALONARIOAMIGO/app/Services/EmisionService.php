@@ -201,22 +201,8 @@ class EmisionService
             \Log::warning("[EmisionService] Advertencia al persistir XML: " . $xmlEx->getMessage());
         }
 
-        // Despacho transaccional automático vía Resend si el cliente o comercio proveyó correo
         $emailEnviado = false;
-        if ($diagnostico['esAutorizado'] && !empty($data['cliente']['email'])) {
-            try {
-                $resend = app(ResendService::class);
-                $emailEnviado = $resend->enviarComprobante(
-                    $data['cliente']['email'],
-                    $data['cliente']['nombre'],
-                    "001-001-" . $resultado['secuencial'],
-                    "Factura Electrónica",
-                    $importeTotal
-                );
-            } catch (\Throwable $mailEx) {
-                \Log::warning("[EmisionService] Advertencia al despachar Resend: " . $mailEx->getMessage());
-            }
-        }
+        $comprobante = null;
 
         // 4. Persistencia en Base de Datos (Comprobantes, Ítems y Clientes Frecuentes)
         try {
@@ -259,8 +245,8 @@ class EmisionService
                 'ambiente' => $emisor->ambiente,
                 'tipo_emision' => $emisor->tipo_emision,
                 'xml_path' => $xmlPath,
-                'email_enviado' => $emailEnviado,
-                'email_enviado_at' => $emailEnviado ? now() : null,
+                'email_enviado' => false,
+                'email_enviado_at' => null,
                 'sri_mensaje' => $diagnostico['mensajeHumano'] ?? null,
             ]);
 
@@ -301,6 +287,47 @@ class EmisionService
             \Log::error("[EmisionService] Error guardando comprobante en Postgres: " . $dbEx->getMessage());
         }
 
+        // Enlace firmado al PDF (RIDE) y correo al cliente (con el PDF adjunto si se pudo generar).
+        $rideUrl = null;
+        if ($comprobante && $diagnostico['esAutorizado']) {
+            try {
+                $rideUrl = RideService::urlFirmada($comprobante);
+            } catch (\Throwable $e) {
+                \Log::warning('[EmisionService] No se pudo firmar el enlace del PDF: ' . $e->getMessage());
+            }
+        }
+
+        if ($diagnostico['esAutorizado'] && !empty($data['cliente']['email'])) {
+            try {
+                $adjuntos = [];
+                if ($comprobante) {
+                    try {
+                        $adjuntos[] = [
+                            'filename' => RideService::nombreArchivo($comprobante),
+                            'content' => base64_encode(app(RideService::class)->generar($comprobante)),
+                        ];
+                    } catch (\Throwable $pdfEx) {
+                        \Log::warning('[EmisionService] No se pudo generar el PDF para el correo: ' . $pdfEx->getMessage());
+                    }
+                }
+                $emailEnviado = (bool) app(ResendService::class)->enviarComprobante(
+                    $data['cliente']['email'],
+                    $data['cliente']['nombre'],
+                    sprintf('%03d-%03d-%09d', (int) $puntoEmision->establecimiento, (int) $puntoEmision->punto_emision, (int) $resultado['secuencial']),
+                    "Factura Electrónica",
+                    $importeTotal,
+                    $rideUrl,
+                    null,
+                    $adjuntos
+                );
+                if ($emailEnviado && $comprobante) {
+                    $comprobante->forceFill(['email_enviado' => true, 'email_enviado_at' => now()])->save();
+                }
+            } catch (\Throwable $mailEx) {
+                \Log::warning("[EmisionService] Advertencia al despachar Resend: " . $mailEx->getMessage());
+            }
+        }
+
         return $this->respuesta([
             'success' => true,
             'estado' => $diagnostico['estado'],
@@ -312,6 +339,7 @@ class EmisionService
             'solucion' => $diagnostico['solucion'] ?? null,
             'diagnostico' => $diagnostico,
             'email_enviado' => $emailEnviado,
+            'ride_url' => $rideUrl,
             'xml_guardado' => !empty($xmlPath),
             'envio_raw' => $resultado['envio'],
             'autorizacion_raw' => $resultado['autorizacion'],

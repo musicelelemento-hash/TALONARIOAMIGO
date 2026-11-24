@@ -261,11 +261,16 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
                     <h3 style="font-size: 20px; font-weight: 800; color: #1E3A8A; margin-bottom: 6px;">
                         ¡Listo! Tu factura quedó hecha
                     </h3>
-                    <p style="margin: 0 0 10px;">${palomitasHTML(nivelDeEmision({ offline: !!emisorData?.lastReceipt?.offline }), !!emisorData?.lastReceipt?.practica)}</p>
+                    <p style="margin: 0 0 10px;">${palomitasHTML(nivelDeEmision({ offline: !!emisorData?.lastReceipt?.offline, practica: !!emisorData?.lastReceipt?.practica, emailEnviado: !!emisorData?.lastReceipt?.emailEnviado }), !!emisorData?.lastReceipt?.practica)}</p>
                     <p style="font-size: 16px; color: #1D4ED8; margin-bottom: 14px;">
                         Tu copia quedó guardada en «Mis tomos». ¿Se la mandas a tu cliente?
                     </p>
                     <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                        ${emisorData?.lastReceipt?.rideUrl && !emisorData?.lastReceipt?.practica ? `
+                            <a class="btn-stamp" href="${esc(emisorData.lastReceipt.rideUrl)}" target="_blank" rel="noopener" style="background: #334155; border-color: #334155; width: auto; padding: 12px 22px; font-size: 16px; min-height: 48px; color: white; font-weight: 800; text-decoration: none; display: inline-flex; align-items: center;">
+                                 Ver PDF
+                            </a>
+                        ` : ''}
                         <button class="btn-whatsapp-direct" style="padding: 12px 20px; font-size: 16px; min-height: 48px;" onclick="window.appState.shareFacturaWhatsapp()">
                              Enviar al cliente por WhatsApp
                         </button>

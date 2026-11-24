@@ -119,7 +119,13 @@ Route::middleware(['auth:sanctum', 'account.status'])->prefix('v1/facturacion')-
     Route::get('/tomos', [FacturacionElectronicaController::class, 'listarTomos']);
     Route::get('/clientes-frecuentes', [FacturacionElectronicaController::class, 'listarClientesFrecuentes']);
     Route::get('/comprobantes/{claveAcceso}/xml', [FacturacionElectronicaController::class, 'descargarXml']);
+    Route::get('/comprobantes/{claveAcceso}/ride', [FacturacionElectronicaController::class, 'descargarRide']);
 });
+
+// PDF de la factura (RIDE) para el cliente final: enlace público firmado (vence a los 30 días).
+Route::get('v1/ride/{claveAcceso}', [FacturacionElectronicaController::class, 'rideFirmado'])
+    ->middleware(['signed:relative', 'throttle:60,1'])
+    ->name('ride.publico');
 
 // Factura por WhatsApp. El webhook es público para Meta pero exige la firma HMAC
 // X-Hub-Signature-256 (WHATSAPP_APP_SECRET); el vínculo del número requiere sesión.
