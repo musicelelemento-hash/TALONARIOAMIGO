@@ -82,3 +82,11 @@
 body:has(.chatf-fab) #app-root {
     padding-bottom: 150px;
 }
+
+/* Pantallas grandes: la conversación se lee en una columna centrada (no de borde a borde). */
+@media (min-width: 900px) {
+    .chatf-msgs { padding-left: max(12px, calc((100% - 820px) / 2)); padding-right: max(12px, calc((100% - 820px) / 2)); }
+    .chatf-composer { padding-left: max(10px, calc((100% - 820px) / 2)); padding-right: max(10px, calc((100% - 820px) / 2)); }
+    .chatf-head, .chatf-badge { padding-left: max(14px, calc((100% - 820px) / 2)); padding-right: max(14px, calc((100% - 820px) / 2)); }
+    .chatf-bubble { max-width: 640px; }
+}

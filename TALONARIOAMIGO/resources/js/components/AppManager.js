@@ -24,6 +24,8 @@ import { abrirChatFactura } from './ChatFactura.js';
 import { esperarConDeshacer, segundosDeshacer, hayCuentaActiva } from './EmitirConDeshacer.js';
 import { emisionHoy } from '../services/emisionHoy.js';
 import { calcularTotales, redondear2 } from '../services/interpreteFactura.js';
+import { renderCaja, montarCaja, estadoCajaInicial } from './ModoCaja.js';
+import { esTabletHorizontal } from '../services/cajaLogica.js';
 import { renderHoy } from './FacturadorRealista.js';
 import { printThermalTicket, setThermalWidth, getThermalWidth } from './ThermalTicket.js';
 
@@ -158,6 +160,7 @@ export class AppManager {
             }
         }
 
+        this.vigilarGiroDeCaja();
         window.appState = this;
     }
 
@@ -253,6 +256,14 @@ export class AppManager {
             return;
         }
 
+        // Tablet horizontal: la caja registradora en lugar del talonario (mismo flujo de emisión).
+        if (this.state.vistaCaja && !this.state.isShowingBlueCopy && esTabletHorizontal()) {
+            if (!this.state.caja) this.state.caja = estadoCajaInicial();
+            this.container.innerHTML = renderCaja(this);
+            montarCaja(this, this.container);
+            return;
+        }
+
         this.container.innerHTML = renderFacturadorRealista(this.state, this.state.currentDocNumber, this.state.experienceMode, this.state.isShowingBlueCopy);
         if (this.state.isTomosModalOpen) {
             this.container.innerHTML += renderTomosModal(
@@ -273,6 +284,7 @@ export class AppManager {
         // El total que trae el HTML es fijo: se recalcula al mostrar la pantalla para que siempre
         // incluya el IVA igual que la factura que llega al SRI.
         if (document.getElementById('realista-items-body')) this.recalculateTotals();
+        if (this.state.cajaPendiente) this.traerCajaAlFacturador();
     }
 
     // CAMBIO DE ROL OPERATIVO (CLIENT / RESELLER / SUPER_ADMIN)
@@ -1361,7 +1373,109 @@ export class AppManager {
     irANuevaFactura() {
         this.triggerHaptic(15);
         this.state.vistaHoy = false;
+        // En tablet horizontal se abre la caja; en celular y tablet vertical, el talonario de siempre.
+        this.state.vistaCaja = esTabletHorizontal();
+        if (this.state.vistaCaja && !this.state.caja) this.state.caja = estadoCajaInicial();
         this.evaluateStateAndRender();
+    }
+
+    // Desde la caja, "← Hoy": vuelve a la pantalla Hoy sin perder lo cargado.
+    volverAHoyDesdeCaja() {
+        this.state.vistaCaja = false;
+        this.state.vistaHoy = true;
+        this.evaluateStateAndRender();
+    }
+
+    // Si la tablet se gira a vertical estando en la caja, pasa lo cargado al talonario normal.
+    vigilarGiroDeCaja() {
+        if (typeof window === 'undefined' || !window.matchMedia) return;
+        const mq = window.matchMedia('(min-width: 900px) and (orientation: landscape)');
+        const alCambiar = () => {
+            if (!this.state.vistaCaja || mq.matches) return;
+            this.state.cajaPendiente = this.state.caja;
+            this.state.vistaCaja = false;
+            this.state.caja = null;
+            this.evaluateStateAndRender();
+        };
+        if (mq.addEventListener) mq.addEventListener('change', alCambiar);
+    }
+
+    // Pasa cliente y productos de la caja a las filas del talonario (solo si hay dónde ponerlos).
+    traerCajaAlFacturador() {
+        const caja = this.state.cajaPendiente;
+        this.state.cajaPendiente = null;
+        const tbody = document.getElementById('realista-items-body');
+        if (!caja || !tbody) return;
+        if (caja.cliente && caja.cliente.identificacion !== '9999999999999') {
+            const nom = document.getElementById('cliente-nombre-input');
+            const ruc = document.getElementById('cliente-ruc-input');
+            if (nom) nom.value = caja.cliente.nombre;
+            if (ruc) ruc.value = caja.cliente.identificacion;
+        }
+        if (!caja.lineas?.length) return;
+        // La caja reemplaza las filas de ejemplo o vacías del talonario.
+        tbody.innerHTML = '';
+        caja.lineas.forEach((l) => this.addQuickProduct(l.nombre, l.precio, l.cantidad));
+    }
+
+    // Emite lo que hay en la caja con el MISMO camino que el talonario: revisión, cuenta de
+    // Deshacer, emitirPayload y copia azul. Devuelve true si se emitió.
+    async emitirDesdeCaja(payload, total) {
+        if (hayCuentaActiva() || this.state.emitiendoAhora) return false;
+        const preFlight = invoiceValidator.validatePreFlight(payload, this.state);
+        if (!preFlight.valid) {
+            this.triggerHaptic([60, 40, 80]);
+            this.showToast(` ${preFlight.title}: ${preFlight.message}`);
+            return false;
+        }
+        this.state.emitiendoAhora = true;
+        try {
+            const decision = await esperarConDeshacer({ segundos: segundosDeshacer(this.state.experienceMode) }).promesa;
+            if (decision === 'cancelado') return false;
+            if (decision === 'deshacer') {
+                this.triggerHaptic(20);
+                this.showToast('Listo, no se emitió nada. Cambia lo que necesites y vuelve a emitir.');
+                return false;
+            }
+            this.showToast('Firmando y procesando…');
+            const res = await this.emitirPayload(payload);
+            if (!res) return false;
+            this.registrarHoy(res, total);
+            soundFx.playStamp();
+            this.triggerHaptic([40, 20, 60]);
+            const secuencial = String(res.secuencial || this.state.currentDocNumber).padStart(9, '0');
+            this.state.lastReceipt = {
+                cliente: payload.cliente,
+                items: payload.items,
+                total: `$${Number(total).toFixed(2)}`,
+                secuencial,
+                claveAcceso: res.claveAcceso || '',
+                numeroAutorizacion: res.numeroAutorizacion || '',
+                offline: res.estado === 'OFFLINE_LOCAL',
+                practica: !!res.isDemo,
+                rideUrl: res.ride_url || '',
+                emailEnviado: !!res.email_enviado,
+            };
+            this.showToast(res.isDemo
+                ? `¡Listo! Factura N° 001-001-${secuencial} hecha en Modo Práctica (no llegó al SRI).`
+                : (res.estado === 'OFFLINE_LOCAL'
+                    ? `Sin conexión: Factura N° 001-001-${secuencial} guardada en tu talonario local.`
+                    : `Factura N° 001-001-${secuencial} ${res.estado === 'AUTORIZADO' ? 'autorizada' : 'enviada'} por el SRI.`));
+            this.state.vistaCaja = false;
+            this.state.caja = null;
+            this.state.isShowingBlueCopy = true;
+            this.evaluateStateAndRender();
+            if (this.blueCopyTimer) clearTimeout(this.blueCopyTimer);
+            this.blueCopyTimer = setTimeout(() => {
+                if (this.state.isShowingBlueCopy) this.finishBlueCopyPreview();
+            }, res.isDemo ? 8000 : 3500);
+            return true;
+        } catch (e) {
+            this.showToast(' ' + (e.message || 'No se pudo emitir la factura. Inténtalo otra vez.'));
+            return false;
+        } finally {
+            this.state.emitiendoAhora = false;
+        }
     }
 
     // Decide cómo emitir un payload: práctica simulada, cola offline o emisión real.
@@ -1591,7 +1705,7 @@ export class AppManager {
             toast.style.cssText = `
                 position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
                 background: #0F172A; color: white; padding: 12px 20px; border-radius: 10px;
-                font-family: var(--font-sans); font-size: 13px; font-weight: 800;
+                font-family: var(--font-sans); font-size: 16px; font-weight: 800;
                 box-shadow: 0 8px 24px rgba(0,0,0,0.3); z-index: 10001; border: 1.5px solid #1A1A1A;
                 text-align: center; max-width: 90%; animation: paperEntrance 0.3s ease;
             `;

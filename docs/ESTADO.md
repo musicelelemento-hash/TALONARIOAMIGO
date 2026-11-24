@@ -20,6 +20,17 @@
 - Base de datos movida a Supabase; `SUPABASE_SERVICE_ROLE_KEY` corregida en Render.
 - Skills del proyecto instaladas; `CLAUDE.md` + esta bitácora + skill `bitacora`.
 
+## Modo caja en tablet y revisión de tamaños (24/11)
+- Modo caja (tablet horizontal ≥900 px): productos frecuentes con un toque, factura a la derecha, un
+  botón "Emitir factura" con el mismo flujo (Deshacer, palomitas, Hoy). Aviso amable si consumidor
+  final pasa de $50. Al girar a vertical pasa todo al facturador. Tests JS 25/25.
+- Revisión en 375/820/1180/1366/1920 px, ambos estilos, modos Comerciante/Tranquilo/Pro: 0 desbordes,
+  0 controles <44 px; textos <16 px solo el botón Ayúdame (es de ícono, a propósito). Chat centrado en
+  pantallas grandes.
+- Decisión del dueño pendiente: la caja guarda en el teléfono los clientes frecuentes (nombre y
+  cédula) y productos usados (`ta_caja_clientes_v1`, `ta_caja_productos_v1`). El modo Pro no tiene
+  entrada a la caja todavía.
+
 ## RIDE en PDF (24/11)
 - PDF de la factura según el SRI (dompdf 2.0.8 + picqer barcode 2.4.2), estilos Clásico y Minimalista,
   código de barras de la clave de acceso. Endpoint del dueño + enlace público firmado (30 días,

@@ -4507,7 +4507,7 @@ body:has(> #app-root > .landing) #app-root {
 .mostrador-console-left { flex-wrap: wrap; min-width: 0; }
 .mostrador-console-right { flex-shrink: 0; position: relative; }
 .mostrador-brand-title { font-size: 16px !important; }
-.mostrador-brand-sub { font-size: 14px !important; white-space: normal; }
+.mostrador-brand-sub { font-size: 16px !important; white-space: normal; }
 .mostrador-seg-btn,
 .mostrador-action-chip {
     font-size: 16px !important;
@@ -4705,7 +4705,7 @@ body { padding-bottom: 88px; }
 @media (max-width: 640px) {
     .mostrador-console-header { padding: 8px 10px; }
     .mostrador-brand-pill { min-width: 0; }
-    .mostrador-brand-sub { font-size: 14px !important; }
+    .mostrador-brand-sub { font-size: 16px !important; }
     .mostrador-mas-panel { position: fixed; left: 12px; right: 12px; top: 64px; max-width: none; }
     .ayudame-flotante {
         width: 52px; height: 52px; min-height: 52px; min-width: 52px;

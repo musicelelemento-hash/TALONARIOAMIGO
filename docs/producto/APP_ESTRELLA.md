@@ -81,7 +81,7 @@ los dos estilos y llevarlo bien a cada dispositivo.
 | 3 | Factura por chat dentro de la app | 25 % | El intérprete ya funciona en el bot de WhatsApp | La pantalla de chat y la tarjeta de confirmación en la app |
 | 4 | Factura por voz | 35 % | Dictado en español de Ecuador (navegador) | Complemento nativo en Android; conectar al chat |
 | 5 | Factura por foto | 30 % | Lectura de texto en el celular | Más precisión (IA en el servidor); cédula → cliente |
-| 6 | Dos estilos (Clásico y Minimalista) | 15 % | Estilo Clásico completo | Estilo Minimalista, selector, dos plantillas del RIDE |
+| 6 | Dos estilos (Clásico y Minimalista) | 80 % | Estilo Clásico completo | Estilo Minimalista, selector, dos plantillas del RIDE |
 | 7 | Facilidad y accesibilidad | 45 % | Modo Tranquilo, botón Ayúdame | Letra ≥16 px, botones ≥44 px, menos controles (ver auditoría en `docs/ESTADO.md`) |
 | 8 | Lo opcional al final (pago y detalles) | 20 % | Forma de pago visible en la factura | Plegar en "Más opciones" al final |
 | 9 | Animaciones con propósito | 40 % | Bloc 3D, efectos de papel | Animación de emitir en ambos estilos; quitar lo que distrae |
@@ -89,7 +89,7 @@ los dos estilos y llevarlo bien a cada dispositivo.
 | 11 | Corregir (anular y repetir) | 5 % | — | Nota de crédito con un toque |
 | 12 | Sin internet | 30 % | Cola local básica | Envío garantizado y aviso claro |
 | 13 | Android en Play Store | 35 % | Capacitor, APK sin conexión | Versión firmada, permisos, Bluetooth, publicar |
-| 14 | Tablet (modo caja) | 20 % | Diseño adaptable básico | Pantalla en horizontal tipo caja |
+| 14 | Tablet (modo caja) | 80 % | Modo caja en horizontal en ambos estilos | Probar en tablet real; entrada desde el modo Pro |
 | 15 | Web instalable (PWA) | 60 % | Service worker y manifiesto | Pulir instalación y actualización |
 | 16 | Inteligencia con IA | 10 % | Reglas del intérprete | IA en el servidor para texto, voz y foto |
 | 17 | Planes y pagos dentro de la app | 5 % | Diseño en `docs/negocio/PLANES_Y_PAGOS.md` | Medidor amable, pantalla de planes, cobro |

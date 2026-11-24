@@ -11,6 +11,7 @@ import { renderOnboardingModal } from './OnboardingScreen.js';
 import { renderHoyTarjeta } from './HoyResumen.js';
 import { palomitasHTML, nivelDeEmision } from './Palomitas.js';
 import { ESTILOS, setEstilo } from '../services/estilo.js';
+import { PRODUCTOS_RAPIDOS } from '../services/cajaLogica.js';
 
 function esc(value) {
     return String(value ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -220,7 +221,7 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
     if (isShowingBlueCopy) {
         return `
             <div class="mode-switcher-bar">
-                <span style="color:#60A5FA; font-size:12px; font-weight:800; padding:6px 12px;">
+                <span style="color:#60A5FA; font-size:16px; font-weight:800; padding:6px 12px;">
                      DUPLICADO AUTOCOPIATIVO DEL EMISOR — ARCHIVO TRIBUTARIO
                 </span>
             </div>
@@ -532,10 +533,7 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
             ${mode === 'comerciante' ? `
                 <div class="quick-chips-wrapper">
                     <span class="seccion-etiqueta" style="font-weight:800; color:#475569; align-self:center; margin-right:4px;">Rápidos:</span>
-                    <button type="button" class="quick-product-chip" onclick="window.appState.addQuickProduct('Quintal de Maíz', 18.50)">Maíz ($18.50)</button>
-                    <button type="button" class="quick-product-chip" onclick="window.appState.addQuickProduct('Quintal de Café', 45.00)">Café ($45.00)</button>
-                    <button type="button" class="quick-product-chip" onclick="window.appState.addQuickProduct('Quintal de Cacao Fino', 60.00)">Cacao ($60.00)</button>
-                    <button type="button" class="quick-product-chip" onclick="window.appState.addQuickProduct('Caja de Banano', 6.50)">Banano ($6.50)</button>
+                    ${PRODUCTOS_RAPIDOS.map((p) => `<button type="button" class="quick-product-chip" onclick="window.appState.addQuickProduct('${p.nombre}', ${p.precio.toFixed(2)})">${p.corto} ($${p.precio.toFixed(2)})</button>`).join('')}
                     <button type="button" class="quick-product-chip" onclick="window.appState.addEmptyRow()">+ Fila</button>
                 </div>
             ` : ''}
@@ -599,7 +597,7 @@ export function renderFacturadorRealista(emisorData, currentDocNumber, experienc
             <!-- Total a cobrar (siempre visible) -->
             <div class="footer-grid footer-grid-solo-total">
                 <div class="total-cobrar-box">
-                    <div class="total-cobrar-header">TOTAL A COBRAR <span style="font-size:14px;">➔</span></div>
+                    <div class="total-cobrar-header">TOTAL A COBRAR <span style="font-size:16px;" aria-hidden="true">➔</span></div>
                     <div class="total-cobrar-monto" id="grand-total-display">$54.50</div>
                 </div>
             </div>
