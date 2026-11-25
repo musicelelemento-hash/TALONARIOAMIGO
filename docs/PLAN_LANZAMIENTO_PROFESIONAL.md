@@ -105,11 +105,11 @@ Las imprentas piloto pedirán "déjame verlo funcionando". Sin demo, no vendes.
 
 ## 7. Lo que sigue en código (P1, ya priorizado)
 
-1. **P1-3 · Code-split** del bundle (> 1.2 MB por three.js + tesseract) → cargar 3D/OCR bajo demanda (celular barato = "no carga" = miedo).
+1. ~~**P1-3 · Code-split** del bundle~~ ✅ **Hecho** — three.js/pdfjs-dist ahora cargan con `import()` dinámico (bajo demanda real, no solo chunk separado); celular barato ya no descarga ~1 MB que no va a usar.
 2. **P1-4 · CI** simple (GitHub Actions): `composer install` + `php artisan test` + `npm run build` en cada PR.
-3. **A1 · Modo Tranquilo real** (wizard de 3 pasos, un botón por pantalla) — hoy es solo CSS.
-4. **A5 · Botón "Ayúdame"** WhatsApp contextual en todas las pantallas.
-5. **P1-1 · RLS Postgres** (defensa en profundidad si alguien expone Supabase REST por fuera del backend).
+3. ~~**A1 · Modo Tranquilo real**~~ ✅ **Hecho** (ver SELL_READY_CHECKLIST.md).
+4. ~~**A5 · Botón "Ayúdame"**~~ ✅ **Hecho** (ver SELL_READY_CHECKLIST.md).
+5. ~~**P1-1 · RLS Postgres**~~ ✅ **Hecho** — migración `enable_rls_defense_in_depth.php`.
 
 ---
 

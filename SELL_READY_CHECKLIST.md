@@ -1,7 +1,7 @@
 # ✅ Checklist "Listo para vender" — Talonario Amigo
 
 > Estado verificado contra el código real (migraciones, seeders, tests, build).
-> **Actualizado:** tests 17/17 ✅ · build ✅ · seed demo ✅ · README ✅ · "quitar el miedo" P0 aplicado → 2 brechas P0 reales restantes (no técnicas).
+> **Actualizado:** tests 17/17 ✅ · build ✅ · seed demo ✅ · README ✅ · "quitar el miedo" P0 aplicado · RLS + lazy-load de three.js/pdfjs aplicados → 2 brechas P0 reales restantes (no técnicas), 0 brechas P1 abiertas.
 > Prioridades: **P0** = bloquea la venta · **P1** = antes de salir · **P2** = mejora.
 
 ---
@@ -45,9 +45,9 @@
 
 | # | Brecha | Solución |
 |---|---|---|
-| P1-1 | **RLS Postgres** (defensa en profundidad) si se expone Supabase REST. | Políticas + rol no-owner; opcional. |
+| ~~P1-1~~ | ~~RLS Postgres~~ | ✅ **Hecho** — migración `enable_rls_defense_in_depth` activa RLS + política deny-all para `anon`/`authenticated` en las tablas multi-tenant (`emisores`, `comprobantes`, `comprobante_items`, `clientes_frecuentes`, `puntos_emision`, `reseller_packages`). Es no-op seguro si la base no es Supabase Postgres (detecta la ausencia de esos roles) — probado con los 17 tests en SQLite sin romper nada. |
 | ~~P1-2~~ | ~~Tests de integración de la emisión~~ | ✅ **Hecho** — `tests/Feature/EmissionTest` (SOAP simulado). |
-| ~~P1-3~~ | ~~Bundle frontend >1.2 MB~~ | ✅ **Hecho** — code-split (`manualChunks`): el chunk principal bajó de 1.25 MB → 244 KB (three/pdfjs/qrcode en chunks separados). |
+| ~~P1-3~~ | ~~Bundle frontend >1.2 MB~~ | ✅ **Hecho** — code-split (`manualChunks`) + ahora `three.js` y `pdfjs-dist` (OCR del certificado RUC) se cargan con `import()` dinámico: ya no se descargan en el arranque, solo si el usuario abre la vista 3D o sube un certificado. Carga inicial bajó de ~2.3 MB a ~287 KB (index+css+qrcode). |
 | ~~P1-4~~ | ~~CI~~ | ✅ **Hecho** — `.github/workflows/ci.yml` (lint + build + phpunit) ya existe; se añadió la extensión `openssl` para el test de emisión. Falta solo `composer audit` (opcional). |
 | ~~P1-5~~ | ~~Más capturas de la app~~ | ✅ **Hecho** — `docs/capturas/app-landing.png`, `app-facturador.png`, `app-tranquilo.png`, `app-3d.png` (Edge headless + deep-link `?demo=&mode=&view=3d`). Falta solo el ticket térmico. |
 
@@ -66,5 +66,5 @@
 
 1. P0-1 (licencia) — abogado.
 2. P0-2 (demo deploy) — con tus credenciales Render/Supabase.
-3. P1-1 (capturas) → venta piloto.
-4. P1-4/P1-5 (calidad/bundle) — mejora continua.
+
+> Todas las brechas P1 de código ya están resueltas (sección 3). Lo único que falta para vender es no técnico.

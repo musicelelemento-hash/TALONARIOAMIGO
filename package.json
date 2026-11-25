@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "description": "Monorepo de Talonario Amigo (Backend Laravel + SPA Vite + App Móvil Capacitor + Cloudflare Workers)",
+  "workspaces": [
+    "TALONARIOAMIGO"
+  ],
   "scripts": {
     "dev": "npm run dev --prefix TALONARIOAMIGO",
     "build": "npm run build --prefix TALONARIOAMIGO",
