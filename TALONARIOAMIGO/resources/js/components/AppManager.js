@@ -9,9 +9,7 @@ import { renderFacturadorRealista } from './FacturadorRealista.js';
 import { renderSuperAdminPanel } from './SuperAdminPanel.js';
 import { renderResellerPanel } from './ResellerPanel.js';
 import { renderTomosModal } from './TomosModal.js';
-import { Talonario3DExperience } from './Talonario3DExperience.js';
 import { api } from '../api.js';
-import { extractDataFromSriPdf } from '../services/sriPdf.js';
 import { soundFx } from '../services/soundFx.js';
 import { voiceDictation } from '../services/voiceDictation.js';
 import { gravityScanner } from '../services/gravityScanner.js';
@@ -665,11 +663,14 @@ export class AppManager {
     // =========================================================================
     // EXPERIENCIA 3D TÁCTIL (THREE.JS / WEBGL REALISTA)
     // =========================================================================
-    open3DExperienceModal() {
+    async open3DExperienceModal() {
         this.triggerHaptic(20);
         soundFx.playPaperSlide();
         this.state.is3DModalOpen = true;
         this.evaluateStateAndRender();
+
+        // Carga perezosa: three.js (~500 KB) solo se descarga si el usuario abre la experiencia 3D.
+        const { Talonario3DExperience } = await import('./Talonario3DExperience.js');
 
         setTimeout(() => {
             const canvasContainer = document.getElementById('talonario-3d-canvas-container');
@@ -1636,6 +1637,8 @@ export class AppManager {
         if (!file) return;
         if (statusEl) { statusEl.textContent = 'Analizando certificado…'; statusEl.style.color = '#1D4ED8'; }
         try {
+            // Carga perezosa: pdfjs-dist (~480 KB) solo se descarga al subir un certificado de RUC.
+            const { extractDataFromSriPdf } = await import('../services/sriPdf.js');
             const data = await extractDataFromSriPdf(file);
             const set = (id, val) => { const el = document.getElementById(id); if (el && val && !el.value) el.value = val; };
             set('reg-ruc', data.ruc);
@@ -1668,6 +1671,8 @@ export class AppManager {
         if (!file) return;
         if (statusEl) { statusEl.textContent = 'Analizando certificado…'; statusEl.style.color = '#1D4ED8'; }
         try {
+            // Carga perezosa: pdfjs-dist (~480 KB) solo se descarga al subir un certificado de RUC.
+            const { extractDataFromSriPdf } = await import('../services/sriPdf.js');
             const data = await extractDataFromSriPdf(file);
             const set = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
             set('reseller-client-name', data.apellidos_nombres);
@@ -1705,6 +1710,8 @@ export class AppManager {
         if (!file) return;
         if (statusEl) { statusEl.textContent = 'Analizando certificado…'; statusEl.style.color = '#1D4ED8'; }
         try {
+            // Carga perezosa: pdfjs-dist (~480 KB) solo se descarga al subir un certificado de RUC.
+            const { extractDataFromSriPdf } = await import('../services/sriPdf.js');
             const data = await extractDataFromSriPdf(file);
             const set = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
             set('onb-ruc', data.ruc);
